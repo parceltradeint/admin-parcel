@@ -8,7 +8,6 @@ const Footer = () => {
         <div className="mb-6 md:mb-0">
           <Link href="/" passHref >
             <span className="flex items-center cursor-pointer">
-              <img src="/otul-main-logo.svg" className="mr-3 " alt="Percel.Com" />
             </span>
           </Link>
         </div>

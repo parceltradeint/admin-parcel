@@ -22,7 +22,7 @@ const Head = (props) => (
     <meta property="og:url" content={props.url || ""} />
     <meta
       property="og:title"
-      content={props.title || "Percel.Com"}
+      content={props.title || "Parcel.Com"}
     />
 
     <meta
@@ -34,7 +34,7 @@ const Head = (props) => (
     />
     <meta
       property="og:image"
-      content={props.ogImage || "https://otuljob.com/otul-main-logo.svg"}
+      content={props.ogImage || ""}
     />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -47,7 +47,7 @@ const Head = (props) => (
     <meta name="twitter:card" content="summary_large_image" />
     <meta
       name="twitter:image"
-      content={props.ogImage || "https://otuljob.com/otul-main-logo.svg"}
+      content={props.ogImage || ""}
     />
     <meta
       property="twitter:title"

@@ -24,15 +24,6 @@ const NavBar = () => {
       <div className="mx-auto px-2 xl:divide-y xl:divide-gray-200 xl:px-8">
         <div className="relative h-12 flex justify-between">
           <div className="relative z-10 px-2 flex xl:px-0">
-            <Link href="/" passHref>
-              <span className=" w-auto cursor-pointer">
-                <img
-                  src="/otul-main-logo.svg"
-                  alt=""
-                  className="object-cover"
-                />
-              </span>
-            </Link>
           </div>
 
           <div className="relative z-10 flex items-center xl:hidden lg:hidden md:hidden">

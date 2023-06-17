@@ -24,8 +24,7 @@ import { useRouter } from "next/router";
 import React, { useContext } from "react";
 import { Avatar } from "../../assets/icons";
 // import { UserContext } from "../../AuthenticationApp/Context/userContext";
-import LogoImage from "./LogoImage";
-import SideBarOtul from "../../assets/icons";
+
 const SideBar = () => {
   const router = useRouter();
   const { pathname } = router;
