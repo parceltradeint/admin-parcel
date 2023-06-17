@@ -96,7 +96,7 @@ const Delivery = () => {
           </div>
         </div>
       </header>
-      {true ? (
+      {loading ? (
         <PlaceHolderLoading loading={true} />
       ) : (
         <div className=" mx-auto py-2">
