@@ -410,7 +410,7 @@ export const generatePDF = (info) => {
                     fontSize: 13,
                   },
                   {
-                    text: `${convertTotalAmount(Number(info?.due))}`,
+                    text: `${convertTotalAmount(Number(info?.due || 0))}`,
                     alignment: "right",
                     fontSize: 13,
                   },
@@ -424,7 +424,7 @@ export const generatePDF = (info) => {
                     fontSize: 13,
                   },
                   {
-                    text: `${convertTotalAmount(Number(info?.due))}`,
+                    text: `${convertTotalAmount(Number(info?.paid || 0))}`,
                     alignment: "right",
                     fontSize: 13,
                   },
