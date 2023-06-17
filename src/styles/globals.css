@@ -7,6 +7,43 @@
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
 }
+.rt-thead {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: white;
+  color: #000;
+}
+.rt-tfoot {
+  top: 228px;
+  position: sticky;
+  z-index: 2;
+  background: white;
+}
+.rt-tbody {
+  overflow: visible !important;
+  color: #000;
+  /* height: 200px; */
+}
+
+.maxtable .rt-tbody {
+  overflow: visible !important;
+  height: auto !important;
+}
+.sticky {
+  position: sticky !important;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  background-color: black;
+}
+.sticky-r {
+  position: sticky !important;
+  right: 0;
+  top: 0;
+  z-index: 1;
+  background-color: white;
+}
 
 @media (prefers-color-scheme: dark) {
   :root {
