@@ -35,7 +35,7 @@ const SideBar = () => {
         className={`scrollbar  h-screen overflow-y-auto overflow-x-hidden bg-[beige] text-green-600 py-1`}
       >
         <div className="hidden lg:block">
-          <p className="font-bold text-2xl">
+          <p className="font-bold text-2xl text-center">
             <span className="text-[#ff2626]">Parcel</span>{" "}
             <span className="text-[#fd9900]">.Com</span>
           </p>

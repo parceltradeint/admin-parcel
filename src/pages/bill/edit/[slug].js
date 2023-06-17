@@ -9,6 +9,7 @@ const EditBill = () => {
   const router = useRouter();
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
@@ -20,8 +21,10 @@ const EditBill = () => {
         .catch((err) => console.log("err", err))
         .finally(() => setLoading(false));
     }
-    fetchData();
-  }, [router.query.slug]);
+    if (router.query?.slug) {
+      fetchData();
+    }
+  }, [router.query?.slug]);
   return (
     <Layout>
       {loading ? (

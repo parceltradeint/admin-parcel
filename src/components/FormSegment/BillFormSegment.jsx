@@ -8,10 +8,13 @@ import { docDefinition, generatePDF } from "../PDF/InvoiceDef";
 import axios from "axios";
 import { errorAlert, successAlert } from "@/common/SweetAlert";
 import OverlayLoading from "@/common/OverlayLoading";
+import { Router, useRouter } from "next/router";
+import PlaceHolderLoading from "@/common/PlaceHolderLoading";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const BillFormSegment = (props) => {
   const { editMode } = props;
+  const router = useRouter();
   const [data, setData] = useState([]);
   const [customerInfo, setCustomerInfo] = useState(editMode ? editMode : null);
   const [loading, setLoading] = useState(false);
@@ -59,6 +62,22 @@ const BillFormSegment = (props) => {
     }
   };
 
+  const deleteData = async () => {
+    setLoading(true);
+    if (editMode) {
+      await axios
+        .delete("/api/bill?id=" + editMode?._id)
+        .then((res) => {
+          successAlert("Successfully Deleted");
+          router.push("/delivery");
+        })
+        .catch((err) => {
+          errorAlert("Something went wrong!");
+        })
+        .finally(() => setLoading(false));
+    }
+  };
+
   useEffect(() => {
     if (editMode) {
       setData(editMode?.data);
@@ -67,7 +86,7 @@ const BillFormSegment = (props) => {
   }, [editMode]);
 
   if (loading) {
-    return <OverlayLoading />;
+    return <PlaceHolderLoading loading={true} />;
   }
   return (
     <div>
@@ -101,7 +120,8 @@ const BillFormSegment = (props) => {
                 {!editMode ? "Save" : "Update"}
               </button>
               <button
-                type="submit"
+                type="button"
+                onClick={deleteData}
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3"
               >
                 Delete

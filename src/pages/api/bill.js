@@ -4,7 +4,7 @@ import { ObjectId } from "mongodb";
 export default async function newShipmentBill(req, res) {
   const { client, db } = await dbClient();
   const collection = db.collection("shipment_bill");
-
+  console.log("req.method", req.method);
   if (req.method == "POST") {
     try {
       const result = await collection.insertOne({ ...req.body });
@@ -21,7 +21,18 @@ export default async function newShipmentBill(req, res) {
         data = await collection.findOne({ _id: objectId });
       } else if (req?.query?.search) {
         const regexQuery = { $regex: req?.query?.search, $options: "i" };
-        data = await collection.find({ fieldName: regexQuery }).toArray();
+        const regexPattern = new RegExp(req?.query?.search, "i"); // Case-insensitive search pattern
+        const query = {
+          $or: [
+            { invoiceNumber: regexPattern },
+            { shipmentBy: regexPattern },
+            { shipmentNo: regexPattern },
+            { deliveryDate: regexPattern },
+            { customerName: regexPattern },
+            { phoneNumber: regexPattern },
+          ],
+        };
+        data = await collection.find(query).toArray();
       } else {
         data = await collection.find({}).limit(50).toArray();
       }
@@ -32,7 +43,7 @@ export default async function newShipmentBill(req, res) {
       console.log("err", error);
       res.status(500).json({ status: false, data: {} });
     }
-  }else if(req.method == "PATCH"){
+  } else if (req.method == "PATCH") {
     try {
       let data;
       const objectId = new ObjectId(req?.body?.id);
@@ -43,6 +54,18 @@ export default async function newShipmentBill(req, res) {
       // console.log("res Data", data);
       await client.close();
       res.status(200).json(data);
+    } catch (error) {
+      console.log("err", error);
+      res.status(500).json({ status: false, data: {} });
+    }
+  } else if (req.method == "DELETE") {
+    try {
+      let data;
+      const objectId = new ObjectId(req?.query?.id);
+      data = await collection.deleteOne({ _id: objectId });
+      // console.log("res Data", data);
+      await client.close();
+      res.status(200).json(data.deletedCount);
     } catch (error) {
       console.log("err", error);
       res.status(500).json({ status: false, data: {} });
