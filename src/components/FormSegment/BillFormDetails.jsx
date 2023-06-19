@@ -104,7 +104,7 @@ const BillFormDetails = (props) => {
   };
 
   return (
-    <div>
+    <div className="w-[80%] mx-auto border border-slate-950 mt-3">
       <form onSubmit={handleSubmit(onSubmit)} className="text-black">
         <ReactTable
           data={data}
@@ -190,7 +190,7 @@ const BillFormDetails = (props) => {
                         onChange={(e) =>
                           handleAditionalInfo(e.target.value, "due")
                         }
-                        defaultValue={0}
+                        defaultValue={aditionalInfo?.due}
                       />
                     </span>
                     <span>
@@ -199,7 +199,7 @@ const BillFormDetails = (props) => {
                         name="input"
                         type={"number"}
                         // onChange={(e) => handleCellRenderChange(cellInfo, e.target.value)}
-                        defaultValue={0}
+                        defaultValue={aditionalInfo?.paid}
                         onChange={(e) =>
                           handleAditionalInfo(e.target.value, "paid")
                         }
@@ -221,7 +221,7 @@ const BillFormDetails = (props) => {
               Header: "#",
               accessor: "#",
               Cell: (row) => (
-                <div className={"text-center"}>
+                <div className={"text-center flex flex-col space-y-2"}>
                   <button
                     type={"button"}
                     tabIndex={-1}
@@ -232,6 +232,16 @@ const BillFormDetails = (props) => {
                   >
                     <FontAwesomeIcon icon={faTrashAlt} />
                   </button>
+                  {
+                   data && data?.length - 1 === row?.row?._viewIndex && (
+                      <button
+                        type="submit"
+                        className="inline-flex items-center px-1.5 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
+                      >
+                        <FontAwesomeIcon icon={faPlus} />
+                      </button>
+                    )
+                  }
                 </div>
               ),
 

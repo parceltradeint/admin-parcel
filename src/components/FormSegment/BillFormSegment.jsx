@@ -82,6 +82,10 @@ const BillFormSegment = (props) => {
     if (editMode) {
       setData(editMode?.data);
       setCustomerInfo(editMode);
+      setAditionalInfo({
+        due: editMode?.due,
+        paid: editMode?.paid,
+      });
     }
   }, [editMode]);
 
@@ -89,7 +93,7 @@ const BillFormSegment = (props) => {
     return <PlaceHolderLoading loading={true} />;
   }
   return (
-    <div>
+    <Section>
       <OverViewFrom
         editMode={editMode}
         setCustomerInfo={setCustomerInfo}
@@ -130,7 +134,7 @@ const BillFormSegment = (props) => {
           </Section>
         </>
       )}
-    </div>
+    </Section>
   );
 };
 

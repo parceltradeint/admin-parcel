@@ -1,5 +1,6 @@
 import { sumBy } from "lodash";
 import { parcelLogo, wechat, whatsApp } from "./image";
+import { formartDate } from "@/common/formartDate";
 // title: `${customerName}- ${type}- ${new Date().toLocaleString()}`,
 
 export const generatePDF = (info) => {
@@ -58,7 +59,7 @@ export const generatePDF = (info) => {
     info: {
       title: `${info?.customerName}- ${
         info?.shipmentBy
-      }- ${new Date().toLocaleString()}`,
+      }- ${formartDate(new Date())}`,
       author: "Parcel",
       subject: "Shipment Bill",
     },
@@ -69,7 +70,7 @@ export const generatePDF = (info) => {
         columns: [
           {
             alignment: "left",
-            text: `${new Date().toLocaleDateString()}`,
+            text: `${formartDate(new Date())}`,
           },
           {
             alignment: "right",
@@ -214,7 +215,7 @@ export const generatePDF = (info) => {
                 color: "#FFFFFF",
                 bold: true,
               },
-              { text: `${new Date().toDateString()}`, alignment: "left" },
+              { text: `${formartDate(new Date())}`, alignment: "left" },
             ],
           ],
         },

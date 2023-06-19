@@ -1,4 +1,7 @@
+/* eslint-disable jsx-a11y/alt-text */
 import Section from "@/common/Section";
+import { formartDate } from "@/common/formartDate";
+import Image from "next/image";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
@@ -8,17 +11,184 @@ const OverViewFrom = (props) => {
     handleSubmit,
     register,
     watch,
+    getValues,
     formState: { errors, isValid },
   } = useForm({ mode: "all", defaultValues: { ...customerInfo } });
 
   const onSubmit = (data) => {
-    setCustomerInfo(data);
+    // setCustomerInfo(data);
   };
+  useEffect(() => {
+    setCustomerInfo({...getValues(), ...watch()});
+  }, [getValues, setCustomerInfo, watch]);
 
   return (
-    <Section>
-      
-        <p className="text-center text-2xl text-gray-950 underline">
+    <div>
+      <p className="text-center text-2xl text-gray-950 underline">
+        {!editMode
+          ? "Create New Bill"
+          : `Edit Bill - ${editMode?.invoiceNumber}`}
+      </p>
+
+      <div className="w-[80%] mx-auto border border-slate-950">
+        <div className="flex items-center justify-center border-b border-slate-950">
+          <div className="w-[20%]">
+            <Image src={"/parcel.jpg"} width={80} height={80} alt="parcel" />
+          </div>
+          <div className="w-[80%]">
+            <p className="text-5xl text-black ml-[10%]">
+              <span className="text-red-600">Parcel</span> Export Import
+            </p>
+          </div>
+        </div>
+        <div className="flex">
+          <div className="w-[20%]">
+            <Image src={"/wechat.jpg"} width={80} height={80} alt="wechat" />
+          </div>
+          <div className="w-[60%] border-l border-r border-slate-950 px-2 bg-[#555555]">
+            <div className="text-xl text-white font-medium text-center ">
+              <p>H-2553, Sayednagor, Vatara, Gulshan-2, Dhaka-1212.</p>
+              <p>Cell: 01879314050, 01521584929</p>
+            </div>
+          </div>
+          <div className="w-[20%] flex justify-end">
+            <Image
+              src={"/whatsapp.png"}
+              width={90}
+              height={90}
+              alt="whatsApp"
+            />
+          </div>
+        </div>
+        <div className="bg-[#1586D5] text-white text-center font-semibold text-2xl">
+          <p>Shipment Bill</p>
+        </div>
+
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="grid grid-cols-1 mt-4 sm:grid-cols-3 border-t border-slate-950 text-lg">
+            <div className="flex gap-1 px-2 col-span-2 border-r border-slate-950">
+              <label
+                htmlFor="customerName"
+                className=" flex items-center text-base text-gray-800 border-r border-slate-950 w-[25%]"
+              >
+                Customer Name:
+              </label>
+              <input
+                {...register("customerName", {
+                  required: true,
+                })}
+                name="customerName"
+                placeholder="Enter your customer name"
+                className="block w-full px-4 py-2 text-gray-700  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+              />
+            </div>
+            <div className="flex gap-1 px-2 ">
+              <label className="flex items-center text-base text-gray-800 border-r border-slate-950 w-[55%]">
+                Delivery Date:
+              </label>
+              <input
+                className="block w-full px-4 py-2 text-gray-700  focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                defaultValue={
+                  editMode
+                    ? formartDate(editMode?.date)
+                    : formartDate(new Date())
+                }
+                {...register("deliveryDate", {
+                  required: true,
+                })}
+                readOnly
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 border-t border-slate-950 text-lg">
+            <div className="flex gap-1 px-2 col-span-2 border-r border-slate-950">
+              <label
+                htmlFor="shipmentBy"
+                className=" flex items-center text-base text-gray-800 border-r border-slate-950 w-[25%]"
+              >
+                Shipment By:
+              </label>
+              <input
+                {...register("shipmentBy", {
+                  required: true,
+                })}
+                name="shipmentBy"
+                placeholder="Enter Shipment By"
+                className="block w-full px-4 py-2 text-gray-700  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+              />
+            </div>
+            <div className="flex gap-1 px-2 ">
+              <label className="flex items-center text-base text-gray-800 border-r border-slate-950 w-[55%]">
+                Reporting:
+              </label>
+              <input
+                {...register("reporting", {
+                  required: true,
+                })}
+                name="reporting"
+                defaultValue={"China"}
+                placeholder="Enter reporting"
+                className="block w-full px-4 py-2 text-gray-700  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 border-t border-slate-950 text-lg">
+            <div className="flex gap-1 px-2 col-span-2 border-r border-slate-950">
+              <label
+                htmlFor="address"
+                className=" flex items-center text-base text-gray-800 border-r border-slate-950 w-[25%]"
+              >
+                Address:
+              </label>
+              <input
+                {...register("address", {
+                  required: true,
+                })}
+                name="address"
+                placeholder="Enter address"
+                className="block w-full px-4 py-2 text-gray-700  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+              />
+            </div>
+            <div className="flex gap-1 px-2 ">
+              <label className="flex items-center text-base text-gray-800 border-r border-slate-950 w-[55%]">
+                Status:
+              </label>
+              <input
+                {...register("status", {
+                  required: true,
+                })}
+                name="status"
+                defaultValue={"Dhaka Office"}
+                placeholder="Enter your customer name"
+                className="block w-full px-4 py-2 text-gray-700  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 border-t border-slate-950 text-lg">
+            <div className="flex gap-1 px-2 col-span-2 border-slate-950">
+              <label
+                htmlFor="remarks"
+                className=" flex items-center text-base text-gray-800 border-r border-slate-950 w-[15.1%]"
+              >
+                Remarks:
+              </label>
+              <input
+                {...register("remarks", {
+                  required: true,
+                })}
+                name="remarks"
+                placeholder="Enter remarks"
+                className="block w-full px-4 py-2 text-gray-700  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+              />
+            </div>
+          </div>
+        </form>
+      </div>
+
+      {/* <p className="text-center text-2xl text-gray-950 underline">
           {!editMode ? "Create New Bill" : `Edit Bill - ${editMode?.invoiceNumber}`}
           
         </p>
@@ -143,8 +313,8 @@ const OverViewFrom = (props) => {
         >
           Update Customer Info
         </button>
-      </form>
-    </Section>
+      </form> */}
+    </div>
   );
 };
 
