@@ -18,9 +18,14 @@ const OverViewFrom = (props) => {
   const onSubmit = (data) => {
     // setCustomerInfo(data);
   };
-  useEffect(() => {
-    setCustomerInfo({...getValues(), ...watch()});
-  }, [getValues, setCustomerInfo, watch]);
+  // useEffect(() => {
+  //   setCustomerInfo({ ...getValues(), ...watch() });
+  //   console.log("customer", { ...getValues(), ...watch() });
+  // }, [getValues, setCustomerInfo, watch]);
+
+  const handleInputChange = (name, value) => {
+    setCustomerInfo({ ...watch(), ...customerInfo, [name]: value });
+  };
 
   return (
     <div>
@@ -30,13 +35,13 @@ const OverViewFrom = (props) => {
           : `Edit Bill - ${editMode?.invoiceNumber}`}
       </p>
 
-      <div className="w-[80%] mx-auto border border-slate-950">
+      <div className="md:w-[80%] mx-auto border border-slate-950">
         <div className="flex items-center justify-center border-b border-slate-950">
           <div className="w-[20%]">
             <Image src={"/parcel.jpg"} width={80} height={80} alt="parcel" />
           </div>
           <div className="w-[80%]">
-            <p className="text-5xl text-black ml-[10%]">
+            <p className="md:text-5xl text-black ml-[10%]">
               <span className="text-red-600">Parcel</span> Export Import
             </p>
           </div>
@@ -46,7 +51,7 @@ const OverViewFrom = (props) => {
             <Image src={"/wechat.jpg"} width={80} height={80} alt="wechat" />
           </div>
           <div className="w-[60%] border-l border-r border-slate-950 px-2 bg-[#555555]">
-            <div className="text-xl text-white font-medium text-center ">
+            <div className="md:text-xl text-white font-medium text-center ">
               <p>H-2553, Sayednagor, Vatara, Gulshan-2, Dhaka-1212.</p>
               <p>Cell: 01879314050, 01521584929</p>
             </div>
@@ -60,16 +65,16 @@ const OverViewFrom = (props) => {
             />
           </div>
         </div>
-        <div className="bg-[#1586D5] text-white text-center font-semibold text-2xl">
+        <div className="bg-[#1586D5] text-white text-center font-semibold md:text-2xl">
           <p>Shipment Bill</p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="grid grid-cols-1 mt-4 sm:grid-cols-3 border-t border-slate-950 text-lg">
-            <div className="flex gap-1 px-2 col-span-2 border-r border-slate-950">
+            <div className="flex gap-1 px-2 col-span-2 md:border-r border-b md:border-b-0 border-slate-950">
               <label
                 htmlFor="customerName"
-                className=" flex items-center text-base text-gray-800 border-r border-slate-950 w-[25%]"
+                className=" flex items-center text-base text-gray-800 border-r border-slate-950 md:w-[25%] w-[30%]"
               >
                 Customer Name:
               </label>
@@ -79,11 +84,14 @@ const OverViewFrom = (props) => {
                 })}
                 name="customerName"
                 placeholder="Enter your customer name"
+                onChange={(e) =>
+                  handleInputChange("customerName", e.target.value)
+                }
                 className="block w-full px-4 py-2 text-gray-700  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
               />
             </div>
-            <div className="flex gap-1 px-2 ">
-              <label className="flex items-center text-base text-gray-800 border-r border-slate-950 w-[55%]">
+            <div className="flex gap-1 px-2">
+              <label className="flex items-center text-base text-gray-800 border-r border-slate-950 md:w-[55%] w-[30%]">
                 Delivery Date:
               </label>
               <input
@@ -102,24 +110,29 @@ const OverViewFrom = (props) => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 border-t border-slate-950 text-lg">
-            <div className="flex gap-1 px-2 col-span-2 border-r border-slate-950">
+            <div className="flex gap-1 px-2 col-span-2 md:border-r border-b md:border-b-0 border-slate-950">
               <label
                 htmlFor="shipmentBy"
-                className=" flex items-center text-base text-gray-800 border-r border-slate-950 w-[25%]"
+                className=" flex items-center text-base text-gray-800 border-r border-slate-950 md:w-[25%] w-[30%]"
               >
                 Shipment By:
               </label>
-              <input
-                {...register("shipmentBy", {
-                  required: true,
-                })}
-                name="shipmentBy"
-                placeholder="Enter Shipment By"
-                className="block w-full px-4 py-2 text-gray-700  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-              />
+              <select
+                id="shipmentBy"
+                defaultValue={"By Air"}
+                onChange={(e) =>
+                  handleInputChange("shipmentBy", e.target.value)
+                }
+                {...register("shipmentBy", { required: true })}
+                className="block w-full px-4 py-2 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+              >
+                <option value="">Choose a Shipment</option>
+                <option value="By Air">By Air</option>
+                <option value="By Sea">By Sea</option>
+              </select>
             </div>
             <div className="flex gap-1 px-2 ">
-              <label className="flex items-center text-base text-gray-800 border-r border-slate-950 w-[55%]">
+              <label className="flex items-center text-base text-gray-800 border-r border-slate-950 md:w-[55%] w-[30%]">
                 Reporting:
               </label>
               <input
@@ -127,6 +140,7 @@ const OverViewFrom = (props) => {
                   required: true,
                 })}
                 name="reporting"
+                onChange={(e) => handleInputChange("reporting", e.target.value)}
                 defaultValue={"China"}
                 placeholder="Enter reporting"
                 className="block w-full px-4 py-2 text-gray-700  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
@@ -135,10 +149,10 @@ const OverViewFrom = (props) => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 border-t border-slate-950 text-lg">
-            <div className="flex gap-1 px-2 col-span-2 border-r border-slate-950">
+            <div className="flex gap-1 px-2 col-span-2 md:border-r border-b md:border-b-0 border-slate-950">
               <label
                 htmlFor="address"
-                className=" flex items-center text-base text-gray-800 border-r border-slate-950 w-[25%]"
+                className=" flex items-center text-base text-gray-800 border-r border-slate-950 md:w-[25%] w-[30%]"
               >
                 Address:
               </label>
@@ -146,13 +160,14 @@ const OverViewFrom = (props) => {
                 {...register("address", {
                   required: true,
                 })}
+                onChange={(e) => handleInputChange("address", e.target.value)}
                 name="address"
                 placeholder="Enter address"
                 className="block w-full px-4 py-2 text-gray-700  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
               />
             </div>
             <div className="flex gap-1 px-2 ">
-              <label className="flex items-center text-base text-gray-800 border-r border-slate-950 w-[55%]">
+              <label className="flex items-center text-base text-gray-800 border-r border-slate-950 md:w-[55%] w-[30%]">
                 Status:
               </label>
               <input
@@ -160,6 +175,7 @@ const OverViewFrom = (props) => {
                   required: true,
                 })}
                 name="status"
+                onChange={(e) => handleInputChange("status", e.target.value)}
                 defaultValue={"Dhaka Office"}
                 placeholder="Enter your customer name"
                 className="block w-full px-4 py-2 text-gray-700  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
@@ -171,7 +187,7 @@ const OverViewFrom = (props) => {
             <div className="flex gap-1 px-2 col-span-2 border-slate-950">
               <label
                 htmlFor="remarks"
-                className=" flex items-center text-base text-gray-800 border-r border-slate-950 w-[15.1%]"
+                className=" flex items-center text-base text-gray-800 border-r border-slate-950 md:w-[15.1%] w-[30%]"
               >
                 Remarks:
               </label>
@@ -180,6 +196,7 @@ const OverViewFrom = (props) => {
                   required: true,
                 })}
                 name="remarks"
+                onChange={(e) => handleInputChange("remarks", e.target.value)}
                 placeholder="Enter remarks"
                 className="block w-full px-4 py-2 text-gray-700  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
               />

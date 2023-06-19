@@ -61,7 +61,7 @@ const BillFormSegment = (props) => {
         .finally(() => setLoading(false));
     }
   };
-
+console.log("customerInfo", customerInfo);
   const deleteData = async () => {
     setLoading(true);
     if (editMode) {

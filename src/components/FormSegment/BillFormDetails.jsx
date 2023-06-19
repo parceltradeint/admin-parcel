@@ -104,7 +104,7 @@ const BillFormDetails = (props) => {
   };
 
   return (
-    <div className="w-[80%] mx-auto border border-slate-950 mt-3">
+    <div className="md:w-[80%] mx-auto border border-slate-950 mt-3">
       <form onSubmit={handleSubmit(onSubmit)} className="text-black">
         <ReactTable
           data={data}
