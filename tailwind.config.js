@@ -2,9 +2,9 @@
 module.exports = {
   content: [
     "./src/**/*.html",
-      "./src/**/*.jsx",
-      "./src/**/*.tsx",
-      "./src/**/*.js",
+    "./src/**/*.jsx",
+    "./src/**/*.tsx",
+    "./src/**/*.js",
   ],
   theme: {
     inset: {
@@ -182,7 +182,13 @@ module.exports = {
       },
       fontFamily: {
         primaryFont: ["Itim", "cursive"],
-        homeFont:[ "Macan","Helvetica Neue","Helvetica","Arial","sans-serif"]
+        homeFont: [
+          "Macan",
+          "Helvetica Neue",
+          "Helvetica",
+          "Arial",
+          "sans-serif",
+        ],
       },
       padding: {
         "10p": "10%",
@@ -301,9 +307,9 @@ module.exports = {
         "-1": "-1",
       },
       animation: {
-        "ping": "ping 0.2s linear infinite",
+        ping: "ping 0.2s linear infinite",
       },
     },
   },
-  plugins: [],
-}
+  plugins: [require("daisyui")],
+};

@@ -28,6 +28,7 @@ const BillFormSegment = (props) => {
     };
     generatePDF(newInfo);
   };
+  console.log("customerInfo", customerInfo);
   const save = async () => {
     setLoading(true);
     const newData = {
@@ -40,9 +41,10 @@ const BillFormSegment = (props) => {
     };
     if (!editMode) {
       await axios
-        .post("/api/bill", { ...newData })
+        .post("/api/outbound", { ...newData })
         .then((res) => {
           successAlert("Successfully Save");
+          router.push("/outbound/air-shipment");
         })
         .catch((err) => {
           errorAlert("Something went wrong!");
@@ -51,7 +53,7 @@ const BillFormSegment = (props) => {
     } else {
       delete newData?._id;
       await axios
-        .patch("/api/bill", { id: editMode?._id, data: { ...newData } })
+        .patch("/api/outbound", { id: editMode?._id, data: { ...newData } })
         .then((res) => {
           successAlert("Successfully Save");
         })
@@ -61,15 +63,15 @@ const BillFormSegment = (props) => {
         .finally(() => setLoading(false));
     }
   };
-console.log("customerInfo", customerInfo);
+
   const deleteData = async () => {
     setLoading(true);
     if (editMode) {
       await axios
-        .delete("/api/bill?id=" + editMode?._id)
+        .delete("/api/outbound?id=" + editMode?._id)
         .then((res) => {
           successAlert("Successfully Deleted");
-          router.push("/delivery");
+          router.push("/outbound/air-shipment");
         })
         .catch((err) => {
           errorAlert("Something went wrong!");

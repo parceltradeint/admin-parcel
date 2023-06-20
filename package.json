@@ -33,5 +33,8 @@
     "react-table-v6": "^6.8.6",
     "sweetalert2": "^11.7.12",
     "tailwindcss": "3.3.2"
+  },
+  "devDependencies": {
+    "daisyui": "^3.1.1"
   }
 }

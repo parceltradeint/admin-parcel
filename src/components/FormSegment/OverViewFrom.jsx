@@ -24,6 +24,7 @@ const OverViewFrom = (props) => {
   // }, [getValues, setCustomerInfo, watch]);
 
   const handleInputChange = (name, value) => {
+    console.log(name, value);
     setCustomerInfo({ ...watch(), ...customerInfo, [name]: value });
   };
 
@@ -69,7 +70,7 @@ const OverViewFrom = (props) => {
           <p>Shipment Bill</p>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)} c>
           <div className="grid grid-cols-1 mt-4 sm:grid-cols-3 border-t border-slate-950 text-lg">
             <div className="flex gap-1 px-2 col-span-2 md:border-r border-b md:border-b-0 border-slate-950">
               <label
@@ -87,7 +88,7 @@ const OverViewFrom = (props) => {
                 onChange={(e) =>
                   handleInputChange("customerName", e.target.value)
                 }
-                className="block w-full px-4 py-2 text-gray-700  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                className="block w-full px-4 py-2 text-gray-700 bg-white  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
               />
             </div>
             <div className="flex gap-1 px-2">
@@ -95,7 +96,7 @@ const OverViewFrom = (props) => {
                 Delivery Date:
               </label>
               <input
-                className="block w-full px-4 py-2 text-gray-700  focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                className="block w-full px-4 py-2 text-gray-700 bg-white  focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                 defaultValue={
                   editMode
                     ? formartDate(editMode?.date)
@@ -118,12 +119,12 @@ const OverViewFrom = (props) => {
                 Shipment By:
               </label>
               <select
-                id="shipmentBy"
-                defaultValue={"By Air"}
+                // defaultValue={"By Air"}
+                name="shipmentBy"
                 onChange={(e) =>
                   handleInputChange("shipmentBy", e.target.value)
                 }
-                {...register("shipmentBy", { required: true })}
+                // {...register("shipmentBy", { required: true })}
                 className="block w-full px-4 py-2 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
               >
                 <option value="">Choose a Shipment</option>
@@ -135,16 +136,17 @@ const OverViewFrom = (props) => {
               <label className="flex items-center text-base text-gray-800 border-r border-slate-950 md:w-[55%] w-[30%]">
                 Reporting:
               </label>
-              <input
-                {...register("reporting", {
-                  required: true,
-                })}
-                name="reporting"
+              <select
+                id="reporting"
+                defaultValue={"china"}
                 onChange={(e) => handleInputChange("reporting", e.target.value)}
-                defaultValue={"China"}
-                placeholder="Enter reporting"
-                className="block w-full px-4 py-2 text-gray-700  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-              />
+                // {...register("reporting", { required: true })}
+                className="block w-full px-4 py-2 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+              >
+                <option value="">Choose a Reporting</option>
+                <option value="china">China</option>
+                <option value="hongkong">Hongkong</option>
+              </select>
             </div>
           </div>
 
@@ -163,7 +165,7 @@ const OverViewFrom = (props) => {
                 onChange={(e) => handleInputChange("address", e.target.value)}
                 name="address"
                 placeholder="Enter address"
-                className="block w-full px-4 py-2 text-gray-700  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                className="block w-full px-4 py-2 text-gray-700 bg-white  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
               />
             </div>
             <div className="flex gap-1 px-2 ">
@@ -178,7 +180,7 @@ const OverViewFrom = (props) => {
                 onChange={(e) => handleInputChange("status", e.target.value)}
                 defaultValue={"Dhaka Office"}
                 placeholder="Enter your customer name"
-                className="block w-full px-4 py-2 text-gray-700  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                className="block w-full px-4 py-2 text-gray-700 bg-white focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
               />
             </div>
           </div>
@@ -198,7 +200,7 @@ const OverViewFrom = (props) => {
                 name="remarks"
                 onChange={(e) => handleInputChange("remarks", e.target.value)}
                 placeholder="Enter remarks"
-                className="block w-full px-4 py-2 text-gray-700  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                className="block w-full px-4 py-2 text-gray-700 bg-white focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
               />
             </div>
           </div>

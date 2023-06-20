@@ -6,6 +6,8 @@ import {
   faCheckCircle,
   faCircleInfo,
   faCirclePlus,
+  faDashboard,
+  faDatabase,
   faDonate,
   faGift,
   faMoneyBills,
@@ -53,7 +55,6 @@ const SideBar = () => {
         <div className="">
           <nav className="">
             <Link
-            
               as={"/"}
               href={{
                 pathname: "/",
@@ -70,21 +71,56 @@ const SideBar = () => {
               </div>
             </Link>
             <Link
-              as={"/delivery"}
+              as={"/dashboard"}
               href={{
-                pathname: "/delivery",
+                pathname: "/dashboard",
               }}
               className={`${
-                pathname === "/delivery" || pathname == "/bill/new/[slug]" || pathname == "/bill/edit/[slug]"
+                pathname === "/dashboard"
+                  ? "bg-sideBarHoverBg  text-sideBarHoverText "
+                  : "text-sideBarText  "
+              } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
+            >
+              <div>
+                <FontAwesomeIcon icon={faDashboard} />
+                <span className="mx-4 font-medium">Dashboard</span>
+              </div>
+            </Link>
+
+            <Link
+              as={"/outbound/air-shipment"}
+              href={{
+                pathname: "/outbound/[slug]",
+              }}
+              className={`${
+                pathname === "/outbound/[slug]"
                   ? "bg-sideBarHoverBg  text-sideBarHoverText "
                   : "text-sideBarText  "
               } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
             >
               <div>
                 <FontAwesomeIcon icon={faShop} />
-                <span className="mx-4 font-medium">Delivery</span>
+                <span className="mx-4 font-medium">Outbound</span>
               </div>
             </Link>
+
+            <Link
+              as={"/inbound/air-shipment"}
+              href={{
+                pathname: "/inbound/[slug]",
+              }}
+              className={`${
+                pathname === "/inbound/[slug]"
+                  ? "bg-sideBarHoverBg  text-sideBarHoverText "
+                  : "text-sideBarText  "
+              } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
+            >
+              <div>
+                <FontAwesomeIcon icon={faShop} />
+                <span className="mx-4 font-medium">Inbound</span>
+              </div>
+            </Link>
+
             <Link
               as={"/"}
               href={{
@@ -115,6 +151,40 @@ const SideBar = () => {
               <div>
                 <FontAwesomeIcon icon={faUsers} />
                 <span className="mx-4 font-medium">Customer</span>
+              </div>
+            </Link>
+
+            <Link
+              as={"/"}
+              href={{
+                pathname: "/",
+              }}
+              className={`${
+                pathname === "/"
+                  ? "bg-sideBarBg  text-sideBarHoverText "
+                  : "text-sideBarText  "
+              } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
+            >
+              <div>
+                <FontAwesomeIcon icon={faUsers} />
+                <span className="mx-4 font-medium">Finance</span>
+              </div>
+            </Link>
+
+            <Link
+              as={"/"}
+              href={{
+                pathname: "/",
+              }}
+              className={`${
+                pathname === "/"
+                  ? "bg-sideBarBg  text-sideBarHoverText "
+                  : "text-sideBarText  "
+              } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
+            >
+              <div>
+                <FontAwesomeIcon icon={faDatabase} />
+                <span className="mx-4 font-medium">Admin Dashboard</span>
               </div>
             </Link>
           </nav>

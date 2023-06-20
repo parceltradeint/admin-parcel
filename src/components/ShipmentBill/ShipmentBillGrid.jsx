@@ -75,8 +75,8 @@ const ShipmentBillGrid = (props) => {
                     ))}
                 </tbody>
               </table>
-              {!data?.length && (
-                <div className=" border-gray-400 bg-white text-center p-4 py-12 mx-auto">
+              {data?.length < 1 && (
+                <div className=" border-gray-400 bg-white text-center p-4 py-12 mx-auto text-black">
                   <span className="inline-flex rounded-md">
                     Results not found
                   </span>

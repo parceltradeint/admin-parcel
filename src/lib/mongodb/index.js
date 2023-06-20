@@ -10,7 +10,7 @@ export async function dbClient() {
     const dbName = 'parcelDB';
 
     // Create a new MongoClient
-    const client = new MongoClient(url);
+    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
     // Connect to the MongoDB server
     await client.connect();
