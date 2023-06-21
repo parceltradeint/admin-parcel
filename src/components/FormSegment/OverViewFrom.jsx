@@ -36,7 +36,7 @@ const OverViewFrom = (props) => {
           : `Edit Bill - ${editMode?.invoiceNumber}`}
       </p>
 
-      <div className="md:w-[80%] mx-auto border border-slate-950">
+      <div className="md:w-full mx-auto border border-slate-950">
         <div className="flex items-center justify-center border-b border-slate-950">
           <div className="w-[20%]">
             <Image src={"/parcel.jpg"} width={80} height={80} alt="parcel" />

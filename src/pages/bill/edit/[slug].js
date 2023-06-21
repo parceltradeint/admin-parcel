@@ -11,10 +11,16 @@ const EditBill = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    const options = {
+      id: router.query?.slug,
+    };
+
     async function fetchData() {
       setLoading(true);
       await axios
-        .get(`/api/bill?id=${router.query?.slug}`)
+        .get(`/api/outbound`, {
+          params: options,
+        })
         .then((res) => {
           setData(res.data);
         })

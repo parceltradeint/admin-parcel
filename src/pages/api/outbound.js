@@ -14,49 +14,56 @@ export default async function newShipmentBill(req, res) {
       res.status(500).json({ status: false, data: {} });
     }
   } else if (req.method == "GET") {
-    const { page, limit, type } = req.query;
-    const filter = req.query?.filter || {};
-    const sort = {
-      deliveryDate: 1,
-    };
-    const search = req?.query?.search || "";
-    const regexPattern = new RegExp(search, "i");
+    if (req?.query?.id) {
+      const objectId = new ObjectId(req?.query?.id);
+      let response = await collection.findOne({ _id: objectId });
+      res.status(200).json(response);
+    } else {
+      const { page, limit, type } = req.query;
+      const filter = req.query?.filter || {};
+      const sort = {
+        deliveryDate: 1,
+      };
+      const search = req?.query?.search || "";
+      const regexPattern = new RegExp(search, "i");
 
-    const searchQuery = {
-      $and: [
-        {
-          shipmentBy: type,
-        }, // Apply the fixed filter condition
-        {
-          $or: [
-            { invoiceNumber: regexPattern },
-            { shipmentBy: regexPattern },
-            { shipmentNo: regexPattern },
-            { deliveryDate: regexPattern },
-            { customerName: regexPattern },
-            { phoneNumber: regexPattern },
-          ],
-        },
-      ],
-    };
+      const searchQuery = {
+        $and: [
+          {
+            shipmentBy: type,
+          }, // Apply the fixed filter condition
+          {
+            $or: [
+              { invoiceNumber: regexPattern },
+              { shipmentBy: regexPattern },
+              { shipmentNo: regexPattern },
+              { deliveryDate: regexPattern },
+              { customerName: regexPattern },
+              { phoneNumber: regexPattern },
+            ],
+          },
+        ],
+      };
 
-    const options = {
-      skip: limit, // calculate the number of documents to skip based on the page and limit
-      limit: parseInt(limit),
-      sort: sort,
-    };
+      const options = {
+        skip: limit, // calculate the number of documents to skip based on the page and limit
+        limit: parseInt(limit),
+        sort: sort,
+      };
 
-    const totalDocuments = await collection.countDocuments(searchQuery);
-    const documents = await collection.find(searchQuery, options).toArray();
+      const totalDocuments = await collection.countDocuments(searchQuery);
+      const documents = await collection.find(searchQuery, options).toArray();
 
-    const response = {
-      data: documents,
-      total: totalDocuments,
-      currentPage: page,
-      limit: limit,
-      totalPages: Math.ceil(totalDocuments / limit),
-    };
-    res.status(200).json(response);
+      const response = {
+        data: documents,
+        total: totalDocuments,
+        currentPage: page,
+        limit: limit,
+        totalPages: Math.ceil(totalDocuments / limit),
+      };
+      res.status(200).json(response);
+    }
+
     // try {
     //   let data;
     //   if (req?.query?.id) {

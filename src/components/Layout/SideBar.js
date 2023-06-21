@@ -25,12 +25,13 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useContext } from "react";
 import { Avatar } from "../../assets/icons";
+import { UserContext } from "@/AuthenticApp/Context/userContext";
 // import { UserContext } from "../../AuthenticationApp/Context/userContext";
 
 const SideBar = () => {
   const router = useRouter();
   const { pathname } = router;
-  // const { user } = useContext(UserContext);
+  const { user } = useContext(UserContext);
   return (
     <>
       <div
@@ -45,10 +46,10 @@ const SideBar = () => {
         <div className="flex flex-col items-center mt-6 -mx-2">
           <Avatar />
           <h4 className="mx-2 mt-2 font-medium text-gray-800 hover:underline">
-            {"user?.displayName"}
+            {user?.displayName || "Name"}
           </h4>
           <p className="mx-2 mt-1 text-sm font-medium text-sideBarText hover:underline">
-            {"user?.email"}
+            {user?.email || "Email"}
           </p>
         </div>
 
@@ -57,7 +58,7 @@ const SideBar = () => {
             <Link
               as={"/"}
               href={{
-                pathname: "/",
+                pathname: "/dashboard",
               }}
               className={`${
                 pathname === "/user/[slug]"
@@ -93,7 +94,7 @@ const SideBar = () => {
                 pathname: "/outbound/[slug]",
               }}
               className={`${
-                pathname === "/outbound/[slug]"
+                pathname === "/outbound/[slug]" || pathname === "/bill/new/[slug]" || pathname === "/bill/edit/[slug]"
                   ? "bg-sideBarHoverBg  text-sideBarHoverText "
                   : "text-sideBarText  "
               } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}

@@ -3,7 +3,7 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <footer className="p-1 bg-gray-300 sm:p-6 ">
+    <footer className="px-2 bg-gray-300 sm:p-6 ">
       <div className="md:flex md:justify-between">
         <div className="mb-6 md:mb-0">
           <Link href="/" passHref >

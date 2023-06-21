@@ -6,6 +6,7 @@ import { Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import NavBarSection from "@/common/NavBar/NavBarSection";
+import ProfileMenu from "../Module/ProfileMenu";
 
 function Layout(props) {
   const [isOpen, setIsOpen] = useState(false);
@@ -92,15 +93,6 @@ function Layout(props) {
         </div>
       </div>
 
-      {/* <div className="navbar-start">
-        <button
-          className="xl:hidden px-4 border-r border-gray-200 text-gray-500 focus:outline-none  focus:text-gray-600"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-        >
-          <FontAwesomeIcon icon={faBars} className="text-white" size={"xl"} />
-        </button>
-      </div> */}
-
       <div className="flex z-10 flex-col w-0 flex-1 overflow-hidden">
         {
           <NavBarSection
@@ -110,6 +102,9 @@ function Layout(props) {
             setIsMenuOpen={setIsMenuOpen}
           />
         }
+        <div className="z-10">
+          <ProfileMenu isOpen={isOpen} setIsOpen={setIsOpen} />
+        </div>
         <Body>{props.children}</Body>
       </div>
     </div>
