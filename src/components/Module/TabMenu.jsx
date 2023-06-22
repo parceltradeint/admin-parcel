@@ -35,19 +35,8 @@ const TabMenu = (props) => {
           <InBound type={"By Air"} />
         )}
         {props.asPath === "/inbound/sea-shipment" && (
-          <OutBound type={"By Sea"} />
+          <InBound type={"By Sea"} />
         )}
-        {/* {props.asPath === "/deposit/instant-deposit" && <InstantDepositForm />}
-        {props.asPath === "/deposit/manual-deposit" && <ManuallyDeposit />}
-        {props.asPath === "/deposit/convert-earning" && <ConvertEarning />}
-        {props.asPath === "/deposit/deposit-history" && <DepositHistory />}
-        {props.asPath === "/withdraw/wallet" && <Withdraw />}
-        {props.asPath === "/withdraw/withdraw-history" && <WithdrawHistory />}
-        {props.asPath === "/work/my-task" && <MyTask />
-          }
-        {props.asPath === "/work/accept-task" && <AcceptTask/>}
-        {props.asPath === "/advertisement/ads-history" && <AdsHistory />}
-        {props.asPath === "/advertisement/new-ads" && <NewAds />} */}
       </div>
     </Layout>
   );

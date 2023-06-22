@@ -64,7 +64,7 @@ const Delivery = () => {
 
   const billNew = async () => {
     router.push({
-      pathname: "/bill/new/" + 123,
+      pathname: "/bill/new/" + "outbound",
       asPath: "/bill/new/[slug]",
     });
   };

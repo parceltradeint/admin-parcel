@@ -32,6 +32,13 @@ const SideBar = () => {
   const router = useRouter();
   const { pathname } = router;
   const { user } = useContext(UserContext);
+
+  let type = router?.query?.type;
+  if (typeof window !== "undefined") {
+    const urlParams = new URLSearchParams(window.location.search);
+    type = urlParams.get("type") ||  router?.query?.type;
+  }
+
   return (
     <>
       <div
@@ -94,8 +101,10 @@ const SideBar = () => {
                 pathname: "/outbound/[slug]",
               }}
               className={`${
-                pathname === "/outbound/[slug]" || pathname === "/bill/new/[slug]" || pathname === "/bill/edit/[slug]"
-                  ? "bg-sideBarHoverBg  text-sideBarHoverText "
+                pathname === "/outbound/[slug]" ||
+                router?.query?.type == "outbound" ||
+                type == "outbound"
+                  ? "bg-sideBarHoverBg  text-sideBarHoverText"
                   : "text-sideBarText  "
               } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
             >
@@ -111,7 +120,9 @@ const SideBar = () => {
                 pathname: "/inbound/[slug]",
               }}
               className={`${
-                pathname === "/inbound/[slug]"
+                pathname === "/inbound/[slug]" ||
+                router?.query?.type == "inbound" ||
+                type == "inbound"
                   ? "bg-sideBarHoverBg  text-sideBarHoverText "
                   : "text-sideBarText  "
               } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}

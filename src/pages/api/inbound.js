@@ -1,9 +1,9 @@
 import { dbClient } from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
-export default async function newShipmentBill(req, res) {
+export default async function newInbound(req, res) {
   const { client, db } = await dbClient();
-  const collection = db.collection("outbound_bill");
+  const collection = db.collection("inbound_bill");
 
   if (req.method == "POST") {
     try {

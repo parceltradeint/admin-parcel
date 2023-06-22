@@ -9,6 +9,11 @@ const EditBill = () => {
   const router = useRouter();
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
+  let type;
+  if (typeof window !== "undefined") {
+    const urlParams = new URLSearchParams(window.location.search);
+    type = urlParams.get("type");
+  }
 
   useEffect(() => {
     const options = {
@@ -18,7 +23,7 @@ const EditBill = () => {
     async function fetchData() {
       setLoading(true);
       await axios
-        .get(`/api/outbound`, {
+        .get(`/api/${type}`, {
           params: options,
         })
         .then((res) => {

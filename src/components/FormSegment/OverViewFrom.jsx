@@ -111,7 +111,26 @@ const OverViewFrom = (props) => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 border-t border-slate-950 text-lg">
-            <div className="flex gap-1 px-2 col-span-2 md:border-r border-b md:border-b-0 border-slate-950">
+            <div className="flex gap-1 px-2  md:border-r border-b md:border-b-0 border-slate-950">
+              <label
+                htmlFor="shipmentNo"
+                className=" flex items-center text-base text-gray-800 border-r border-slate-950 md:w-[71.5%] w-[30%]"
+              >
+                Shipment No:
+              </label>
+              <input
+                {...register("shipmentNo", {
+                  required: true,
+                })}
+                name="shipmentNo"
+                placeholder="Enter ShipmentNo"
+                onChange={(e) =>
+                  handleInputChange("shipmentNo", e.target.value)
+                }
+                className="block w-full px-4 py-2 text-gray-700 bg-white  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+              />
+            </div>
+            <div className="flex gap-1 px-2 md:border-r border-b md:border-b-0 border-slate-950">
               <label
                 htmlFor="shipmentBy"
                 className=" flex items-center text-base text-gray-800 border-r border-slate-950 md:w-[25%] w-[30%]"
@@ -119,7 +138,7 @@ const OverViewFrom = (props) => {
                 Shipment By:
               </label>
               <select
-                // defaultValue={"By Air"}
+                defaultValue={customerInfo?.shipmentBy}
                 name="shipmentBy"
                 onChange={(e) =>
                   handleInputChange("shipmentBy", e.target.value)
@@ -189,7 +208,7 @@ const OverViewFrom = (props) => {
             <div className="flex gap-1 px-2 col-span-2 border-slate-950">
               <label
                 htmlFor="remarks"
-                className=" flex items-center text-base text-gray-800 border-r border-slate-950 md:w-[15.1%] w-[30%]"
+                className=" flex items-center text-base text-gray-800 border-r border-slate-950 md:w-[15.2%] w-[30%]"
               >
                 Remarks:
               </label>

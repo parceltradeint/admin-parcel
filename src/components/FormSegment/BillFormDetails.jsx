@@ -7,27 +7,37 @@ import { useForm } from "react-hook-form";
 import { useTable } from "react-table";
 import ReactTable from "react-table-v6";
 import { convertBengaliToEnglishNumber } from "../PDF/InvoiceDef";
+import AutoSuggestInput from "@/common/AutoInputSuggest";
 
 const BillFormDetails = (props) => {
-  const { data, setData, aditionalInfo, setAditionalInfo } = props;
+  const { data, setData, aditionalInfo, setAditionalInfo,setSuggestionData } = props;
 
   const renderEditable = (cellInfo, fixed) => {
     const cellValue = data[cellInfo.index][cellInfo.column.id];
+
     return (
-      <input
-        className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-        name="input"
-        type={cellInfo.column.id == "goodsName" || "ctn" ? "text" : "number"}
-        onChange={(e) => handleCellRenderChange(cellInfo, e.target.value)}
-        value={
-          cellInfo.column.id == "totalAmount"
-            ? convertBengaliToEnglishNumber(
-                Number(Number(cellValue || 0).toFixed(0)).toLocaleString("bn")
-              )
-            : cellValue
-        }
-        readOnly={cellInfo.column.id == "totalAmount"}
-      />
+      <>
+        {cellInfo.column.id === "goodsName" ? (
+          <AutoSuggestInput handleCellRenderChange={handleCellRenderChange} cellInfo={cellInfo} setSuggestionData={setSuggestionData}/>
+        ) : (
+          <input
+            className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+            name="input"
+            type={cellInfo.column.id == "ctn" || cellInfo.column.id == "totalAmount" ? "text" : "number"}
+            onChange={(e) => handleCellRenderChange(cellInfo, e.target.value)}
+            value={
+              cellInfo.column.id == "totalAmount"
+                ? convertBengaliToEnglishNumber(
+                    Number(Number(cellValue  || 0).toFixed(0)).toLocaleString(
+                      "bn"
+                    )
+                  )
+                : cellValue
+            }
+            readOnly={cellInfo.column.id == "totalAmount"}
+          />
+        )}
+      </>
     );
   };
 
@@ -232,16 +242,14 @@ const BillFormDetails = (props) => {
                   >
                     <FontAwesomeIcon icon={faTrashAlt} />
                   </button>
-                  {
-                   data && data?.length - 1 === row?.row?._viewIndex && (
-                      <button
-                        type="submit"
-                        className="inline-flex items-center px-1.5 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
-                      >
-                        <FontAwesomeIcon icon={faPlus} />
-                      </button>
-                    )
-                  }
+                  {data && data?.length - 1 === row?.row?._viewIndex && (
+                    <button
+                      type="submit"
+                      className="inline-flex items-center px-1.5 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
+                    >
+                      <FontAwesomeIcon icon={faPlus} />
+                    </button>
+                  )}
                 </div>
               ),
 

@@ -2,7 +2,7 @@ import Link from "next/link";
 import React from "react";
 
 const ShipmentBillGrid = (props) => {
-  const { data } = props;
+  const { data, type } = props;
   return (
     <div>
       <div className="flex flex-col">
@@ -55,11 +55,12 @@ const ShipmentBillGrid = (props) => {
 
                         <td className="px-6 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium">
                           <Link
-                            as={"/bill/edit/" + item?._id}
+                            as={"/bill/edit/" + item?._id + "/?type=" + type}
                             href={{
                               pathname: "/bill/edit/[slug]",
                               query: {
                                 id: item?._id,
+                                // type: type
                               },
                             }}
                           >

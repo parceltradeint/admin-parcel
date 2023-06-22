@@ -7,30 +7,45 @@ import PlaceHolderLoading from "@/common/PlaceHolderLoading";
 import ShipmentBillGrid from "../ShipmentBill/ShipmentBillGrid";
 import { errorAlert } from "@/common/SweetAlert";
 
-const InBound = () => {
+const InBound = ({type}) => {
   const router = useRouter();
-  const [searchInput, setSearchInput] = useState("");
-  // const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState("");
   const [data, setData] = useState([]);
-
   const [pageNumber, setPageNumber] = useState(0);
-  const quotesPerPage = 25;
-  const pagesVisited = pageNumber * quotesPerPage;
+  const perPage = 25;
   const [pageCount, setPageCount] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [dataInfo, setDataInfo] = useState({});
 
   const pagginationHandler = ({ selected }) => {
     setPageNumber(selected);
   };
-  const handleSearch = async (search) => {
-    let searchText =
-      searchInput.length > 0 ? encodeURI(searchInput.trim()) : "";
+
+  const handleSearch = async () => {
+    let search = searchText.length > 0 ? encodeURI(searchText.trim()) : "";
+
+    const options = {
+      limit: perPage,
+      page: pageNumber,
+      filter: {},
+      type: type,
+      search: search,
+    };
+
     async function fetchBills() {
       setLoading(true);
       await axios
-        .get(`/api/bill?search=${searchText}`)
+        .get(`/api/inbound`, {
+          params: options,
+        })
         .then((res) => {
-          setData(res.data);
+          setData(res.data?.data);
+          setDataInfo({
+            total: res.data?.total,
+            currentPage: res.data?.currentPage,
+            totalPages: res.data?.totalPages,
+          });
+          setPageCount(res.data?.totalPages);
         })
         .catch((err) => {
           errorAlert("Something went wrong!");
@@ -52,29 +67,44 @@ const InBound = () => {
   };
 
   const handleClear = () => {
-    setSearchInput("");
+    setSearchText("");
     setLoading("clear");
   };
 
   const handleSearchInput = (e) => {
-    setSearchInput(e.target.value);
+    setSearchText(e.target.value);
     // setPageNumber(0)
   };
 
   const billNew = async () => {
     router.push({
-      pathname: "/bill/new/" + 123,
+      pathname: "/bill/new/" + "inbound",
       asPath: "/bill/new/[slug]",
     });
   };
 
   useEffect(() => {
+    const options = {
+      limit: perPage,
+      page: pageNumber,
+      filter: {},
+      type: type,
+    };
+
     async function fetchBills() {
       setLoading(true);
       await axios
-        .get("/api/bill")
+        .get("/api/inbound", {
+          params: options,
+        })
         .then((res) => {
-          setData(res.data);
+          setData(res?.data?.data);
+          setDataInfo({
+            total: res.data?.total,
+            currentPage: res.data?.currentPage,
+            totalPages: res.data?.totalPages,
+          });
+          setPageCount(res.data?.totalPages);
         })
         .catch((err) => {
           errorAlert("Something went wrong!");
@@ -91,7 +121,7 @@ const InBound = () => {
         <div className=" mx-auto py-4 px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 space-y-2 md:space-y-0 justify-between items-center">
           <div className={"ml-4 "}>
             <h1 className="text-lg leading-6 font-semibold text-gray-900">
-              All Shipment Bill
+              All Inbound Shipment Bill
             </h1>
           </div>
 
@@ -102,7 +132,7 @@ const InBound = () => {
                   <input
                     onChange={handleSearchInput}
                     onKeyDown={handleKeyDown}
-                    value={searchInput}
+                    value={searchText}
                     className="form-input text-black px-2 block w-full bg-inherit border border-black rounded-none rounded-l-md transition ease-in-out duration-150 sm:text-sm sm:leading-5"
                     placeholder={"Search"}
                   />
@@ -149,10 +179,10 @@ const InBound = () => {
                 nextLabel={">"}
                 breakLabel={"..."}
                 breakClassName={"break-me"}
-                activeClassName={"active bg-gray-400 text-white"}
+                activeClassName={"active bg-black text-white"}
                 containerClassName={"relative z-0 inline-flex shadow-sm"}
                 subContainerClassName={"pages pagination"}
-                initialPage={0}
+                initialPage={1}
                 pageCount={pageCount}
                 marginPagesDisplayed={2}
                 pageRangeDisplayed={2}
@@ -181,13 +211,16 @@ const InBound = () => {
           </div>
         </div>
       </div>
-      <div className=" mx-auto py-2">
+      <div className=" mx-auto py-1">
         {loading ? (
           <PlaceHolderLoading loading={true} />
         ) : (
-          <div className=" py-4 sm:px-0">
-            <ShipmentBillGrid data={data} />
-          </div>
+          <>
+            <p className="text-2xl text-black text-center">{`Total- ${dataInfo?.total}`}</p>
+            <div className=" py-4 sm:px-0">
+              <ShipmentBillGrid data={data} type={"inbound"}/>
+            </div>
+          </>
         )}
       </div>
     </>

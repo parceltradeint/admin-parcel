@@ -15,10 +15,12 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 const BillFormSegment = (props) => {
   const { editMode } = props;
   const router = useRouter();
+
   const [data, setData] = useState([]);
   const [customerInfo, setCustomerInfo] = useState(editMode ? editMode : null);
   const [loading, setLoading] = useState(false);
   const [aditionalInfo, setAditionalInfo] = useState({});
+  const [suggestionData, setSuggestionData] = useState({});
   const downloadPDF = () => {
     // var win = window.open("", "_blank");
     const newInfo = {
@@ -28,7 +30,7 @@ const BillFormSegment = (props) => {
     };
     generatePDF(newInfo);
   };
-  console.log("customerInfo", customerInfo);
+
   const save = async () => {
     setLoading(true);
     const newData = {
@@ -41,10 +43,10 @@ const BillFormSegment = (props) => {
     };
     if (!editMode) {
       await axios
-        .post("/api/outbound", { ...newData })
+        .post(`/api/${router?.query?.slug}`, { ...newData })
         .then((res) => {
           successAlert("Successfully Save");
-          router.push("/outbound/air-shipment");
+          router.push(`/${router?.query?.slug}/air-shipment`);
         })
         .catch((err) => {
           errorAlert("Something went wrong!");
@@ -53,7 +55,10 @@ const BillFormSegment = (props) => {
     } else {
       delete newData?._id;
       await axios
-        .patch("/api/outbound", { id: editMode?._id, data: { ...newData } })
+        .patch(`/api/${router?.query?.slug}`, {
+          id: editMode?._id,
+          data: { ...newData },
+        })
         .then((res) => {
           successAlert("Successfully Save");
         })
@@ -62,16 +67,18 @@ const BillFormSegment = (props) => {
         })
         .finally(() => setLoading(false));
     }
+
+    localStorage.setItem("suggestInput", JSON.stringify(suggestionData));
   };
 
   const deleteData = async () => {
     setLoading(true);
     if (editMode) {
       await axios
-        .delete("/api/outbound?id=" + editMode?._id)
+        .delete(`/api/${router?.query?.slug}?id=` + editMode?._id)
         .then((res) => {
           successAlert("Successfully Deleted");
-          router.push("/outbound/air-shipment");
+          router.push(`/${router?.query?.slug}/air-shipment`);
         })
         .catch((err) => {
           errorAlert("Something went wrong!");
@@ -108,6 +115,7 @@ const BillFormSegment = (props) => {
             setData={setData}
             aditionalInfo={aditionalInfo}
             setAditionalInfo={setAditionalInfo}
+            setSuggestionData={setSuggestionData}
           />
           <Section>
             <div className="flex space-x-2 justify-center mt-2">
@@ -125,13 +133,15 @@ const BillFormSegment = (props) => {
               >
                 {!editMode ? "Save" : "Update"}
               </button>
-              <button
-                type="button"
-                onClick={deleteData}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3"
-              >
-                Delete
-              </button>
+              {editMode && (
+                <button
+                  type="button"
+                  onClick={deleteData}
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3"
+                >
+                  Delete
+                </button>
+              )}
             </div>
           </Section>
         </>

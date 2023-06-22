@@ -58,3 +58,15 @@ body {
   background: white;
 }
 
+html::-webkit-scrollbar, .scrollbar::-webkit-scrollbar {
+  width: 3px !important;
+}
+
+html::-webkit-scrollbar-track, .scrollbar::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(196, 196, 196, 0.735) !important;
+}
+
+html::-webkit-scrollbar-thumb, .scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(25, 29, 253, 0.829) !important;
+  outline: 1px solid slategrey !important;
+}

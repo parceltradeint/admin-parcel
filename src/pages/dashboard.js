@@ -6,11 +6,13 @@ import { getAuth } from "firebase/auth";
 import UserProvider from "../AuthenticApp/Context/userContext";
 import { useEffect } from "react";
 import Page from "@/components/Page";
+import { useTheme } from "next-themes";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Dashboard() {
   const router = useRouter();
   const auth = getAuth();
+  const {theme, setTheme, systemTheme} = useTheme()
   // useEffect(() => {
   //   const listener = auth.onIdTokenChanged((user) => {
   //     if (user) {
@@ -25,6 +27,11 @@ export default function Dashboard() {
   //     listener();
   //   };
   // }, [auth]);
+
+  useEffect(() => {
+    const currentTheme = theme === "system" ? systemTheme : theme;
+    setTheme("light")
+  }, [router, setTheme, systemTheme, theme])
 
   return (
     <UserProvider>

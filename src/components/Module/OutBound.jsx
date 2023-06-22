@@ -78,7 +78,7 @@ const OutBound = ({ type }) => {
 
   const billNew = async () => {
     router.push({
-      pathname: "/bill/new/" + 123,
+      pathname: "/bill/new/" +"outbound",
       asPath: "/bill/new/[slug]",
     });
   };
@@ -218,7 +218,7 @@ const OutBound = ({ type }) => {
           <>
             <p className="text-2xl text-black text-center">{`Total- ${dataInfo?.total}`}</p>
             <div className=" py-4 sm:px-0">
-              <ShipmentBillGrid data={data} />
+              <ShipmentBillGrid data={data} type={"outbound"}/>
             </div>
           </>
         )}

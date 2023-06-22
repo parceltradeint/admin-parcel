@@ -6,6 +6,7 @@ module.exports = {
     "./src/**/*.tsx",
     "./src/**/*.js",
   ],
+  darkMode: "class",
   theme: {
     inset: {
       0: 0,
