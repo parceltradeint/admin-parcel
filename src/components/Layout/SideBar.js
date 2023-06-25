@@ -38,7 +38,7 @@ const SideBar = () => {
     const urlParams = new URLSearchParams(window.location.search);
     type = urlParams.get("type") ||  router?.query?.type;
   }
-
+console.log("user", user);
   return (
     <>
       <div
@@ -150,13 +150,13 @@ const SideBar = () => {
               </div>
             </Link>
             <Link
-              as={"/"}
+              as={"/customers"}
               href={{
-                pathname: "/",
+                pathname: "/customers",
               }}
               className={`${
-                pathname === "/user/[slug]"
-                  ? "bg-sideBarBg  text-sideBarHoverText "
+                pathname === "/customers"
+                  ? "bg-sideBarHoverBg  text-sideBarHoverText "
                   : "text-sideBarText  "
               } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
             >
