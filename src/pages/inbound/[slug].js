@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import React from "react";
 import TabMenu from "../../components/Module/TabMenu";
+import InBound from "@/components/Module/InBound";
 
 const InBoundPage = (props) => {
   const router = useRouter();
@@ -8,23 +9,13 @@ const InBoundPage = (props) => {
   const tabItems = [
     {
       id: 1,
-      Parent: "Air Shipment",
-      Child: "air-shipment",
-      Position: 0,
-      path: {
-        as: "/inbound/air-shipment",
-        href: "/inbound/[slug]",
-      },
+      label: "Air Shipment",
+      value: <InBound type={"Air"} />,
     },
     {
       id: 2,
-      Parent: "Sea Shipment",
-      Child: "sea-shipment",
-      Position: 1,
-      path: {
-        as: "/inbound/sea-shipment",
-        href: "/inbound/[slug]",
-      },
+      label: "Sea Shipment",
+      value: <InBound type={"Sea"} />,
     },
   ];
 

@@ -1,144 +1,194 @@
 /* eslint-disable jsx-a11y/alt-text */
+import PlaceHolderLoading from "@/common/PlaceHolderLoading";
 import Section from "@/common/Section";
+import { errorAlert, successAlert } from "@/common/SweetAlert";
 import { formartDate } from "@/common/formartDate";
+import axios from "axios";
 import Image from "next/image";
-import React, { useEffect } from "react";
+import React, { useEffect, useId, useState } from "react";
 import { useForm } from "react-hook-form";
+import shortid from "shortid";
+shortid.seed(1000);
 
 const CustomerForm = (props) => {
-  const { editMode, setCustomerInfo, customerInfo } = props;
+  const { editMode, setIsOpen, data, setData } = props;
+  const [loading, setLoading] = useState(false);
   const {
     handleSubmit,
     register,
     watch,
     getValues,
     formState: { errors, isValid },
-  } = useForm({ mode: "all", defaultValues: { ...customerInfo } });
+  } = useForm({ mode: "all", defaultValues: { ...editMode } });
 
-  const onSubmit = (data) => {
-    // setCustomerInfo(data);
+  const onSubmit = async (value) => {
+    setLoading(true);
+    const newData = {
+      customerId: shortid.generate(),
+      created: new Date(),
+      ...value,
+    };
+    if (!editMode) {
+      await axios
+        .post(`/api/customers`, { ...newData })
+        .then((res) => {
+          successAlert("Successfully Save");
+          setData([...data, { ...newData }]);
+        })
+        .catch((err) => {
+          errorAlert("Something went wrong!");
+        })
+        .finally(() => {
+          setIsOpen(false);
+          setLoading(false);
+        });
+    } else {
+      delete newData?._id;
+      await axios
+        .patch(`/api/customers`, {
+          id: editMode?._id,
+          data: { ...newData },
+        })
+        .then((res) => {
+          successAlert("Successfully Updated");
+          setData([...data, { ...newData }]);
+        })
+        .catch((err) => {
+          console.log("err", err);
+          errorAlert("Something went wrong!");
+        })
+        .finally(() => {
+          setIsOpen(false);
+          setLoading(false);
+        });
+    }
   };
-  // useEffect(() => {
-  //   setCustomerInfo({ ...getValues(), ...watch() });
-  //   console.log("customer", { ...getValues(), ...watch() });
-  // }, [getValues, setCustomerInfo, watch]);
-
-  const handleInputChange = (name, value) => {
-    console.log(name, value);
-    setCustomerInfo({ ...watch(), ...customerInfo, [name]: value });
-  };
-
+  if (loading) {
+    return <PlaceHolderLoading loading={true} />;
+  }
   return (
     <div>
-              <p className="text-primaryText text-2xl text-center  underline">Customer Details: </p>
-
+      <p className="text-primaryText text-2xl text-center  underline">
+        Customer Details:{" "}
+      </p>
 
       <div className="md:w-full mx-auto">
-      <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-3">
+            <div>
+              <label
+                htmlFor="customerName"
+                className="block text-sm text-gray-800 "
+              >
+                Customer Name
+              </label>
+              <input
+                {...register("customerName", {
+                  required: true,
+                })}
+                name="customerName"
+                placeholder="Enter your customer name"
+                className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="customerPhone"
+                className="block text-sm text-gray-800 "
+              >
+                Phone Number
+              </label>
+              <input
+                {...register("customerPhone", {
+                  required: true,
+                })}
+                name="customerPhone"
+                placeholder="Enter phone number"
+                className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="weChatId"
+                className="block text-sm text-gray-800 "
+              >
+                Customer Wechat ID
+              </label>
+              <input
+                {...register("weChatId", {
+                  required: false,
+                })}
+                name="weChatId"
+                placeholder="Enter customer wechat ID"
+                className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-3">
+            <div className="">
+              <label
+                htmlFor="customerAddress"
+                className="block text-sm text-gray-800"
+              >
+                Address
+              </label>
+              <input
+                {...register("customerAddress", {
+                  required: true,
+                })}
+                name="customerAddress"
+                placeholder="Enter customer address"
+                className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+              />
+            </div>
 
-        <div className="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-3">
-          <div>
-            <label
-              htmlFor="customerName"
-              className="block text-sm text-gray-800 "
-            >
-              Customer Name
-            </label>
-            <input
-              {...register("customerName", {
-                required: true,
-              })}
-              name="customerName"
-              placeholder="Enter your customer name"
-              className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="phoneNumber"
-              className="block text-sm text-gray-800 "
-            >
-              Phone Number
-            </label>
-            <input
-              {...register("phoneNumber", {
-                required: true,
-              })}
-              name="phoneNumber"
-              placeholder="Enter phone number"
-              className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="weChatId"
-              className="block text-sm text-gray-800 "
-            >
-              Customer Wechat ID
-            </label>
-            <input
-              {...register("weChatId", {
-                required: true,
-              })}
-              name="weChatId"
-              placeholder="Enter customer wechat ID"
-              className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-            />
-          </div>
-        </div>
-        <div className="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-3">
-          <div className="">
-            <label htmlFor="address" className="block text-sm text-gray-800">
-              Address
-            </label>
-            <input
-              {...register("address", {
-                required: true,
-              })}
-              name="address"
-              placeholder="Enter customer address"
-              className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-            />
+            <div>
+              <label
+                htmlFor="shipmentBy"
+                className="block text-sm text-gray-800 "
+              >
+                Shipment By
+              </label>
+              <select
+                id="shipmentBy"
+                defaultValue={"Air"}
+                {...register("shipmentBy", { required: false })}
+                className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+              >
+                <option value="">Choose a Shipment</option>
+                <option value="Air">Air</option>
+                <option value="Sea">Sea</option>
+              </select>
+            </div>
+            <div className="">
+              <label htmlFor="remarks" className="block text-sm text-gray-800">
+                Remarks
+              </label>
+              <input
+                {...register("remarks", { required: false })}
+                name="remarks"
+                placeholder="Enter your remarks"
+                className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+              />
+            </div>
           </div>
 
-          <div>
-            <label
-              htmlFor="shipmentBy"
-              className="block text-sm text-gray-800 "
+          <div className="flex gap-3 items-center mt-3">
+            <button
+              type="button"
+              className=" bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-3"
+              onClick={() => setIsOpen(false)}
             >
-              Shipment By
-            </label>
-            <select
-              id="shipmentBy"
-              defaultValue={"By Air"}
-              {...register("shipmentBy", { required: true })}
-              className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3"
             >
-              <option value="">Choose a Shipment</option>
-              <option value="By Air">Air</option>
-              <option value="By Sea">Sea</option>
-            </select>
+              Save
+            </button>
           </div>
-          <div className="">
-            <label htmlFor="remarks" className="block text-sm text-gray-800">
-              Remarks
-            </label>
-            <input
-              {...register("remarks", { required: false })}
-              name="remarks"
-              placeholder="Enter your remarks"
-              className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-            />
-          </div>
-        </div>
-
-        <button
-          type="submit"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3"
-        >
-          Save
-        </button>
-      </form>
+        </form>
 
         {/* <form onSubmit={handleSubmit(onSubmit)} c>
           <div className="grid grid-cols-1 mt-4 sm:grid-cols-3 border-t border-slate-950 text-lg">
