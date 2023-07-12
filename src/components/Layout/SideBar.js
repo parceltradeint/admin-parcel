@@ -110,7 +110,7 @@ const SideBar = () => {
             >
               <div>
                 <FontAwesomeIcon icon={faShop} />
-                <span className="mx-4 font-medium">Outbound</span>
+                <span className="mx-4 font-medium">Customer Bill</span>
               </div>
             </Link>
 
@@ -129,7 +129,7 @@ const SideBar = () => {
             >
               <div>
                 <FontAwesomeIcon icon={faShop} />
-                <span className="mx-4 font-medium">Inbound</span>
+                <span className="mx-4 font-medium">CnF Bill</span>
               </div>
             </Link>
 

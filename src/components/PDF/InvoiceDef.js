@@ -57,9 +57,9 @@ export const generatePDF = (info) => {
 
   let docDefinition = {
     info: {
-      title: `${info?.customerName}- ${
-        info?.shipmentBy
-      }- ${formartDate(new Date())}`,
+      title: `${info?.customerName}- ${info?.shipmentBy}- ${formartDate(
+        new Date()
+      )}`,
       author: "Parcel",
       subject: "Shipment Bill",
     },
@@ -70,12 +70,12 @@ export const generatePDF = (info) => {
         columns: [
           {
             alignment: "left",
-            text: `${formartDate(new Date())}`,
+            text: `Customer Invoice`,
           },
           {
             alignment: "right",
-            text: `Customer Invoice`,
-          },
+            text: `${formartDate(new Date())}`,
+          }
         ],
       },
       {
@@ -94,8 +94,13 @@ export const generatePDF = (info) => {
                   },
                   {
                     alignment: "center",
-                    text: [{ text: "Parcel", color: "red" }, ".Com"],
-                    fontSize: 40,
+                    text: [
+                      "P",
+                      { text: "arce", color: "red" },
+                      "l ",
+                      "Trade International",
+                    ],
+                    fontSize: 30,
                     bold: true,
                     margin: [0, 10, 0, 0],
                   },
@@ -193,6 +198,7 @@ export const generatePDF = (info) => {
         },
         layout: "noBorders",
       },
+
       {
         margin: [0, 5, 0, 0],
         fontSize: 12,
@@ -356,7 +362,9 @@ export const generatePDF = (info) => {
               { text: "", style: "tableFooter" },
               { text: `${info?.data?.length}`, style: "tableFooter" },
               {
-                text: `${sumBy(info?.data, (val) => Number(val?.kg))}`,
+                text: `${Number(sumBy(info?.data, (val) =>
+                  Number(val?.kg)
+                )).toFixed(2)}`,
                 style: "tableFooter",
               },
               { text: "", style: "tableFooter" },
@@ -398,22 +406,25 @@ export const generatePDF = (info) => {
                         Number(info?.due || 0) -
                         Number(info?.paid || 0)
                     )}`,
-                    alignment: "center",
-                    margin: [0, 20, 0, 0],
-                    fontSize: 17,
+                    alignment: "left",
+                    margin: [0, 15, 0, 0],
+                    fontSize: 22,
                     bold: true,
                     color: "red",
+                    border: [true, false, false, true]
                   },
                   {
                     text: "Due",
                     fillColor: "#555555",
                     color: "#FFFFFF",
                     fontSize: 13,
+                    border: [true, false, false, false]
                   },
                   {
                     text: `${convertTotalAmount(Number(info?.due || 0))}`,
                     alignment: "right",
                     fontSize: 13,
+                    border: [true, false, true, false]
                   },
                 ],
                 [
@@ -451,7 +462,7 @@ export const generatePDF = (info) => {
                 ],
               ],
             },
-            layout: "border",
+            layout: "noBorder",
           },
           {
             style: "summartTable",
@@ -485,6 +496,7 @@ export const generatePDF = (info) => {
                     // border: [true, true, true, false],
                     decoration: "overline",
                     margin: [0, 35, 0, 0],
+                    border: [true, false, true, false]
                   },
                   {
                     text: "Authoities Signature",
@@ -493,6 +505,7 @@ export const generatePDF = (info) => {
                     decoration: "overline",
                     // border: [true, true, true, false],
                     margin: [0, 35, 0, 0],
+                    border: [false, false, true, false]
                   },
                 ],
               ],
@@ -505,9 +518,9 @@ export const generatePDF = (info) => {
               body: [
                 [
                   {
-                    text: "https://facebook.com/parcel.com.bd",
+                    text: "https://facebook.com/parcel.com",
                     alignment: "left",
-                    link: "https://facebook.com/parcel.com.bd",
+                    link: "https://facebook.com/parcel.com",
                     bold: true,
                     fontSize: 16,
                   },
@@ -525,40 +538,6 @@ export const generatePDF = (info) => {
         border: [true, true, true, true],
       },
 
-      // {
-      //   style: "summartTable",
-      //   absolutePosition: { x: 40, y: 750 },
-      //   table: {
-      //     widths: ["70%", "15%", "15%"],
-      //     // headerRows: 1,
-      //     // dontBreakRows: true,
-      //     body: [
-      //       [
-      //         {
-      //           rowSpan: 3,
-      //           text: "Total Due Bill",
-      //           alignment: "center",
-      //         },
-      //         "Due",
-      //         "500",
-      //       ],
-      //       ["", "Paid", "300"],
-      //       ["", "Total", "1000"],
-      //     ],
-      //   },
-      // },
-      // {
-      //   style: "summartTable",
-      //   table: {
-      //     widths: ["15%", "85%"],
-      //     body: [
-      //       [
-      //         "Taka In Words:",
-      //         "I am auto sized.",
-      //       ],
-      //     ],
-      //   },
-      // },
     ],
 
     // pageBreakBefore: (currentNode, followingNodes) => {

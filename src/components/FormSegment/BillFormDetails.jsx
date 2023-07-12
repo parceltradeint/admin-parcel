@@ -69,9 +69,9 @@ const BillFormDetails = (props) => {
     let newData = [...data];
     const newBill = {
       goodsName: "",
-      ctn: 0,
-      kg: 0,
-      rate: 0,
+      ctn: "",
+      kg: "",
+      rate: "",
     };
     newData.push(newBill);
     setData(newData);
@@ -140,7 +140,7 @@ const BillFormDetails = (props) => {
               accessor: "goodsName",
               Cell: renderEditable,
               Footer: (row) => (
-                <div className={" text-xl font-semibold text-center"}>
+                <div className={" text-xl font-semibold text-left"}>
                   <span>Total</span>
                 </div>
               ),
@@ -152,7 +152,7 @@ const BillFormDetails = (props) => {
               Cell: renderEditable,
               Footer: (row) => (
                 <div className={" text-xl font-semibold text-center"}>
-                  <span>Cartton= {row?.data?.length}</span>
+                  <span>Cartoon= {row?.data?.length}</span>
                 </div>
               ),
             },

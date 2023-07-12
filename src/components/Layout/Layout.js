@@ -89,11 +89,11 @@ function Layout(props) {
 
       {/* Static sidebar for desktop */}
       <div
-        className={`${
+        className={`hidden ${
           router.pathname === "/bill/new/[slug]" ||
           router.pathname === "/bill/edit/[slug]"
             ? "xl:hidden"
-            : "xl:flex flex-col xl:w-full xl:max-w-[16rem] hidden"
+            : "xl:flex flex-col xl:w-full xl:max-w-[16rem]"
         } `}
       >
         <div className="flex flex-col h-0 flex-1">
@@ -107,7 +107,7 @@ function Layout(props) {
             router.pathname === "/bill/new/[slug]" ||
             router.pathname === "/bill/edit/[slug]"
               ? "block"
-              : "md:hidden"
+              : "xl:hidden"
           }`}
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         >

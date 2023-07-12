@@ -60,7 +60,7 @@ const ShipmentBillGrid = (props) => {
                               pathname: "/bill/edit/[slug]",
                               query: {
                                 id: item?._id,
-                                // type: type
+                                type: type
                               },
                             }}
                           >

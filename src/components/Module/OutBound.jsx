@@ -20,7 +20,7 @@ const OutBound = ({ type }) => {
   const pagginationHandler = ({ selected }) => {
     setPageNumber(selected);
   };
-console.log("type", type);
+  console.log("type", type);
   const handleSearch = async () => {
     let search = searchText.length > 0 ? encodeURI(searchText.trim()) : "";
 
@@ -78,8 +78,9 @@ console.log("type", type);
 
   const billNew = async () => {
     router.push({
-      pathname: "/bill/new/" +"outbound",
+      pathname: "/bill/new/" + "outbound",
       asPath: "/bill/new/[slug]",
+      query: { type: "outbound" },
     });
   };
 
@@ -218,7 +219,7 @@ console.log("type", type);
           <>
             <p className="text-2xl text-black text-center">{`Total- ${dataInfo?.total}`}</p>
             <div className=" py-4 sm:px-0">
-              <ShipmentBillGrid data={data} type={"outbound"}/>
+              <ShipmentBillGrid data={data} type={"outbound"} />
             </div>
           </>
         )}

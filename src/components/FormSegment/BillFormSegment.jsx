@@ -19,7 +19,7 @@ const BillFormSegment = (props) => {
   const [customerInfo, setCustomerInfo] = useState(editMode ? editMode : null);
   const [loading, setLoading] = useState(false);
   const [aditionalInfo, setAditionalInfo] = useState({});
-  const [suggestionData, setSuggestionData] = useState({});
+  const [suggestionData, setSuggestionData] = useState([]);
   const downloadPDF = () => {
     // var win = window.open("", "_blank");
     const newInfo = {
@@ -29,7 +29,6 @@ const BillFormSegment = (props) => {
     };
     generatePDF(newInfo);
   };
-
   const save = async () => {
     setLoading(true);
     const newData = {
@@ -42,10 +41,10 @@ const BillFormSegment = (props) => {
     };
     if (!editMode) {
       await axios
-        .post(`/api/${router?.query?.slug}`, { ...newData })
+        .post(`/api/${router?.query?.type}`, { ...newData })
         .then((res) => {
           successAlert("Successfully Save");
-          router.push(`/${router?.query?.slug}`);
+          router.push(`/${router?.query?.type}`);
         })
         .catch((err) => {
           errorAlert("Something went wrong!");
@@ -54,7 +53,7 @@ const BillFormSegment = (props) => {
     } else {
       delete newData?._id;
       await axios
-        .patch(`/api/${router?.query?.slug}`, {
+        .patch(`/api/${router?.query?.type}`, {
           id: editMode?._id,
           data: { ...newData },
         })
@@ -74,10 +73,10 @@ const BillFormSegment = (props) => {
     setLoading(true);
     if (editMode) {
       await axios
-        .delete(`/api/${router?.query?.slug}?id=` + editMode?._id)
+        .delete(`/api/${router?.query?.type}?id=` + editMode?._id)
         .then((res) => {
           successAlert("Successfully Deleted");
-          router.push(`/${router?.query?.slug}`);
+          router.push(`/${router?.query?.type}`);
         })
         .catch((err) => {
           console.log("err", err);
