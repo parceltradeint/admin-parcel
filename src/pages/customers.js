@@ -70,7 +70,6 @@ const Customers = () => {
       await axios
         .get("/api/customers")
         .then((res) => {
-          console.log("res", res);
           setData(res.data.data);
         })
         .catch((err) => {

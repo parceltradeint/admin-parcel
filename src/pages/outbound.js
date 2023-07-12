@@ -1,25 +1,25 @@
 import { useRouter } from "next/router";
 import React from "react";
-import TabMenu from "../../components/Module/TabMenu";
-import InBound from "@/components/Module/InBound";
+import OutBound from "@/components/Module/OutBound";
+import TabMenu from "@/components/Module/TabMenu";
 
-const InBoundPage = (props) => {
+const OutBoundPage = (props) => {
   const router = useRouter();
 
   const tabItems = [
     {
       id: 1,
       label: "Air Shipment",
-      value: <InBound type={"Air"} />,
+      value: <OutBound type={"Air"} />,
     },
     {
       id: 2,
       label: "Sea Shipment",
-      value: <InBound type={"Sea"} />,
+      value: <OutBound type={"Sea"} />,
     },
   ];
 
   return <TabMenu {...router} tabItems={tabItems} />;
 };
 
-export default InBoundPage;
+export default OutBoundPage;

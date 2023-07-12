@@ -20,7 +20,7 @@ const OutBound = ({ type }) => {
   const pagginationHandler = ({ selected }) => {
     setPageNumber(selected);
   };
-
+console.log("type", type);
   const handleSearch = async () => {
     let search = searchText.length > 0 ? encodeURI(searchText.trim()) : "";
 

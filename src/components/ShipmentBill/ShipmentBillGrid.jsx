@@ -34,7 +34,7 @@ const ShipmentBillGrid = (props) => {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {data?.length > 0 &&
                     data?.map((item, index) => (
-                      <tr key={item.id}>
+                      <tr key={index}>
                         <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
                           {item?.invoiceNumber}
                         </td>

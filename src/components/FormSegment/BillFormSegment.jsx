@@ -15,7 +15,6 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 const BillFormSegment = (props) => {
   const { editMode } = props;
   const router = useRouter();
-
   const [data, setData] = useState([]);
   const [customerInfo, setCustomerInfo] = useState(editMode ? editMode : null);
   const [loading, setLoading] = useState(false);
@@ -46,7 +45,7 @@ const BillFormSegment = (props) => {
         .post(`/api/${router?.query?.slug}`, { ...newData })
         .then((res) => {
           successAlert("Successfully Save");
-          router.push(`/${router?.query?.slug}/air-shipment`);
+          router.push(`/${router?.query?.slug}`);
         })
         .catch((err) => {
           errorAlert("Something went wrong!");
@@ -78,9 +77,10 @@ const BillFormSegment = (props) => {
         .delete(`/api/${router?.query?.slug}?id=` + editMode?._id)
         .then((res) => {
           successAlert("Successfully Deleted");
-          router.push(`/${router?.query?.slug}/air-shipment`);
+          router.push(`/${router?.query?.slug}`);
         })
         .catch((err) => {
+          console.log("err", err);
           errorAlert("Something went wrong!");
         })
         .finally(() => setLoading(false));

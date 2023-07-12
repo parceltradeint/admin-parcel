@@ -45,7 +45,7 @@ const AutoSuggestInput = ({
       setInputHistory(storedArray);
       setSuggestionData(storedArray);
     }
-    setSuggestions([]);
+    // setSuggestions([]);
   };
 
   return (
@@ -58,11 +58,11 @@ const AutoSuggestInput = ({
         className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
       />
       {suggestions.length > 0 && (
-        <ul className=" absolute overflow-scroll">
-          {suggestions.map((suggestion) => (
+        <ul className=" absolute overflow-scroll bg-scroll">
+          {suggestions.map((suggestion, i) => (
             <li
-              key={suggestion}
-              className=" cursor-pointer hover:bg-gray-200 px-8"
+              key={i}
+              className=" cursor-pointer hover:bg-gray-200 px-5 py-1 w-[350px]"
               onClick={() => handleSuggestionSelect(suggestion)}
             >
               {suggestion}

@@ -24,7 +24,6 @@ const OverViewFrom = (props) => {
   // }, [getValues, setCustomerInfo, watch]);
 
   const handleInputChange = (name, value) => {
-    console.log(name, value);
     setCustomerInfo({ ...watch(), ...customerInfo, [name]: value });
   };
 
@@ -147,8 +146,8 @@ const OverViewFrom = (props) => {
                 className="block w-full px-4 py-2 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
               >
                 <option value="">Choose a Shipment</option>
-                <option value="By Air">By Air</option>
-                <option value="By Sea">By Sea</option>
+                <option value="Air">By Air</option>
+                <option value="Sea">By Sea</option>
               </select>
             </div>
             <div className="flex gap-1 px-2 ">

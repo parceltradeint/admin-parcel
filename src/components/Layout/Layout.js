@@ -7,11 +7,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import NavBarSection from "@/common/NavBar/NavBarSection";
 import ProfileMenu from "../Module/ProfileMenu";
+import { useRouter } from "next/router";
 
 function Layout(props) {
   const [isOpen, setIsOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const router = useRouter();
   return (
     <div className="h-screen flex overflow-auto bg-gray-100  ">
       <Head />
@@ -87,14 +88,32 @@ function Layout(props) {
       </Transition>
 
       {/* Static sidebar for desktop */}
-      <div className="xl:flex flex-col xl:w-full xl:max-w-[16rem] hidden">
+      <div
+        className={`${
+          router.pathname === "/bill/new/[slug]" ||
+          router.pathname === "/bill/edit/[slug]"
+            ? "xl:hidden"
+            : "xl:flex flex-col xl:w-full xl:max-w-[16rem] hidden"
+        } `}
+      >
         <div className="flex flex-col h-0 flex-1">
           <SideBar />
         </div>
       </div>
 
       <div className="flex z-10 flex-col w-0 flex-1 overflow-hidden">
-        {
+        <button
+          className={`self-start inline my-2 px-4 focus:outline-none  focus:text-gray-600 ${
+            router.pathname === "/bill/new/[slug]" ||
+            router.pathname === "/bill/edit/[slug]"
+              ? "block"
+              : "md:hidden"
+          }`}
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        >
+          <FontAwesomeIcon icon={faBars} className="" size={"xl"} />
+        </button>
+        {/* {
           <NavBarSection
             isOpen={isOpen}
             setIsOpen={setIsOpen}
@@ -104,7 +123,7 @@ function Layout(props) {
         }
         <div className="z-10">
           <ProfileMenu isOpen={isOpen} setIsOpen={setIsOpen} />
-        </div>
+        </div> */}
         <Body>{props.children}</Body>
       </div>
     </div>

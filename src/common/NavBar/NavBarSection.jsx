@@ -12,9 +12,9 @@ const NavBarSection = (props) => {
   const { isMenuOpen, setIsMenuOpen, setIsOpen, isOpen } = props;
   // const { user } = useContext(UserContext);
   return (
-    <div className="bg-gradient-to-r from-[#b6b6b6] via-[#ffff] to-[#e99594]">
-      <div className="navbar">
-        <div className="navbar-start">
+    <div className="bg-gradient-to-r from-[#b6b6b6] via-[#ffff] to-[#e99594] w-auto">
+      <div className="navbar flex ">
+        <div className="navbar-start flex-1">
           <div className="navbar-center flex items-center md:justify-center space-x-1 py-3">
             <button
               className="self-start xl:hidden px-4 border-r border-gray-200 text-gray-500 focus:outline-none  focus:text-gray-600 flex-shrink-0"
@@ -43,7 +43,7 @@ const NavBarSection = (props) => {
           </div>
         </div>
 
-        <div className="navbar-end">
+        {/* <div className="self-end">
           <button
             className="btn btn-ghost btn-circle"
             onClick={(e) => {
@@ -52,12 +52,12 @@ const NavBarSection = (props) => {
             }}
           >
             <div className="avatar placeholder">
-              <div className="bg-neutral-focus text-neutral-content rounded-full w-8">
+              <div className="rounded-full w-3">
                 <Avatar />
               </div>
             </div>
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

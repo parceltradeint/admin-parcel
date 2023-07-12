@@ -36,9 +36,8 @@ const SideBar = () => {
   let type = router?.query?.type;
   if (typeof window !== "undefined") {
     const urlParams = new URLSearchParams(window.location.search);
-    type = urlParams.get("type") ||  router?.query?.type;
+    type = urlParams.get("type") || router?.query?.type;
   }
-console.log("user", user);
   return (
     <>
       <div
@@ -96,14 +95,15 @@ console.log("user", user);
             </Link>
 
             <Link
-              as={"/outbound/air-shipment"}
+              as={"/outbound"}
               href={{
-                pathname: "/outbound/[slug]",
+                pathname: "/outbound",
               }}
               className={`${
-                pathname === "/outbound/[slug]" ||
+                pathname === "/outbound" || pathname === "/bill/new/[slug]" || pathname === "/bill/edit/[slug]" ||
                 router?.query?.type == "outbound" ||
                 type == "outbound"
+                
                   ? "bg-sideBarHoverBg  text-sideBarHoverText"
                   : "text-sideBarText  "
               } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
@@ -115,12 +115,12 @@ console.log("user", user);
             </Link>
 
             <Link
-              as={"/inbound/air-shipment"}
+              as={"/inbound"}
               href={{
-                pathname: "/inbound/[slug]",
+                pathname: "/inbound",
               }}
               className={`${
-                pathname === "/inbound/[slug]" ||
+                pathname === "/inbound" || 
                 router?.query?.type == "inbound" ||
                 type == "inbound"
                   ? "bg-sideBarHoverBg  text-sideBarHoverText "
