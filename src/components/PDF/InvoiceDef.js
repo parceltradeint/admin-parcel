@@ -10,9 +10,9 @@ export const generatePDF = (info) => {
       let totalAmount = Number(item?.kg) * Number(item?.rate);
       return [
         { text: `${i + 1}`, fontSize: 12 },
-        { text: `${item?.goodsName}`, fontSize: 12 },
+        { text: `${item?.goodsName}`, fontSize: 12, alignment: "left" },
         { text: `${item?.ctn}`, fontSize: 12 },
-        { text: `${item?.kg}`, fontSize: 12 },
+        { text: `${Number(item?.kg).toFixed(2)}`, fontSize: 12 },
         { text: `${item?.rate}`, fontSize: 12 },
         {
           text: `${convertBengaliToEnglishNumber(
@@ -50,7 +50,7 @@ export const generatePDF = (info) => {
   const convertTotalAmount = (val) => {
     return convertBengaliToEnglishNumber(
       val.toLocaleString("bn", {
-        minimumFractionDigits: 2,
+        minimumFractionDigits: 0,
       })
     );
   };
@@ -93,7 +93,7 @@ export const generatePDF = (info) => {
                     image: parcelLogo,
                   },
                   {
-                    alignment: "center",
+                    alignment: "left",
                     text: [
                       "P",
                       { text: "arce", color: "red" },
@@ -207,7 +207,7 @@ export const generatePDF = (info) => {
           body: [
             [
               {
-                text: "Name",
+                text: "Name :",
                 alignment: "left",
                 fillColor: "#555555",
                 color: "#FFFFFF",
@@ -215,7 +215,7 @@ export const generatePDF = (info) => {
               },
               `${info?.customerName}`,
               {
-                text: "Date",
+                text: "Date :",
                 alignment: "left",
                 fillColor: "#555555",
                 color: "#FFFFFF",
@@ -247,7 +247,7 @@ export const generatePDF = (info) => {
                 border: [true, false, true, false],
               },
               {
-                text: "Reporting:",
+                text: "Reporting :",
                 alignment: "left",
                 fillColor: "#555555",
                 color: "#FFFFFF",
@@ -271,7 +271,7 @@ export const generatePDF = (info) => {
           body: [
             [
               {
-                text: "Address:",
+                text: "Address :",
                 alignment: "left",
                 fillColor: "#555555",
                 color: "#FFFFFF",
@@ -283,7 +283,7 @@ export const generatePDF = (info) => {
                 border: [true, true, true, true],
               },
               {
-                text: "Status:",
+                text: "Status :",
                 alignment: "left",
                 fillColor: "#555555",
                 color: "#FFFFFF",
@@ -304,7 +304,7 @@ export const generatePDF = (info) => {
           body: [
             [
               {
-                text: "Remarks:",
+                text: "Remarks :",
                 alignment: "left",
                 fillColor: "#555555",
                 color: "#FFFFFF",
@@ -335,11 +335,11 @@ export const generatePDF = (info) => {
                 style: "tableHeader",
               },
               {
-                text: "Goods Name",
+                text: "GOODS NAME",
                 style: "tableHeader",
               },
               {
-                text: "CTN NO",
+                text: "CTN NO.",
                 style: "tableHeader",
               },
               {
@@ -347,11 +347,11 @@ export const generatePDF = (info) => {
                 style: "tableHeader",
               },
               {
-                text: "Rate",
+                text: "RATE",
                 style: "tableHeader",
               },
               {
-                text: "Amount",
+                text: "AMOUNT",
                 style: "tableHeader",
               },
             ],
@@ -407,8 +407,8 @@ export const generatePDF = (info) => {
                         Number(info?.paid || 0)
                     )}`,
                     alignment: "left",
-                    margin: [0, 15, 0, 0],
-                    fontSize: 22,
+                    margin: [8, 15, 0, 0],
+                    fontSize: 25,
                     bold: true,
                     color: "red",
                     border: [true, false, false, true]
@@ -473,11 +473,14 @@ export const generatePDF = (info) => {
               body: [
                 [
                   "Taka In Words:",
-                  `${convertNumberToWords(
+                  {
+                    text: `${convertNumberToWords(
                     Number(netTotalAmount(info?.data)) +
                       Number(info?.due || 0) -
                       Number(info?.paid || 0)
-                  )}`,
+                  )}`, alignment: "left"
+                  }
+                  ,
                 ],
               ],
             },
@@ -491,20 +494,20 @@ export const generatePDF = (info) => {
                 [
                   {
                     text: "Customer Signature:",
-                    alignment: "center",
+                    alignment: "left",
                     bold: true,
                     // border: [true, true, true, false],
                     decoration: "overline",
-                    margin: [0, 35, 0, 0],
+                    margin: [5, 40, 0, 0],
                     border: [true, false, true, false]
                   },
                   {
                     text: "Authoities Signature",
-                    alignment: "center",
+                    alignment: "right",
                     bold: true,
                     decoration: "overline",
                     // border: [true, true, true, false],
-                    margin: [0, 35, 0, 0],
+                    margin: [0, 40, 0, 5],
                     border: [false, false, true, false]
                   },
                 ],
@@ -518,9 +521,9 @@ export const generatePDF = (info) => {
               body: [
                 [
                   {
-                    text: "https://facebook.com/parcel.com",
+                    text: "https://facebook.com/parceltradeinternational",
                     alignment: "left",
-                    link: "https://facebook.com/parcel.com",
+                    link: "https://facebook.com/parceltradeinternational",
                     bold: true,
                     fontSize: 16,
                   },
