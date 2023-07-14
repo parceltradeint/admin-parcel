@@ -1,5 +1,5 @@
 import { sumBy } from "lodash";
-import { parcelLogo, wechat, whatsApp } from "./image";
+import { contact27, parcelLogo, wechat, whatsApp } from "./image";
 import { formartDate } from "@/common/formartDate";
 // title: `${customerName}- ${type}- ${new Date().toLocaleString()}`,
 
@@ -24,7 +24,7 @@ export const generatePDF = (info) => {
       ];
     });
 
-    for (let i = 0; i < 15 - info?.data.length; i++) {
+    for (let i = 0; i < 14 - info?.data.length; i++) {
       newData.push([
         { text: `${i + 2}`, fontSize: 12 },
         "",
@@ -75,7 +75,7 @@ export const generatePDF = (info) => {
           {
             alignment: "right",
             text: `${formartDate(new Date())}`,
-          }
+          },
         ],
       },
       {
@@ -104,11 +104,11 @@ export const generatePDF = (info) => {
                     bold: true,
                     margin: [0, 10, 0, 0],
                   },
-                  // {
-                  //   alignment: "right",
-                  //   width: 60,
-                  //   image: wechat,
-                  // },
+                  {
+                    alignment: "right",
+                    width: 60,
+                    image: contact27,
+                  },
                 ],
               },
             ],
@@ -127,7 +127,7 @@ export const generatePDF = (info) => {
                 stack: [
                   {
                     image: wechat,
-                    width: 46,
+                    width: 50,
                     margin: [10, 0, 0, 0],
                   },
                   {
@@ -201,7 +201,7 @@ export const generatePDF = (info) => {
 
       {
         margin: [0, 5, 0, 0],
-        fontSize: 12,
+        fontSize: 11,
         table: {
           widths: ["15%", "50%", "15%", "20%"],
           body: [
@@ -228,23 +228,22 @@ export const generatePDF = (info) => {
       },
       {
         margin: [0, 0, 0, 0],
-        fontSize: 12,
-        // layout:"noBorders",
+        fontSize: 11,
         table: {
           widths: ["15%", "50%", "15%", "20%"],
           body: [
             [
               {
-                text: "Shipment By:",
+                text: "Shipment By :",
                 alignment: "left",
                 fillColor: "#555555",
                 color: "#FFFFFF",
                 bold: true,
-                border: [true, false, true, false],
+                border: [true, false, false, true],
               },
               {
                 text: `${info?.shipmentBy}`,
-                border: [true, false, true, false],
+                border: [true, false, false, true],
               },
               {
                 text: "Reporting :",
@@ -252,20 +251,20 @@ export const generatePDF = (info) => {
                 fillColor: "#555555",
                 color: "#FFFFFF",
                 bold: true,
-                border: [true, false, true, false],
+                border: [true, false, false, true],
               },
               {
-                text: `China`,
+                text: `${info?.reporting}`,
                 alignment: "left",
-                border: [false, false, true, false],
+                border: [true, false, true, true],
               },
             ],
           ],
         },
       },
       {
+        margin: [0, 0, 0, 0],
         fontSize: 11,
-        fontSize: 12,
         table: {
           widths: ["15%", "50%", "15%", "20%"],
           body: [
@@ -276,25 +275,30 @@ export const generatePDF = (info) => {
                 fillColor: "#555555",
                 color: "#FFFFFF",
                 bold: true,
-                border: [true, true, true, true],
+                border: [true, false, false, true],
               },
               {
                 text: `${info?.address}`,
-                border: [true, true, true, true],
+                border: [true, false, false, true],
               },
               {
-                text: "Status :",
+                text: "Shipment No :",
                 alignment: "left",
                 fillColor: "#555555",
                 color: "#FFFFFF",
                 bold: true,
+                border: [true, false, false, true],
+              },
+              {
+                text: `${info?.shipmentNo}`,
+                alignment: "left",
                 border: [true, false, true, true],
               },
-              { text: `Dhaka Office`, alignment: "left" },
             ],
           ],
         },
       },
+      
       {
         fontSize: 11,
         margin: [0, 0, 0, 5],
@@ -309,6 +313,8 @@ export const generatePDF = (info) => {
                 fillColor: "#555555",
                 color: "#FFFFFF",
                 bold: true,
+                border: [true, false, true, true],
+                margin: [0, -2, 0, 0]
               },
               {
                 text: `${info?.remarks}`,
@@ -362,9 +368,9 @@ export const generatePDF = (info) => {
               { text: "", style: "tableFooter" },
               { text: `${info?.data?.length}`, style: "tableFooter" },
               {
-                text: `${Number(sumBy(info?.data, (val) =>
-                  Number(val?.kg)
-                )).toFixed(2)}`,
+                text: `${Number(
+                  sumBy(info?.data, (val) => Number(val?.kg))
+                ).toFixed(2)}`,
                 style: "tableFooter",
               },
               { text: "", style: "tableFooter" },
@@ -407,24 +413,24 @@ export const generatePDF = (info) => {
                         Number(info?.paid || 0)
                     )}`,
                     alignment: "left",
-                    margin: [8, 15, 0, 0],
+                    margin: [40, 15, 0, 0],
                     fontSize: 25,
                     bold: true,
                     color: "red",
-                    border: [true, false, false, true]
+                    border: [true, false, false, true],
                   },
                   {
                     text: "Due",
                     fillColor: "#555555",
                     color: "#FFFFFF",
                     fontSize: 13,
-                    border: [true, false, false, false]
+                    border: [true, false, false, false],
                   },
                   {
                     text: `${convertTotalAmount(Number(info?.due || 0))}`,
                     alignment: "right",
                     fontSize: 13,
-                    border: [true, false, true, false]
+                    border: [true, false, true, false],
                   },
                 ],
                 [
@@ -475,12 +481,12 @@ export const generatePDF = (info) => {
                   "Taka In Words:",
                   {
                     text: `${convertNumberToWords(
-                    Number(netTotalAmount(info?.data)) +
-                      Number(info?.due || 0) -
-                      Number(info?.paid || 0)
-                  )}`, alignment: "left"
-                  }
-                  ,
+                      Number(netTotalAmount(info?.data)) +
+                        Number(info?.due || 0) -
+                        Number(info?.paid || 0)
+                    )}`,
+                    alignment: "left",
+                  },
                 ],
               ],
             },
@@ -499,7 +505,7 @@ export const generatePDF = (info) => {
                     // border: [true, true, true, false],
                     decoration: "overline",
                     margin: [5, 40, 0, 0],
-                    border: [true, false, true, false]
+                    border: [true, false, true, false],
                   },
                   {
                     text: "Authoities Signature",
@@ -507,8 +513,8 @@ export const generatePDF = (info) => {
                     bold: true,
                     decoration: "overline",
                     // border: [true, true, true, false],
-                    margin: [0, 40, 0, 5],
-                    border: [false, false, true, false]
+                    margin: [0, 40, 10, -2],
+                    border: [false, false, true, false],
                   },
                 ],
               ],
@@ -540,7 +546,6 @@ export const generatePDF = (info) => {
         // margin: [40, -150],
         border: [true, true, true, true],
       },
-
     ],
 
     // pageBreakBefore: (currentNode, followingNodes) => {

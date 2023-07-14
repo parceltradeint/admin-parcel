@@ -112,34 +112,36 @@ const OverViewFrom = (props) => {
           <div className="grid grid-cols-1 sm:grid-cols-3 border-t border-slate-950 text-lg">
             <div className="flex gap-1 px-2 col-span-2 md:border-r border-b md:border-b-0 border-slate-950">
               <label
-                htmlFor="shipmentNo"
+                htmlFor="shipmentBy"
                 className=" flex items-center text-base text-gray-800 border-r border-slate-950 md:w-[25%] w-[30%]"
               >
-                Shipment No:
+                Shipment By:
               </label>
-              <input
-                {...register("shipmentNo", {
-                  required: true,
-                })}
-                name="shipmentNo"
-                placeholder="Enter ShipmentNo"
+              <select
+                defaultValue={customerInfo?.shipmentBy}
+                name="shipmentBy"
                 onChange={(e) =>
-                  handleInputChange("shipmentNo", e.target.value)
+                  handleInputChange("shipmentBy", e.target.value)
                 }
-                className="block w-full px-4 py-2 text-gray-700 bg-white  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-              />
+                // {...register("shipmentBy", { required: true })}
+                className="block w-full px-4 py-2 text-gray-700 bg-white focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+              >
+                <option value="">Choose a Shipment</option>
+                <option value="Air">Air</option>
+                <option value="Sea">Sea</option>
+              </select>
             </div>
 
             <div className="flex gap-1 px-2 ">
-              <label className="flex items-center text-base text-gray-800 border-r border-slate-950 md:w-[52.5%] w-[30%]">
+              <label className="flex items-center text-base text-gray-800 border-r border-slate-950 md:w-[55%] w-[30%]">
                 Reporting:
               </label>
               <select
                 id="reporting"
-                defaultValue={"china"}
+                defaultValue={customerInfo?.reporting || "china"}
                 onChange={(e) => handleInputChange("reporting", e.target.value)}
                 // {...register("reporting", { required: true })}
-                className="block w-full py-2 text-gray-700 bg-white focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                className="block w-full px-4 py-2 text-gray-700 bg-white focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
               >
                 <option value="">Choose a Reporting</option>
                 <option value="china">China</option>
@@ -205,24 +207,23 @@ const OverViewFrom = (props) => {
             </div>
             <div className="flex gap-1 px-2 md:border-r border-b md:border-b-0 border-slate-950">
               <label
-                htmlFor="shipmentBy"
+                htmlFor="shipmentNo"
                 className=" flex items-center text-base text-gray-800 border-r border-slate-950 md:w-[55%] w-[30%]"
               >
-                Shipment By:
+                Shipment No:
               </label>
-              <select
-                defaultValue={customerInfo?.shipmentBy}
-                name="shipmentBy"
+              <input
+                {...register("shipmentNo", {
+                  required: true,
+                })}
+                name="shipmentNo"
+                placeholder="Enter ShipmentNo"
                 onChange={(e) =>
-                  handleInputChange("shipmentBy", e.target.value)
+                  handleInputChange("shipmentNo", e.target.value)
                 }
-                // {...register("shipmentBy", { required: true })}
-                className="block w-full px-4 py-2 text-gray-700 bg-white focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-              >
-                <option value="">Choose a Shipment</option>
-                <option value="Air">By Air</option>
-                <option value="Sea">By Sea</option>
-              </select>
+                className="block w-full px-4 py-2 text-gray-700 bg-white  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+              />
+              
             </div>
           </div>
         </form>

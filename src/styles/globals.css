@@ -11,8 +11,9 @@
   position: sticky;
   top: 0;
   z-index: 2;
-  background: white;
-  color: #000;
+  color: #ffffff;
+  background-color: #343434;
+  font-weight: 700;
 }
 .rt-tfoot {
   top: 228px;

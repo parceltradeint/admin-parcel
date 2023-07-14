@@ -19,7 +19,7 @@ const NavBar = () => {
       <div className="mx-auto px-2 xl:divide-y xl:divide-gray-200 xl:px-8">
         <div className="relative h-12 flex justify-between">
           <div className="relative z-10 px-2 flex xl:px-0">
-            <p className="text-xl text-black font-semibold flex items-center">Parcel Export Import</p>
+            <p className="text-xl text-black font-semibold flex items-center">Parcel Trade International</p>
           </div>
 
           <div className="relative z-10 flex items-center xl:hidden lg:hidden md:hidden">

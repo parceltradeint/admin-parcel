@@ -9,15 +9,15 @@ const defaultOGImage = "";
 const Head = (props) => (
   <NextHead>
     <meta charSet="UTF-8" />
-    <title>{props.title || "Percel Export Import"}</title>
-    <meta name="description" content={"Percel Export Import"} />
+    <title>{props.title || "Parcel Trade International"}</title>
+    <meta name="description" content={"Parcel Trade International"} />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="shortcut icon" href="" />
+    <link rel="shortcut icon" href="/public/favicon.ico" />
     <meta property="og:url" content={props.url || ""} />
-    <meta property="og:title" content={props.title || "Percel Export Import"} />
+    <meta property="og:title" content={props.title || "Parcel Trade International"} />
 
-    <meta property="og:description" content={"Percel Export Import"} />
-    <meta property="og:image" content={"/public/parcel.jpg"} />
+    <meta property="og:description" content={"Parcel Trade International"} />
+    <meta property="og:image" content={"/public/parcel.png"} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta name="title" content="O" />
@@ -27,9 +27,9 @@ const Head = (props) => (
 
     <meta name="twitter:site" content={props.url || ""} />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content={"/public/parcel.jpg"} />
-    <meta property="twitter:title" content="Percel Export Import" />
-    <meta property="twitter:description" content="Percel Export Import" />
+    <meta name="twitter:image" content={"/public/parcel.png"} />
+    <meta property="twitter:title" content="Parcel Trade International" />
+    <meta property="twitter:description" content="Parcel Trade International" />
   </NextHead>
 );
 

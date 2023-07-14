@@ -21,7 +21,8 @@ const BillFormDetails = (props) => {
           <AutoSuggestInput handleCellRenderChange={handleCellRenderChange} cellInfo={cellInfo} setSuggestionData={setSuggestionData}/>
         ) : (
           <input
-            className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+          text-center
+            className={`block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 ${cellInfo.column.id == "goodsName" || cellInfo.column.id == "totalAmount" ? "text-left" : "text-center"}`}
             name="input"
             type={cellInfo.column.id == "ctn" || cellInfo.column.id == "totalAmount" ? "text" : "number"}
             onChange={(e) => handleCellRenderChange(cellInfo, e.target.value)}
@@ -122,7 +123,7 @@ const BillFormDetails = (props) => {
             {
               Header: "SL",
               accessor: "sl",
-              Cell: (info) => <p>{info?.index + 1}</p>,
+              Cell: (info) => <p className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40">{info?.index + 1}</p>,
               Footer: (row) => (
                 <div className={"text-center"}>
                   <button
@@ -136,7 +137,7 @@ const BillFormDetails = (props) => {
               width: 60,
             },
             {
-              Header: "Goods Name",
+              Header: "GOODS NAME",
               accessor: "goodsName",
               Cell: renderEditable,
               Footer: (row) => (
@@ -162,12 +163,12 @@ const BillFormDetails = (props) => {
               Cell: renderEditable,
               Footer: (row) => (
                 <div className={" text-xl font-semibold text-center"}>
-                  <span>Kg= {sumBy(row?.data, (val) => Number(val?.kg))}</span>
+                  <span>Kg= {sumBy(row?.data, (val) => Number(val?.kg)).toFixed(2)}</span>
                 </div>
               ),
             },
             {
-              Header: "Rate",
+              Header: "RATE",
               accessor: "rate",
               Cell: renderEditable,
               Footer: (row) => (
@@ -182,18 +183,18 @@ const BillFormDetails = (props) => {
               ),
             },
             {
-              Header: "Total Amount",
+              Header: "AMOUNT",
               accessor: "totalAmount",
               Cell: renderEditable,
               Footer: (row) => (
-                <div className={" text-xl font-semibold text-center"}>
+                <div className={" text-xl font-semibold text-left"}>
                   <div className="flex flex-col">
-                    <span className=" border-y-2">
+                    <span className=" border-y-2 text-left">
                       {convertTotalAmount(netTotalAmount(row?.data))}
                     </span>
                     <span>
                       <input
-                        className="block w-full text-center bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                        className="block w-full bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                         name="input"
                         type={"number"}
                         // onChange={(e) => handleCellRenderChange(cellInfo, e.target.value)}
@@ -205,7 +206,7 @@ const BillFormDetails = (props) => {
                     </span>
                     <span>
                       <input
-                        className="block w-full text-center bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                        className="block w-full text-left bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                         name="input"
                         type={"number"}
                         // onChange={(e) => handleCellRenderChange(cellInfo, e.target.value)}
@@ -215,7 +216,7 @@ const BillFormDetails = (props) => {
                         }
                       />
                     </span>
-                    <span className="block w-full text-center bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40">
+                    <span className="block w-full text-left bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40">
                       {convertTotalAmount(
                         Number(netTotalAmount(row?.data)) +
                           Number(aditionalInfo?.due || 0) -
