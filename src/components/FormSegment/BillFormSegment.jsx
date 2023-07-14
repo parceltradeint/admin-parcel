@@ -29,7 +29,7 @@ const BillFormSegment = (props) => {
     };
     generatePDF(newInfo);
   };
-  console.log("router?.query?.type", router?.query?.type);
+
   const save = async () => {
     setLoading(true);
     const newData = {

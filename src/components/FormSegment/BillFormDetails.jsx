@@ -33,13 +33,14 @@ const BillFormDetails = (props) => {
               : "text-center"
           }`}
           name="input"
-          type={
-            cellInfo.column.id == "ctn" ||
-            cellInfo.column.id == "totalAmount" ||
-            cellInfo.column.id == "goodsName"
-              ? "text"
-              : "number"
-          }
+          step={"any"}
+          // type={
+          //   cellInfo.column.id == "ctn" ||
+          //   cellInfo.column.id == "totalAmount" ||
+          //   cellInfo.column.id == "goodsName"
+          //     ? "text"
+          //     : "number"
+          // }
           onKeyDown={handleKeyDown}
           onChange={(e) => handleCellRenderChange(cellInfo, e.target.value)}
           value={
@@ -116,9 +117,9 @@ const BillFormDetails = (props) => {
     if (data?.length < 1) {
       const newBill = {
         goodsName: "",
-        ctn: 0,
-        kg: 0,
-        rate: 0,
+        ctn: "",
+        kg: "",
+        rate: "",
       };
       setData([{ ...newBill }]);
     }

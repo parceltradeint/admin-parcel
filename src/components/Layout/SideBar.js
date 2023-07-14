@@ -125,7 +125,7 @@ const SideBar = () => {
                 type == "inbound"
                   ? "bg-sideBarHoverBg  text-sideBarHoverText "
                   : "text-sideBarText  "
-              } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
+              } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg hover:text-sideBarHoverText`}
             >
               <div>
                 <FontAwesomeIcon icon={faShop} />
