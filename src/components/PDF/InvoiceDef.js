@@ -484,7 +484,7 @@ export const generatePDF = (info) => {
                       Number(netTotalAmount(info?.data)) +
                         Number(info?.due || 0) -
                         Number(info?.paid || 0)
-                    )}`,
+                    )} Taka Only.`,
                     alignment: "left",
                   },
                 ],
