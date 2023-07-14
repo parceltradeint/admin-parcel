@@ -7,7 +7,7 @@ import PlaceHolderLoading from "@/common/PlaceHolderLoading";
 import ShipmentBillGrid from "../ShipmentBill/ShipmentBillGrid";
 import { errorAlert } from "@/common/SweetAlert";
 
-const InBound = ({type}) => {
+const InBound = ({ type }) => {
   const router = useRouter();
   const [searchText, setSearchText] = useState("");
   const [data, setData] = useState([]);
@@ -80,6 +80,7 @@ const InBound = ({type}) => {
     router.push({
       pathname: "/bill/new/" + "inbound",
       asPath: "/bill/new/[slug]",
+      query: { type: "inbound" },
     });
   };
 
@@ -218,7 +219,7 @@ const InBound = ({type}) => {
           <>
             <p className="text-2xl text-black text-center">{`Total- ${dataInfo?.total}`}</p>
             <div className=" py-4 sm:px-0">
-              <ShipmentBillGrid data={data} type={"inbound"}/>
+              <ShipmentBillGrid data={data} type={"inbound"} />
             </div>
           </>
         )}

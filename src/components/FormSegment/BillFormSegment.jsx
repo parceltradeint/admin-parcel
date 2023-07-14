@@ -29,6 +29,7 @@ const BillFormSegment = (props) => {
     };
     generatePDF(newInfo);
   };
+  console.log("router?.query?.type", router?.query?.type);
   const save = async () => {
     setLoading(true);
     const newData = {
@@ -47,6 +48,7 @@ const BillFormSegment = (props) => {
           router.push(`/${router?.query?.type}`);
         })
         .catch((err) => {
+          console.log("err", err);
           errorAlert("Something went wrong!");
         })
         .finally(() => setLoading(false));

@@ -13,6 +13,12 @@ const BillFormDetails = (props) => {
   const { data, setData, aditionalInfo, setAditionalInfo, setSuggestionData } =
     props;
 
+    const handleKeyDown = (event) => {
+      if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+        event.preventDefault();
+      }
+    };
+
   const renderEditable = (cellInfo, fixed) => {
     const cellValue = data[cellInfo.index][cellInfo.column.id];
 
@@ -34,6 +40,7 @@ const BillFormDetails = (props) => {
               ? "text"
               : "number"
           }
+          onKeyDown={handleKeyDown}
           onChange={(e) => handleCellRenderChange(cellInfo, e.target.value)}
           value={
             cellInfo.column.id == "totalAmount"
