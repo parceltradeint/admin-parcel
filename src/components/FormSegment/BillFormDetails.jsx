@@ -28,9 +28,8 @@ const BillFormDetails = (props) => {
         <input
           text-center
           className={`block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 ${
-            cellInfo.column.id == "goodsName" ||
-            cellInfo.column.id == "totalAmount"
-              ? "text-left"
+            cellInfo.column.id == "goodsName" 
+              ? "text-left" : cellInfo.column.id == "totalAmount" ? "text-right"
               : "text-center"
           }`}
           name="input"
@@ -243,7 +242,7 @@ const BillFormDetails = (props) => {
               ),
               Footer: (row) => (
                 <div
-                  className={" text-xl font-semibold text-center flex flex-col"}
+                  className={" text-xl font-semibold text-left flex flex-col"}
                 >
                   <span className=" border-y-2">Total</span>
                   <span>Due</span>
@@ -257,14 +256,14 @@ const BillFormDetails = (props) => {
               accessor: "totalAmount",
               Cell: renderEditable,
               Footer: (row) => (
-                <div className={" text-xl font-semibold text-left"}>
+                <div className={" text-xl font-semibold text-right"}>
                   <div className="flex flex-col">
-                    <span className=" border-y-2 text-left">
+                    <span className=" border-y-2 text-right">
                       {convertTotalAmount(netTotalAmount(row?.data))}
                     </span>
                     <span>
                       <input
-                        className="block w-full bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                        className="text-right block w-full bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                         name="input"
                         type={"number"}
                         // onChange={(e) => handleCellRenderChange(cellInfo, e.target.value)}
@@ -276,7 +275,7 @@ const BillFormDetails = (props) => {
                     </span>
                     <span>
                       <input
-                        className="block w-full text-left bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                        className="block w-full text-right bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                         name="input"
                         type={"number"}
                         // onChange={(e) => handleCellRenderChange(cellInfo, e.target.value)}
@@ -286,7 +285,7 @@ const BillFormDetails = (props) => {
                         }
                       />
                     </span>
-                    <span className="block w-full text-left bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40">
+                    <span className="block w-full text-right bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40">
                       {convertTotalAmount(
                         Number(netTotalAmount(row?.data)) +
                           Number(aditionalInfo?.due || 0) -
