@@ -10,21 +10,48 @@ import { convertBengaliToEnglishNumber } from "../PDF/InvoiceDef";
 import AutoSuggestInput from "@/common/AutoInputSuggest";
 
 const BillFormDetails = (props) => {
-  const { data, setData, aditionalInfo, setAditionalInfo,setSuggestionData } = props;
+  const { data, setData, aditionalInfo, setAditionalInfo, setSuggestionData } =
+    props;
 
   const renderEditable = (cellInfo, fixed) => {
     const cellValue = data[cellInfo.index][cellInfo.column.id];
 
     return (
       <>
-        {cellInfo.column.id === "goodsName" ? (
+        <input
+          text-center
+          className={`block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 ${
+            cellInfo.column.id == "goodsName" ||
+            cellInfo.column.id == "totalAmount"
+              ? "text-left"
+              : "text-center"
+          }`}
+          name="input"
+          type={
+            cellInfo.column.id == "ctn" ||
+            cellInfo.column.id == "totalAmount" ||
+            cellInfo.column.id == "goodsName"
+              ? "text"
+              : "number"
+          }
+          onChange={(e) => handleCellRenderChange(cellInfo, e.target.value)}
+          value={
+            cellInfo.column.id == "totalAmount"
+              ? convertBengaliToEnglishNumber(
+                  Number(Number(cellValue || 0).toFixed(0)).toLocaleString("bn")
+                )
+              : cellValue
+          }
+          readOnly={cellInfo.column.id == "totalAmount"}
+        />
+        {/* {cellInfo.column.id === "goodsName" ? (
           <AutoSuggestInput handleCellRenderChange={handleCellRenderChange} cellInfo={cellInfo} setSuggestionData={setSuggestionData}/>
         ) : (
           <input
           text-center
             className={`block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 ${cellInfo.column.id == "goodsName" || cellInfo.column.id == "totalAmount" ? "text-left" : "text-center"}`}
             name="input"
-            type={cellInfo.column.id == "ctn" || cellInfo.column.id == "totalAmount" ? "text" : "number"}
+            type={cellInfo.column.id == "ctn" || cellInfo.column.id == "totalAmount" || cellInfo.column.id == "goodsName" ? "text" : "number"}
             onChange={(e) => handleCellRenderChange(cellInfo, e.target.value)}
             value={
               cellInfo.column.id == "totalAmount"
@@ -37,7 +64,7 @@ const BillFormDetails = (props) => {
             }
             readOnly={cellInfo.column.id == "totalAmount"}
           />
-        )}
+        )} */}
       </>
     );
   };
@@ -123,7 +150,11 @@ const BillFormDetails = (props) => {
             {
               Header: "SL",
               accessor: "sl",
-              Cell: (info) => <p className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40">{info?.index + 1}</p>,
+              Cell: (info) => (
+                <p className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40">
+                  {info?.index + 1}
+                </p>
+              ),
               Footer: (row) => (
                 <div className={"text-center"}>
                   <button
@@ -163,7 +194,9 @@ const BillFormDetails = (props) => {
               Cell: renderEditable,
               Footer: (row) => (
                 <div className={" text-xl font-semibold text-center"}>
-                  <span>Kg= {sumBy(row?.data, (val) => Number(val?.kg)).toFixed(2)}</span>
+                  <span>
+                    Kg= {sumBy(row?.data, (val) => Number(val?.kg)).toFixed(2)}
+                  </span>
                 </div>
               ),
             },

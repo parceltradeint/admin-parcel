@@ -138,16 +138,18 @@ const OverViewFrom = (props) => {
               </label>
               <select
                 id="reporting"
-                defaultValue={customerInfo?.reporting || "china"}
+                defaultValue={customerInfo?.reporting || "China"}
                 onChange={(e) => handleInputChange("reporting", e.target.value)}
                 // {...register("reporting", { required: true })}
                 className="block w-full px-4 py-2 text-gray-700 bg-white focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                {...register("reporting", {
+                  required: true,
+                })}
               >
-                <option value="">Choose a Reporting</option>
-                <option value="china">China</option>
-                <option value="hongkong">Hongkong</option>
-                <option value="chongqing">Chongqing</option>
-                <option value="south-korea">South Korea</option>
+                <option value="China">China</option>
+                <option value="Hongkong">Hongkong</option>
+                <option value="Chongqing">Chongqing</option>
+                <option value="South-korea">South Korea</option>
               </select>
             </div>
           </div>
@@ -223,7 +225,6 @@ const OverViewFrom = (props) => {
                 }
                 className="block w-full px-4 py-2 text-gray-700 bg-white  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
               />
-              
             </div>
           </div>
         </form>

@@ -27,6 +27,7 @@ const BillFormSegment = (props) => {
       ...aditionalInfo,
       data: data,
     };
+    console.log("newInfo",newInfo);
     generatePDF(newInfo);
   };
   const save = async () => {
