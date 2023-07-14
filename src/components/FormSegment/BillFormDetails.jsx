@@ -8,6 +8,7 @@ import { useTable } from "react-table";
 import ReactTable from "react-table-v6";
 import { convertBengaliToEnglishNumber } from "../PDF/InvoiceDef";
 import AutoSuggestInput from "@/common/AutoInputSuggest";
+import NumberFormat from "react-number-format";
 
 const BillFormDetails = (props) => {
   const { data, setData, aditionalInfo, setAditionalInfo, setSuggestionData } =
@@ -199,7 +200,21 @@ const BillFormDetails = (props) => {
             {
               Header: "KG",
               accessor: "kg",
-              Cell: renderEditable,
+              // Cell: renderEditable,
+              Cell: (row) => (
+                <NumberFormat
+                    thousandSeparator={true}
+                    onValueChange={(values, sourceInfo) => {
+                      const { formattedValue, value } = values;
+                      handleCellRenderChange(row, value);
+                    }}
+                    className={`block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40`}
+                    value={row?.original?.kg}
+                    inputMode="numeric"
+                    decimalScale={2}
+                    fixedDecimalScale={2}
+                  />
+              ),
               Footer: (row) => (
                 <div className={" text-xl font-semibold text-center"}>
                   <span>
