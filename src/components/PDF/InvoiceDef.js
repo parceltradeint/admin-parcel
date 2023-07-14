@@ -587,7 +587,7 @@ export const generatePDF = (info) => {
       tableFooter: {
         bold: true,
         fontSize: 13,
-        color: "#FFFFF",
+        color: "#FFFFFF",
         fillColor: "#555555",
         alignment: "center",
       },
