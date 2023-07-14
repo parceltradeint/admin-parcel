@@ -40,15 +40,18 @@ const OverViewFrom = (props) => {
           <div className="w-[20%]">
             <Image src={"/parcel.png"} width={80} height={80} alt="parcel" />
           </div>
-          <div className="w-[80%]">
+          <div className="w-[60%]">
             <p className="md:text-5xl text-black ml-[20%]">
               P<span className="text-red-600">arce</span>l Trade International
             </p>
           </div>
+          <div className="w-[20%] flex justify-end">
+            <Image src={"/24*7.png"} width={80} height={80} alt="24/7" />
+          </div>
         </div>
         <div className="flex">
           <div className="w-[20%]">
-            <Image src={"/wechat.jpg"} width={80} height={80} alt="wechat" />
+            <Image src={"/wechat.png"} width={80} height={80} alt="wechat" />
           </div>
           <div className="w-[60%] border-l border-r border-slate-950 px-2 bg-[#555555]">
             <div className="md:text-xl text-white font-medium text-center ">

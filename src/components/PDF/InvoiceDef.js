@@ -26,7 +26,7 @@ export const generatePDF = (info) => {
 
     for (let i = 0; i < 14 - info?.data.length; i++) {
       newData.push([
-        { text: `${i + 2}`, fontSize: 12 },
+        { text: `${info?.data.length + i + 1}`, fontSize: 12 },
         "",
         "",
         "",
@@ -587,8 +587,8 @@ export const generatePDF = (info) => {
       tableFooter: {
         bold: true,
         fontSize: 13,
-        color: "#00000",
-        fillColor: "#F5B7B1",
+        color: "#FFFFF",
+        fillColor: "#555555",
         alignment: "center",
       },
       nameStyle: {
