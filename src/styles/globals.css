@@ -71,3 +71,12 @@ html::-webkit-scrollbar-thumb, .scrollbar::-webkit-scrollbar-thumb {
   background-color: rgba(25, 29, 253, 0.829) !important;
   outline: 1px solid slategrey !important;
 }
+
+input[type='number'] {
+  -moz-appearance:textfield;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
