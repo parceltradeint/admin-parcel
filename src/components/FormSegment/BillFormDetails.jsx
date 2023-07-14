@@ -184,7 +184,7 @@ const BillFormDetails = (props) => {
               Cell: renderEditable,
               Footer: (row) => (
                 <div className={" text-xl font-semibold text-center"}>
-                  <span>Cartoon= {row?.data?.length}</span>
+                  <span>CTN= {row?.data?.length}</span>
                 </div>
               ),
             },
@@ -195,7 +195,7 @@ const BillFormDetails = (props) => {
               Footer: (row) => (
                 <div className={" text-xl font-semibold text-center"}>
                   <span>
-                    Kg= {sumBy(row?.data, (val) => Number(val?.kg)).toFixed(2)}
+                    KG= {sumBy(row?.data, (val) => Number(val?.kg)).toFixed(2)}
                   </span>
                 </div>
               ),
