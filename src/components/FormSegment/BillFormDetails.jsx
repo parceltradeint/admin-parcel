@@ -208,7 +208,7 @@ const BillFormDetails = (props) => {
                       const { formattedValue, value } = values;
                       handleCellRenderChange(row, value);
                     }}
-                    className={`block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40`}
+                    className={`text-center block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40`}
                     value={row?.original?.kg}
                     inputMode="numeric"
                     decimalScale={2}
@@ -226,7 +226,21 @@ const BillFormDetails = (props) => {
             {
               Header: "RATE",
               accessor: "rate",
-              Cell: renderEditable,
+              // Cell: renderEditable,
+              Cell: (row) => (
+                <NumberFormat
+                    thousandSeparator={true}
+                    onValueChange={(values, sourceInfo) => {
+                      const { formattedValue, value } = values;
+                      handleCellRenderChange(row, value);
+                    }}
+                    className={`text-center block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40`}
+                    value={row?.original?.rate}
+                    inputMode="numeric"
+                    // decimalScale={0}
+                    // fixedDecimalScale={2}
+                  />
+              ),
               Footer: (row) => (
                 <div
                   className={" text-xl font-semibold text-center flex flex-col"}
