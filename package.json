@@ -37,7 +37,7 @@
     "shortid": "^2.2.16",
     "sweetalert2": "^11.7.12",
     "tailwind-merge": "^1.13.2",
-    "tailwindcss": "3.3.2"
+    "tailwindcss": "^1.8.5"
   },
   "devDependencies": {
     "daisyui": "^3.1.1"

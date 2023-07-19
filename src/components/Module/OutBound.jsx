@@ -6,6 +6,7 @@ import Layout from "../Layout/Layout";
 import PlaceHolderLoading from "@/common/PlaceHolderLoading";
 import ShipmentBillGrid from "../ShipmentBill/ShipmentBillGrid";
 import { errorAlert } from "@/common/SweetAlert";
+import FolderComponents from "./FolderComponents";
 
 const OutBound = ({ type }) => {
   const router = useRouter();
@@ -208,10 +209,15 @@ const OutBound = ({ type }) => {
               className="inline-flex items-center px-3 py-2.5 border border-transparent text-sm leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
             >
               Add New
+              
             </button>
           </div>
         </div>
       </div>
+
+     <FolderComponents/>
+
+
       <div className=" mx-auto py-1">
         {loading ? (
           <PlaceHolderLoading loading={true} />
@@ -222,7 +228,7 @@ const OutBound = ({ type }) => {
               <ShipmentBillGrid data={data} type={"outbound"} />
             </div>
           </>
-        )}
+        )}  
       </div>
     </>
   );
