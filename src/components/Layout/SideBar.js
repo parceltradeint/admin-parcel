@@ -95,10 +95,11 @@ const SideBar = () => {
             </Link>
 
             <Link
-              as={"/outbound"}
-              href={{
-                pathname: "/outbound",
-              }}
+              // as={"/outbound"}
+              // href={{
+              //   pathname: "/outbound",
+              // }}
+              href={`/bills/customer/months`}
               className={`${
                 pathname === "/outbound" || pathname === "/bill/new/[slug]" || pathname === "/bill/edit/[slug]" ||
                 router?.query?.type == "outbound" ||

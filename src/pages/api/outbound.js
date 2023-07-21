@@ -4,10 +4,18 @@ import { ObjectId } from "mongodb";
 export default async function newShipmentBill(req, res) {
   const { client, db } = await dbClient();
   const collection = db.collection("outbound_bill");
+  const shipmentCollection = db.collection("shipments_info");
+  const shipmentInfo = {
+    year: new Date().getFullYear(),
+    month: req.body.month,
+    shipmentNo: req.body.shipmentNo,
+    shipmentBy: req.body.shipmentBy
+  };
 
   if (req.method == "POST") {
     try {
       const result = await collection.insertOne({ ...req.body });
+      shipmentData(shipmentCollection, { ...shipmentInfo });
       res.status(200).json({ status: 200, data: result });
       await client.close();
     } catch (error) {
@@ -19,10 +27,10 @@ export default async function newShipmentBill(req, res) {
       let response = await collection.findOne({ _id: objectId });
       res.status(200).json(response);
     } else {
-      const { page, limit, type } = req.query;
+      const { page, limit, type, shipmentNo } = req.query;
       const filter = req.query?.filter || {};
       const sort = {
-        deliveryDate: 1,
+        deliveryDate: -1,
       };
       const search = req?.query?.search || "";
       const regexPattern = new RegExp(search, "i");
@@ -30,8 +38,11 @@ export default async function newShipmentBill(req, res) {
       const searchQuery = {
         $and: [
           {
-            shipmentBy: type,
-          }, // Apply the fixed filter condition
+            shipmentBy: new RegExp(type, "i"),
+          },
+          {
+            shipmentNo: new RegExp(shipmentNo, "i"),
+          },
           {
             $or: [
               { invoiceNumber: regexPattern },
@@ -102,6 +113,8 @@ export default async function newShipmentBill(req, res) {
         { $set: req.body.data } // Fields to update
       );
       // console.log("res Data", data);
+      // const objectId = new ObjectId(req?.body?.id);
+      // shipmentData(shipmentCollection);
       await client.close();
       res.status(200).json(data);
     } catch (error) {
@@ -121,7 +134,7 @@ export default async function newShipmentBill(req, res) {
       res.status(500).json({ status: false, data: {} });
     }
   }
-  // Close the MongoDB client connection when done
+  
 }
 
 // const { dbClient } = require("@/lib/mongodb");
@@ -167,3 +180,10 @@ export async function getFilteredAndPaginatedData(
     await client.close();
   }
 }
+
+export const shipmentData = async (shipmentCollection) => {
+  let result = await shipmentCollection.insertOne({
+    year: new Date().getFullYear(),
+  });
+  return result;
+};
