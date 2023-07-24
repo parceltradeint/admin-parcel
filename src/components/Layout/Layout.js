@@ -8,11 +8,13 @@ import { faBars } from "@fortawesome/free-solid-svg-icons";
 import NavBarSection from "@/common/NavBar/NavBarSection";
 import ProfileMenu from "../Module/ProfileMenu";
 import { useRouter } from "next/router";
+import Breadcrumb from "@/common/Breadcrumb";
 
 function Layout(props) {
   const [isOpen, setIsOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
+
   return (
     <div className="h-screen flex overflow-auto bg-gray-100  ">
       <Head />
@@ -88,7 +90,7 @@ function Layout(props) {
       </Transition>
 
       {/* Static sidebar for desktop */}
-      <div
+      {/* <div
         className={`hidden ${
           router.pathname === "/bill/new/[slug]" ||
           router.pathname === "/bill/edit/[slug]"
@@ -99,6 +101,9 @@ function Layout(props) {
         <div className="flex flex-col h-0 flex-1">
           <SideBar />
         </div>
+      </div> */}
+      <div className=" hidden xl:flex">
+        <SideBar />
       </div>
 
       <div className="flex z-10 flex-col w-0 flex-1 overflow-hidden">
@@ -113,6 +118,7 @@ function Layout(props) {
         >
           <FontAwesomeIcon icon={faBars} className="" size={"xl"} />
         </button>
+        <Breadcrumb items={props.breadcrumbs} />
         {/* {
           <NavBarSection
             isOpen={isOpen}

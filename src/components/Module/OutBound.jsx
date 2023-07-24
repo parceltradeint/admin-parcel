@@ -6,8 +6,9 @@ import Layout from "../Layout/Layout";
 import PlaceHolderLoading from "@/common/PlaceHolderLoading";
 import ShipmentBillGrid from "../ShipmentBill/ShipmentBillGrid";
 import { errorAlert } from "@/common/SweetAlert";
+import FolderComponents from "./FolderComponents";
 
-const OutBound = ({ type }) => {
+const OutBound = ({ type, shipmentNo }) => {
   const router = useRouter();
   const [searchText, setSearchText] = useState("");
   const [data, setData] = useState([]);
@@ -76,13 +77,13 @@ const OutBound = ({ type }) => {
     // setPageNumber(0)
   };
 
-  const billNew = async () => {
-    router.push({
-      pathname: "/bill/new/" + "outbound",
-      asPath: "/bill/new/[slug]",
-      query: { type: "outbound" },
-    });
-  };
+  // const billNew = async () => {
+  //   router.push({
+  //     pathname: "/bill/new/" + "outbound",
+  //     asPath: "/bill/new/[slug]",
+  //     query: { type: "outbound" },
+  //   });
+  // };
 
   useEffect(() => {
     const options = {
@@ -90,8 +91,8 @@ const OutBound = ({ type }) => {
       page: pageNumber,
       filter: {},
       type: type,
+      shipmentNo: shipmentNo
     };
-
     async function fetchBills() {
       setLoading(true);
       await axios
@@ -99,6 +100,7 @@ const OutBound = ({ type }) => {
           params: options,
         })
         .then((res) => {
+          console.log("res", res);
           setData(res?.data?.data);
           setDataInfo({
             total: res.data?.total,
@@ -201,15 +203,7 @@ const OutBound = ({ type }) => {
             </div>
           </div>
 
-          <div className={"ml-4 "}>
-            <button
-              onClick={billNew}
-              type="button"
-              className="inline-flex items-center px-3 py-2.5 border border-transparent text-sm leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
-            >
-              Add New
-            </button>
-          </div>
+          
         </div>
       </div>
       <div className=" mx-auto py-1">

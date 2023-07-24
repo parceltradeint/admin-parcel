@@ -30,7 +30,7 @@ import { UserContext } from "@/AuthenticApp/Context/userContext";
 
 const SideBar = () => {
   const router = useRouter();
-  const { pathname } = router;
+  const { pathname, query } = router;
   const { user } = useContext(UserContext);
 
   let type = router?.query?.type;
@@ -95,12 +95,13 @@ const SideBar = () => {
             </Link>
 
             <Link
-              as={"/outbound"}
-              href={{
-                pathname: "/outbound",
-              }}
+              // as={"/outbound"}
+              // href={{
+              //   pathname: "/outbound",
+              // }}
+              href={`/bills/customer/months`}
               className={`${
-                pathname === "/outbound" || pathname === "/bill/new/[slug]" || pathname === "/bill/edit/[slug]" ||
+                query?.type === "/customer" || pathname === "/bills/customer/months" || pathname === "/bill/edit/[slug]" ||
                 router?.query?.type == "outbound" ||
                 type == "outbound"
                 
@@ -115,13 +116,10 @@ const SideBar = () => {
             </Link>
 
             <Link
-              as={"/inbound"}
-              href={{
-                pathname: "/inbound",
-              }}
+              href={`/bills/cnf/months`}
               className={`${
-                pathname === "/inbound" || 
-                router?.query?.type == "inbound" ||
+                pathname === "/bills/cnf/months" || 
+                query?.type === "/customer" ||
                 type == "inbound"
                   ? "bg-sideBarHoverBg  text-sideBarHoverText "
                   : "text-sideBarText  "

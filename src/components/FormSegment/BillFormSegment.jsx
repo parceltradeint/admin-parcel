@@ -10,6 +10,7 @@ import { errorAlert, successAlert } from "@/common/SweetAlert";
 import OverlayLoading from "@/common/OverlayLoading";
 import { Router, useRouter } from "next/router";
 import PlaceHolderLoading from "@/common/PlaceHolderLoading";
+import { monthNames } from "../Module/FolderComponents";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const BillFormSegment = (props) => {
@@ -36,8 +37,9 @@ const BillFormSegment = (props) => {
       ...customerInfo,
       ...aditionalInfo,
       data: data,
+      month: monthNames[new Date().getMonth()],
       invoiceNumber: !editMode
-        ? Math.floor(Math.random() * (100 - 1 + 1)) + 1
+        ? Date.now()
         : editMode?.invoiceNumber,
     };
     if (!editMode) {
@@ -45,7 +47,7 @@ const BillFormSegment = (props) => {
         .post(`/api/${router?.query?.type}`, { ...newData })
         .then((res) => {
           successAlert("Successfully Save");
-          router.push(`/${router?.query?.type}`);
+          router.back();
         })
         .catch((err) => {
           console.log("err", err);
