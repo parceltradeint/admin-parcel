@@ -8,7 +8,7 @@ import ShipmentBillGrid from "../ShipmentBill/ShipmentBillGrid";
 import { errorAlert } from "@/common/SweetAlert";
 import FolderComponents from "./FolderComponents";
 
-const OutBound = ({ type, shipmentNo }) => {
+const OutBound = () => {
   const router = useRouter();
   const [searchText, setSearchText] = useState("");
   const [data, setData] = useState([]);
@@ -17,6 +17,7 @@ const OutBound = ({ type, shipmentNo }) => {
   const [pageCount, setPageCount] = useState(null);
   const [loading, setLoading] = useState(false);
   const [dataInfo, setDataInfo] = useState({});
+  const { folder, shipmentNo } = router.query;
 
   const pagginationHandler = ({ selected }) => {
     setPageNumber(selected);
@@ -29,7 +30,7 @@ const OutBound = ({ type, shipmentNo }) => {
       limit: perPage,
       page: pageNumber,
       filter: {},
-      type: type,
+      type: folder,
       search: search,
     };
 
@@ -90,8 +91,8 @@ const OutBound = ({ type, shipmentNo }) => {
       limit: perPage,
       page: pageNumber,
       filter: {},
-      type: type,
-      shipmentNo: shipmentNo
+      type: folder,
+      shipmentNo: shipmentNo,
     };
     async function fetchBills() {
       setLoading(true);
@@ -202,8 +203,6 @@ const OutBound = ({ type, shipmentNo }) => {
               />
             </div>
           </div>
-
-          
         </div>
       </div>
       <div className=" mx-auto py-1">

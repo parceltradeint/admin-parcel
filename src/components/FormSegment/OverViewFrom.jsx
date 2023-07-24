@@ -36,7 +36,7 @@ const OverViewFrom = (props) => {
       </p>
 
       <div className="md:w-full mx-auto border border-slate-950">
-        <div className="flex items-center justify-center border-b border-slate-950">
+        <div className="flex items-center justify-between border-b border-slate-950">
           <div className="w-[20%]">
             <Image src={"/parcel.png"} width={80} height={80} alt="parcel" />
           </div>
@@ -49,12 +49,12 @@ const OverViewFrom = (props) => {
             <Image src={"/24*7.png"} width={80} height={80} alt="24/7" />
           </div>
         </div>
-        <div className="flex">
+        <div className="flex justify-between">
           <div className="w-[20%]">
             <Image src={"/wechat.png"} width={80} height={80} alt="wechat" />
           </div>
           <div className="w-[60%] border-l border-r border-slate-950 px-2 bg-[#555555]">
-            <div className="md:text-xl text-white font-medium text-center ">
+            <div className="md:text-xl text-black font-medium text-center ">
               <p>H-2553, Sayednagor, Vatara, Gulshan-2, Dhaka-1212.</p>
               <p>Cell: 01879314050, 01521584929</p>
             </div>
@@ -68,7 +68,7 @@ const OverViewFrom = (props) => {
             />
           </div>
         </div>
-        <div className="bg-[#1586D5] text-white text-center font-semibold md:text-2xl">
+        <div className="bg-blue-600 text-white text-center font-semibold md:text-2xl">
           <p>Shipment Bill</p>
         </div>
 

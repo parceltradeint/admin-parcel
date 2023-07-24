@@ -46,8 +46,8 @@ const BillFormSegment = (props) => {
       await axios
         .post(`/api/${router?.query?.type}`, { ...newData })
         .then((res) => {
-          successAlert("Successfully Save");
-          router.back();
+          successAlert("Successfully Saved Invoice.");
+          router.push(`/bills/customer/month/July/${newData.shipmentBy}/${newData.shipmentNo}`);
         })
         .catch((err) => {
           console.log("err", err);
@@ -62,7 +62,8 @@ const BillFormSegment = (props) => {
           data: { ...newData },
         })
         .then((res) => {
-          successAlert("Successfully Save");
+          successAlert("Successfully Update Invoice");
+          router.push(`/bills/customer/month/July/${editMode.shipmentBy}/${editMode.shipmentNo}`);
         })
         .catch((err) => {
           errorAlert("Something went wrong!");
@@ -80,7 +81,7 @@ const BillFormSegment = (props) => {
         .delete(`/api/${router?.query?.type}?id=` + editMode?._id)
         .then((res) => {
           successAlert("Successfully Deleted");
-          router.push(`/${router?.query?.type}`);
+          router.push(`/bills/customer/month/July/${editMode.shipmentBy}/${editMode.shipmentNo}`);
         })
         .catch((err) => {
           console.log("err", err);

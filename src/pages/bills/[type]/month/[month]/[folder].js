@@ -9,13 +9,14 @@ import { useEffect, useState } from "react";
 
 const ShipmentNoPage = ({ type, month, folder }) => {
   const [shipmentNos, setShipmentNos] = useState([]);
+
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     async function fetchShipmentNos() {
       setLoading(true);
       await axios
         .get(
-          `/api/shipment-info?year=${2023}&month=${"july"}&shipmentBy=${"air"}`
+          `/api/shipment-info?year=${2023}&month=${month.toLowerCase()}&shipmentBy=${folder.toLowerCase()}`
         )
         .then((res) => {
           const resultArray = removeDuplicatesByProperty(

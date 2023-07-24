@@ -6,7 +6,6 @@ export default async function shipmentInfo(req, res) {
   const shipmentCollection = db.collection("shipments_info");
 
   const { year, month, shipmentBy } = req.query;
-
   const sort = {
     deliveryDate: -1,
   };
