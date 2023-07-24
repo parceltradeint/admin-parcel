@@ -15,8 +15,10 @@ export default async function newShipmentBill(req, res) {
   if (req.method == "POST") {
     try {
       const result = await collection.insertOne({ ...req.body });
-      shipmentData(shipmentCollection, { ...shipmentInfo });
-      res.status(200).json({ status: 200, data: result });
+      // shipmentData(shipmentCollection, { ...shipmentInfo });
+      const shipmentInfoData = await shipmentCollection.insertOne({...shipmentInfo });
+      console.log("shipmentInfoData",shipmentInfoData);
+      res.status(200).json({ status: 200, data: {...result, ...shipmentInfoData} });
       await client.close();
     } catch (error) {
       res.status(500).json({ status: false, data: {} });
@@ -181,9 +183,12 @@ export async function getFilteredAndPaginatedData(
   }
 }
 
-export const shipmentData = async (shipmentCollection) => {
-  let result = await shipmentCollection.insertOne({
-    year: new Date().getFullYear(),
-  });
-  return result;
-};
+// export const shipmentData = async (shipmentCollection, data) => {
+//   console.log("data", shipmentCollection, data);
+//   let result = await shipmentCollection.insertOne({
+//     year: new Date().getFullYear(),
+//     ...data
+//   });
+//   console.log("res", result);
+//   return result;
+// };

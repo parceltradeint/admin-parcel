@@ -26,6 +26,7 @@ const BillFormSegment = (props) => {
     const newInfo = {
       ...customerInfo,
       ...aditionalInfo,
+      shipmentBy: customerInfo.shipmentBy?.toLowerCase(),
       data: data,
     };
     generatePDF(newInfo);
