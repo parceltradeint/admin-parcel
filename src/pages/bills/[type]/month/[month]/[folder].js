@@ -72,7 +72,7 @@ export async function getStaticPaths() {
   return {
     paths: monthNames.flatMap((month) =>
       ["air", "sea"].flatMap((folder) => ({
-        params: { type: "customer", month, folder },
+        params: { type: ("customer" || "cnf"), month, folder },
       }))
     ),
     fallback: false,

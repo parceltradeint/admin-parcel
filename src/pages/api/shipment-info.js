@@ -15,14 +15,17 @@ export default async function shipmentInfo(req, res) {
   const searchQuery = {
     $and: [
       {
-        year: new RegExp(year, "i"),
+        // year: new RegExp(year, "i"),
+        year: { $regex: new RegExp(`^${year}$`, "i") },
       },
       {
-        month: new RegExp(month, "i"),
+        // month: new RegExp(`^${month}$`, 'i'),
+        month: { $regex: new RegExp(`^${month}$`, "i") },
       },
       {
-        shipmentBy: new RegExp(shipmentBy, "i"),
-      }
+        // shipmentBy: new RegExp(`^${shipmentBy}$`, 'i')
+        shipmentBy: { $regex: new RegExp(`^${shipmentBy}$`, "i") },
+      },
     ],
   };
 

@@ -6,7 +6,7 @@ export default async function newShipmentBill(req, res) {
   const collection = db.collection("outbound_bill");
   const shipmentCollection = db.collection("shipments_info");
   const shipmentInfo = {
-    year: new Date().getFullYear(),
+    year: new Date().getFullYear().toString(),
     month: req.body.month,
     shipmentNo: req.body.shipmentNo,
     shipmentBy: req.body.shipmentBy?.toLowerCase()

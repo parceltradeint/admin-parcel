@@ -7,7 +7,7 @@ import PlaceHolderLoading from "@/common/PlaceHolderLoading";
 import ShipmentBillGrid from "../ShipmentBill/ShipmentBillGrid";
 import { errorAlert } from "@/common/SweetAlert";
 
-const InBound = ({ type }) => {
+const InBound = () => {
   const router = useRouter();
   const [searchText, setSearchText] = useState("");
   const [data, setData] = useState([]);
@@ -16,6 +16,7 @@ const InBound = ({ type }) => {
   const [pageCount, setPageCount] = useState(null);
   const [loading, setLoading] = useState(false);
   const [dataInfo, setDataInfo] = useState({});
+  const { folder, shipmentNo } = router.query;
 
   const pagginationHandler = ({ selected }) => {
     setPageNumber(selected);
@@ -28,7 +29,7 @@ const InBound = ({ type }) => {
       limit: perPage,
       page: pageNumber,
       filter: {},
-      type: type,
+      type: folder,
       search: search,
     };
 
@@ -76,20 +77,20 @@ const InBound = ({ type }) => {
     // setPageNumber(0)
   };
 
-  const billNew = async () => {
-    router.push({
-      pathname: "/bill/new/" + "inbound",
-      asPath: "/bill/new/[slug]",
-      query: { type: "inbound" },
-    });
-  };
+  // const billNew = async () => {
+  //   router.push({
+  //     pathname: "/bill/new/" + "inbound",
+  //     asPath: "/bill/new/[slug]",
+  //     query: { type: "inbound" },
+  //   });
+  // };
 
   useEffect(() => {
     const options = {
       limit: perPage,
       page: pageNumber,
       filter: {},
-      type: type,
+      type: folder,
     };
 
     async function fetchBills() {

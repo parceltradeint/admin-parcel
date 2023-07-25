@@ -1,4 +1,5 @@
 import Layout from '@/components/Layout/Layout';
+import InBound from '@/components/Module/InBound';
 import OutBound from '@/components/Module/OutBound';
 import { useRouter } from 'next/router';
 
@@ -20,11 +21,14 @@ const ShipmentPage = () => {
       href: `/bills/${type}/month/${month}/${folder?.toLowerCase()}`
     }
   ]
-
+console.log("type", type);
   return (
     <Layout breadcrumbs={breadcrumbs}>
       {
-        type === "customer" && <OutBound type={"air"} shipmentNo={`${shipmentNo}`} />
+        type === "customer" && <OutBound type={folder?.toLowerCase()} shipmentNo={`${shipmentNo}`} />
+      }
+      {
+        type === "cnf" && <InBound type={folder?.toLowerCase()} shipmentNo={`${shipmentNo}`} />
       }
       {/* <h1>Month: {month}</h1>
       <h2>Shipment Type: {folder} </h2>
