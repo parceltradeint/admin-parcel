@@ -32,7 +32,6 @@ const InBound = () => {
       type: folder,
       search: search,
     };
-
     async function fetchBills() {
       setLoading(true);
       await axios

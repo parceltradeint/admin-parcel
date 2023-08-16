@@ -21,7 +21,6 @@ const ShipmentPage = () => {
       href: `/bills/${type}/month/${month}/${folder?.toLowerCase()}`
     }
   ]
-console.log("type", type);
   return (
     <Layout breadcrumbs={breadcrumbs}>
       {

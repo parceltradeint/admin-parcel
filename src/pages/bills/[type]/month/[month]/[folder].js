@@ -1,3 +1,4 @@
+import NoRecord from "@/common/NoRecord";
 import PlaceHolderLoading from "@/common/PlaceHolderLoading";
 import Layout from "@/components/Layout/Layout";
 import { monthNames } from "@/components/Module/FolderComponents";
@@ -7,16 +8,15 @@ import axios from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-const ShipmentNoPage = ({ type, month, folder }) => {
+const ShipmentNoPage = ({ type, month, folder, year }) => {
   const [shipmentNos, setShipmentNos] = useState([]);
-
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     async function fetchShipmentNos() {
       setLoading(true);
       await axios
         .get(
-          `/api/shipment-info?year=${2023}&month=${month.toLowerCase()}&shipmentBy=${folder.toLowerCase()}`
+          `/api/shipment-info?year=${2023}&month=${month.toLowerCase()}&shipmentBy=${folder.toLowerCase()}&type=${type}`
         )
         .then((res) => {
           const resultArray = removeDuplicatesByProperty(
@@ -31,7 +31,7 @@ const ShipmentNoPage = ({ type, month, folder }) => {
         .finally(() => setLoading(false));
     }
     fetchShipmentNos();
-  }, []);
+  }, [folder, month, type]);
 
   const breadcrumbs = [
     {
@@ -50,30 +50,38 @@ const ShipmentNoPage = ({ type, month, folder }) => {
         {loading ? (
           <PlaceHolderLoading loading={true} />
         ) : (
-          <div className="grid grid-cols-3 gap-4">
-            {shipmentNos.map((item, i) => (
-              <Link
-                className="flex flex-col items-center justify-center h-16 bg-gray-200 rounded"
-                key={i}
-                href={`/bills/${type}/month/${month}/${folder.toLowerCase()}/${item?.shipmentNo.toLowerCase()}`}
-              >
-                <FontAwesomeIcon icon={faFolder} className="" size={"xl"} />
-                <p className="mt-2 text-sm">{item?.shipmentNo}</p>
-              </Link>
-            ))}
-          </div>
+          <>
+            {shipmentNos.length > 0 ? (
+              <div className="grid grid-cols-3 gap-4">
+                {shipmentNos.map((item, i) => (
+                  <Link
+                    className="flex flex-col items-center justify-center h-16 bg-gray-200 rounded"
+                    key={i}
+                    href={`/bills/${type}/month/${month}/${folder.toLowerCase()}/${item?.shipmentNo.toLowerCase()}`}
+                  >
+                    <FontAwesomeIcon icon={faFolder} className="" size={"xl"} />
+                    <p className="mt-2 text-sm">{item?.shipmentNo}</p>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <NoRecord />
+            )}
+          </>
         )}
       </div>
     </Layout>
   );
 };
 
-export async function getStaticPaths() {
+export async function getStaticPaths(props) {
   return {
     paths: monthNames.flatMap((month) =>
-      ["air", "sea"].flatMap((folder) => ({
-        params: { type: ("customer" || "cnf"), month, folder },
-      }))
+      ["customer", "cnf"].flatMap((type) =>
+        ["air", "sea"].flatMap((folder) => ({
+          params: { type, month, folder },
+        }))
+      )
     ),
     fallback: false,
   };

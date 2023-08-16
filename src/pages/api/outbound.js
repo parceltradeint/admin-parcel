@@ -6,7 +6,7 @@ export default async function newShipmentBill(req, res) {
   const collection = db.collection("outbound_bill");
   const shipmentCollection = db.collection("shipments_info");
   const shipmentInfo = {
-    year: new Date().getFullYear().toString(),
+    year: `${new Date().getFullYear()}`,
     month: req.body.month,
     shipmentNo: req.body.shipmentNo,
     shipmentBy: req.body.shipmentBy?.toLowerCase()
@@ -17,7 +17,6 @@ export default async function newShipmentBill(req, res) {
       const result = await collection.insertOne({ ...req.body });
       // shipmentData(shipmentCollection, { ...shipmentInfo });
       const shipmentInfoData = await shipmentCollection.insertOne({...shipmentInfo });
-      console.log("shipmentInfoData",shipmentInfoData);
       res.status(200).json({ status: 200, data: {...result, ...shipmentInfoData} });
       await client.close();
     } catch (error) {

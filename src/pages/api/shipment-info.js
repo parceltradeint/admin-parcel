@@ -5,7 +5,7 @@ export default async function shipmentInfo(req, res) {
   const { client, db } = await dbClient();
   const shipmentCollection = db.collection("shipments_info");
 
-  const { year, month, shipmentBy } = req.query;
+  const { year, month, shipmentBy, type } = req.query;
   const sort = {
     deliveryDate: -1,
   };
@@ -15,16 +15,22 @@ export default async function shipmentInfo(req, res) {
   const searchQuery = {
     $and: [
       {
+        type: new RegExp(`^${type}$`, "i"),
+      },
+      {
         // year: new RegExp(year, "i"),
-        year: { $regex: new RegExp(`^${year}$`, "i") },
+        year: new RegExp(`^${year}$`, "i"),
+        // { $regex: new RegExp(`^${year}$`, "i") },
       },
       {
         // month: new RegExp(`^${month}$`, 'i'),
-        month: { $regex: new RegExp(`^${month}$`, "i") },
+        month: new RegExp(`^${month}$`, "i"),
+        // { $regex: new RegExp(`^${month}$`, "i") },
       },
       {
         // shipmentBy: new RegExp(`^${shipmentBy}$`, 'i')
-        shipmentBy: { $regex: new RegExp(`^${shipmentBy}$`, "i") },
+        shipmentBy: new RegExp(`^${shipmentBy}$`, "i"),
+        // { $regex: new RegExp(`^${shipmentBy}$`, "i") },
       },
     ],
   };
@@ -37,6 +43,15 @@ export default async function shipmentInfo(req, res) {
 
   const totalDocuments = await shipmentCollection.countDocuments(searchQuery);
   const documents = await shipmentCollection.find(searchQuery).toArray();
+  //   const updateCondition = { shipmentBy: 'Air' };
+  //   const updateOperation = {
+  //     $set: { type: 'customer' }
+  //     // You can include other update operators here
+  //   };
+
+  //   // Update multiple documents that match the condition
+  //   const result = await shipmentCollection.updateMany(updateCondition, updateOperation);
+  // console.log("res", result);
 
   const response = {
     data: documents,
