@@ -9,7 +9,8 @@ export default async function newShipmentBill(req, res) {
     year: `${new Date().getFullYear()}`,
     month: req.body.month,
     shipmentNo: req.body.shipmentNo,
-    shipmentBy: req.body.shipmentBy?.toLowerCase()
+    shipmentBy: req.body.shipmentBy?.toLowerCase(),
+    type: req.body.type
   };
 
   if (req.method == "POST") {

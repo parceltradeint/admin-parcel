@@ -32,6 +32,7 @@ const OutBound = () => {
       filter: {},
       type: folder,
       search: search,
+      shipmentNo: shipmentNo
     };
 
     async function fetchBills() {
@@ -101,7 +102,6 @@ const OutBound = () => {
           params: options,
         })
         .then((res) => {
-          console.log("res", res);
           setData(res?.data?.data);
           setDataInfo({
             total: res.data?.total,

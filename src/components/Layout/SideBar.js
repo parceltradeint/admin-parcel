@@ -32,7 +32,6 @@ const SideBar = () => {
   const router = useRouter();
   const { pathname, query } = router;
   const { user } = useContext(UserContext);
-console.log("query", query);
   let type = router?.query?.type;
   if (typeof window !== "undefined") {
     const urlParams = new URLSearchParams(window.location.search);

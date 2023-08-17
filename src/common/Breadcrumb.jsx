@@ -2,15 +2,17 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { FiChevronRight, FiHome } from "react-icons/fi";
 
-const Breadcrumb = ({ items = [] }) => {
+const Breadcrumb = ({ items = [], type }) => {
   const router = useRouter();
   const billNew = async () => {
+    const billType = type == "customer" ? "outbound" : "inbound"
     router.push({
-      pathname: "/bill/new/" + "outbound",
+      pathname: "/bill/new/" + billType,
       asPath: "/bill/new/[slug]",
-      query: { type: "outbound" },
+      query: { ...router.query, type: billType },
     });
   };
+
   return (
     <nav
       className="flex justify-between px-5 py-3  border border-gray-200 rounded-lg bg-gray-50 text-green-600 text-xl"

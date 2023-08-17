@@ -30,7 +30,6 @@ const BillFormSegment = (props) => {
     };
     generatePDF(newInfo);
   };
-
   const save = async () => {
     setLoading(true);
     const newData = {
@@ -38,16 +37,19 @@ const BillFormSegment = (props) => {
       ...aditionalInfo,
       data: data,
       month: monthNames[new Date().getMonth()],
-      invoiceNumber: !editMode
-        ? Date.now()
-        : editMode?.invoiceNumber,
+      invoiceNumber: !editMode ? Date.now() : editMode?.invoiceNumber,
+      type: router?.query?.type == "outbound" ? "customer" : "cnf",
     };
     if (!editMode) {
       await axios
         .post(`/api/${router?.query?.type}`, { ...newData })
         .then((res) => {
           successAlert("Successfully Saved Invoice.");
-          router.push(`/bills/customer/month/July/${newData.shipmentBy}/${newData.shipmentNo}`);
+          router.push(
+            `/bills/${
+              router?.query?.type == "outbound" ? "customer" : "cnf"
+            }/month/${newData.month}/${newData.shipmentBy}/${newData.shipmentNo}`
+          );
         })
         .catch((err) => {
           console.log("err", err);
@@ -63,7 +65,9 @@ const BillFormSegment = (props) => {
         })
         .then((res) => {
           successAlert("Successfully Update Invoice");
-          router.push(`/bills/customer/month/July/${editMode.shipmentBy}/${editMode.shipmentNo}`);
+          router.push(
+            `/bills/customer/month/${editMode.month}/${editMode.shipmentBy}/${editMode.shipmentNo}`
+          );
         })
         .catch((err) => {
           errorAlert("Something went wrong!");
@@ -81,7 +85,9 @@ const BillFormSegment = (props) => {
         .delete(`/api/${router?.query?.type}?id=` + editMode?._id)
         .then((res) => {
           successAlert("Successfully Deleted");
-          router.push(`/bills/customer/month/July/${editMode.shipmentBy}/${editMode.shipmentNo}`);
+          router.push(
+            `/bills/customer/month/${editMode.month}/${editMode.shipmentBy}/${editMode.shipmentNo}`
+          );
         })
         .catch((err) => {
           console.log("err", err);
@@ -105,6 +111,7 @@ const BillFormSegment = (props) => {
   if (loading) {
     return <PlaceHolderLoading loading={true} />;
   }
+
   return (
     <Section>
       <OverViewFrom
@@ -112,44 +119,48 @@ const BillFormSegment = (props) => {
         setCustomerInfo={setCustomerInfo}
         customerInfo={customerInfo}
       />
-      {customerInfo && (
-        <>
-          <BillFormDetails
-            data={data}
-            setData={setData}
-            aditionalInfo={aditionalInfo}
-            setAditionalInfo={setAditionalInfo}
-            setSuggestionData={setSuggestionData}
-          />
-          <Section>
-            <div className="flex space-x-2 justify-center mt-2">
-              <button
-                type="button"
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3"
-                onClick={downloadPDF}
-              >
-                View Inovice
-              </button>
-              <button
-                type="button"
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3"
-                onClick={save}
-              >
-                {!editMode ? "Save" : "Update"}
-              </button>
-              {editMode && (
+
+      {customerInfo &&
+        customerInfo?.customerName &&
+        customerInfo?.shipmentBy &&
+        customerInfo?.shipmentNo && (
+          <>
+            <BillFormDetails
+              data={data}
+              setData={setData}
+              aditionalInfo={aditionalInfo}
+              setAditionalInfo={setAditionalInfo}
+              setSuggestionData={setSuggestionData}
+            />
+            <Section>
+              <div className="flex space-x-2 justify-center mt-2">
                 <button
                   type="button"
-                  onClick={deleteData}
                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3"
+                  onClick={downloadPDF}
                 >
-                  Delete
+                  View Inovice
                 </button>
-              )}
-            </div>
-          </Section>
-        </>
-      )}
+                <button
+                  type="button"
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3"
+                  onClick={save}
+                >
+                  {!editMode ? "Save" : "Update"}
+                </button>
+                {editMode && (
+                  <button
+                    type="button"
+                    onClick={deleteData}
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3"
+                  >
+                    Delete
+                  </button>
+                )}
+              </div>
+            </Section>
+          </>
+        )}
     </Section>
   );
 };

@@ -90,8 +90,8 @@ const InBound = () => {
       page: pageNumber,
       filter: {},
       type: folder,
+      shipmentNo: shipmentNo
     };
-
     async function fetchBills() {
       setLoading(true);
       await axios

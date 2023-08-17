@@ -21,7 +21,6 @@ const FolderComponents = ({path}) => {
   const currentDate = new Date();
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
-console.log("path", path);
   const newMonths = [];
   // Loop through the months from the current month to January
   for (let i = month; i >= 0; i--) {

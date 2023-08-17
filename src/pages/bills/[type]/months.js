@@ -1,24 +1,34 @@
-import Layout from '@/components/Layout/Layout';
-import FolderComponents from '@/components/Module/FolderComponents';
-import Link from 'next/link';
+import Layout from "@/components/Layout/Layout";
+import FolderComponents from "@/components/Module/FolderComponents";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
-const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
 const MonthsPage = ({ type }) => {
-  
   return (
-    <Layout>
-      <FolderComponents path={`/bills/${type}/month`}/>
+    <Layout billTypetype={type}>
+      <FolderComponents path={`/bills/${type}/month`} />
     </Layout>
   );
 };
 
 export async function getStaticPaths() {
   return {
-    paths: [
-      { params: { type: 'customer' } },
-      { params: { type: 'cnf' } },
-    ],
+    paths: [{ params: { type: "customer" } }, { params: { type: "cnf" } }],
     fallback: false,
   };
 }

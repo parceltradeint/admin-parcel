@@ -9,7 +9,8 @@ export default async function newShipmentBill(req, res) {
     year: `${new Date().getFullYear()}`,
     month: req.body.month,
     shipmentNo: req.body.shipmentNo,
-    shipmentBy: req.body.shipmentBy
+    shipmentBy: req.body.shipmentBy,
+    type: req.body.type
   };
 
   if (req.method == "POST") {
@@ -39,10 +40,10 @@ export default async function newShipmentBill(req, res) {
       const searchQuery = {
         $and: [
           {
-            shipmentBy: new RegExp(type, "i"),
+            shipmentNo: new RegExp(shipmentNo, "i"),
           },
           {
-            shipmentNo: new RegExp(shipmentNo, "i"),
+            shipmentBy: new RegExp(type, "i"),
           },
           {
             $or: [
@@ -53,8 +54,8 @@ export default async function newShipmentBill(req, res) {
               { customerName: regexPattern },
               { phoneNumber: regexPattern },
             ],
-          },
-        ],
+          }
+        ]
       };
 
       const options = {
