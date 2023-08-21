@@ -67,7 +67,7 @@ export default async function customersAPI(req, res) {
         { _id: objectId }, // Filter criteria to find the document
         { $set: req.body.data } // Fields to update
       );
-      // console.log("res Data", data);
+
       await client.close();
       res.status(200).json(data);
     } catch (error) {
@@ -79,7 +79,6 @@ export default async function customersAPI(req, res) {
       let data;
       const objectId = new ObjectId(req?.query?.id);
       data = await collection.deleteOne({ _id: objectId });
-      // console.log("res Data", data);
       await client.close();
       res.status(200).json(data.deletedCount);
     } catch (error) {

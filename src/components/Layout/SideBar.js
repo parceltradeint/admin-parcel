@@ -37,6 +37,7 @@ const SideBar = () => {
     const urlParams = new URLSearchParams(window.location.search);
     type = urlParams.get("type") || router?.query?.type;
   }
+
   return (
     <>
       <div
@@ -100,7 +101,7 @@ const SideBar = () => {
               // }}
               href={`/bills/customer/months`}
               className={`${
-                query?.type === "customer" || pathname === "/bills/customer/months"
+                query?.type === "customer" || pathname === "/bills/customer/months" || type === "outbound"
                   ? "bg-sideBarHoverBg  text-sideBarHoverText"
                   : "text-sideBarText  "
               } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
@@ -115,7 +116,7 @@ const SideBar = () => {
               href={`/bills/cnf/months`}
               className={`${
                 pathname === "/bills/cnf/months" || 
-                query?.type === "cnf"
+                query?.type === "cnf" || type === "inbound"
                   ? "bg-sideBarHoverBg  text-sideBarHoverText "
                   : "text-sideBarText  "
               } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg hover:text-sideBarHoverText`}

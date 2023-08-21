@@ -20,7 +20,7 @@ const months = [
 
 const MonthsPage = ({ type }) => {
   return (
-    <Layout billTypetype={type}>
+    <Layout billType={type}>
       <FolderComponents path={`/bills/${type}/month`} />
     </Layout>
   );

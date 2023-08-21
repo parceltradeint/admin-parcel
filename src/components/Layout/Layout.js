@@ -118,7 +118,7 @@ function Layout(props) {
         >
           <FontAwesomeIcon icon={faBars} className="" size={"xl"} />
         </button>
-        <Breadcrumb items={props.breadcrumbs} billType={props.billType} />
+        <Breadcrumb items={props.breadcrumbs} type={props.billType} />
         {/* {
           <NavBarSection
             isOpen={isOpen}

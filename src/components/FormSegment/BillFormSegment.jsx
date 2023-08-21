@@ -35,12 +35,14 @@ const BillFormSegment = (props) => {
     const newData = {
       ...customerInfo,
       ...aditionalInfo,
-      data: data,
-      month: monthNames[new Date().getMonth()],
-      invoiceNumber: !editMode ? Date.now() : editMode?.invoiceNumber,
-      type: router?.query?.type == "outbound" ? "customer" : "cnf",
+      data: data
     };
     if (!editMode) {
+      newData["month"] = monthNames[new Date().getMonth()],
+      newData["year"] = `${new Date().getFullYear()}`,
+      newData["invoiceNumber"] =  Date.now(),
+      newData["type"] = router?.query?.type == "outbound" ? "customer" : "cnf",
+  
       await axios
         .post(`/api/${router?.query?.type}`, { ...newData })
         .then((res) => {

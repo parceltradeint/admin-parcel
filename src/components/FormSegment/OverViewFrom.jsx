@@ -26,7 +26,6 @@ const OverViewFrom = (props) => {
   const handleInputChange = (name, value) => {
     setCustomerInfo({ ...watch(), ...customerInfo, [name]: value });
   };
-
   return (
     <div>
       <p className="text-center text-2xl text-gray-950 underline">
@@ -123,10 +122,10 @@ const OverViewFrom = (props) => {
               <select
                 defaultValue={customerInfo?.shipmentBy}
                 name="shipmentBy"
-                onChange={(e) =>
-                  handleInputChange("shipmentBy", e.target.value)
-                }
-                // {...register("shipmentBy", { required: true })}
+                {...register("shipmentBy", {
+                  required: true,
+                  onChange: (e) => handleInputChange("shipmentBy", e.target.value)
+                })}
                 className="block w-full px-4 py-2 text-gray-700 bg-white focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
               >
                 <option value="">Choose a Shipment</option>
@@ -142,11 +141,10 @@ const OverViewFrom = (props) => {
               <select
                 id="reporting"
                 defaultValue={customerInfo?.reporting || "China"}
-                onChange={(e) => handleInputChange("reporting", e.target.value)}
-                // {...register("reporting", { required: true })}
                 className="block w-full px-4 py-2 text-gray-700 bg-white focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                 {...register("reporting", {
                   required: true,
+                  onChange: (e) => handleInputChange("reporting", e.target.value)
                 })}
               >
                 <option value="China">China</option>
