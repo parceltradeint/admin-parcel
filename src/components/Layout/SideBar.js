@@ -46,7 +46,6 @@ const SideBar = () => {
         <div className="hidden lg:block">
           <p className="font-bold text-2xl text-center">
             <span className="text-[#ff2626]">Parcel</span>{" "}
-            <span className="text-[#fd9900]">.Com</span>
           </p>
         </div>
         <div className="flex flex-col items-center mt-6 -mx-2">
@@ -101,7 +100,9 @@ const SideBar = () => {
               // }}
               href={`/bills/customer/months`}
               className={`${
-                query?.type === "customer" || pathname === "/bills/customer/months" || type === "outbound"
+                query?.type === "customer" ||
+                pathname === "/bills/customer/months" ||
+                type === "outbound"
                   ? "bg-sideBarHoverBg  text-sideBarHoverText"
                   : "text-sideBarText  "
               } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
@@ -115,8 +116,9 @@ const SideBar = () => {
             <Link
               href={`/bills/cnf/months`}
               className={`${
-                pathname === "/bills/cnf/months" || 
-                query?.type === "cnf" || type === "inbound"
+                pathname === "/bills/cnf/months" ||
+                query?.type === "cnf" ||
+                type === "inbound"
                   ? "bg-sideBarHoverBg  text-sideBarHoverText "
                   : "text-sideBarText  "
               } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg hover:text-sideBarHoverText`}

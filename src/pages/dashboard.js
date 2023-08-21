@@ -38,7 +38,7 @@ export default function Dashboard() {
       <Page>
         <Layout>
           <p className="text-4xl text-black text-center">
-            Welcome Our Parcel Internal Dashboard
+            Welcome to Our Parcel Internal Dashboard
           </p>
         </Layout>
       </Page>
