@@ -5,12 +5,14 @@ import NavBar from "@/common/NavBar/NavBar";
 import LandingPage from "@/components/Landing/Index";
 import UserProvider from "../AuthenticApp/Context/userContext";
 import Page from "@/components/Page";
+import { useRouter } from "next/router";
+import { useTheme } from "next-themes";
+import { useEffect } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   const router = useRouter();
-  const auth = getAuth();
   const {theme, setTheme, systemTheme} = useTheme()
   // useEffect(() => {
   //   const listener = auth.onIdTokenChanged((user) => {
