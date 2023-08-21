@@ -23,7 +23,7 @@ const Login = () => {
     const { email, password } = data;
     await loginWithEmail(email, password)
       .then((res) => {
-        Router.push("/dashboard");
+        Router.push("/");
         setProcessing(false);
       })
       .catch((err) => {
