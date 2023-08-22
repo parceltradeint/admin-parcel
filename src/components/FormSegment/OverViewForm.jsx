@@ -83,7 +83,7 @@ const OverViewForm = (props) => {
                     required: true,
                   })}
                   name="customerName"
-                  placeholder="Enter your customer name"
+                  placeholder="Enter customer name"
                   onChange={(e) =>
                     handleInputChange("customerName", e.target.value)
                   }
@@ -102,7 +102,7 @@ const OverViewForm = (props) => {
                   name="phone"
                   placeholder="Enter Phone Number"
                   onChange={(e) => handleInputChange("phone", e.target.value)}
-                  className="block w-full px-4 py-2 text-gray-700 bg-white  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                  className="uppercase block w-full px-4 py-2 text-gray-700 bg-white  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                 />
               }
             />
@@ -131,7 +131,7 @@ const OverViewForm = (props) => {
                     required: true,
                   })}
                   name="shipmentNo"
-                  placeholder="Enter ShipmentNo"
+                  placeholder="Enter Shipment No"
                   onChange={(e) =>
                     handleInputChange("shipmentNo", e.target.value)
                   }
@@ -203,7 +203,7 @@ const OverViewForm = (props) => {
                   name="status"
                   onChange={(e) => handleInputChange("status", e.target.value)}
                   defaultValue={"Dhaka Office"}
-                  placeholder="Enter your customer name"
+                  placeholder="Enter Status"
                   className="uppercase block w-full px-4 py-2 text-gray-700 bg-white focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                 />
               }

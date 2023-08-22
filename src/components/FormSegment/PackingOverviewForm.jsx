@@ -82,7 +82,7 @@ const PackingOverviewForm = (props) => {
                     required: true,
                   })}
                   name="customerName"
-                  placeholder="Enter your customer name"
+                  placeholder="Enter customer name"
                   onChange={(e) =>
                     handleInputChange("customerName", e.target.value)
                   }
@@ -130,7 +130,7 @@ const PackingOverviewForm = (props) => {
                     required: true,
                   })}
                   name="shipmentNo"
-                  placeholder="Enter ShipmentNo"
+                  placeholder="Enter Shipment No"
                   onChange={(e) =>
                     handleInputChange("shipmentNo", e.target.value)
                   }
@@ -193,18 +193,23 @@ const PackingOverviewForm = (props) => {
               // className={"col-span-2"}
             /> */}
             <DataField
-              label={"Status"}
+              label={"Reporting"}
               value={
-                <input
-                  {...register("status", {
+                <select
+                  id="reporting"
+                  defaultValue={customerInfo?.reporting || "China"}
+                  className="uppercase block w-full px-4 py-2 text-gray-700 bg-white focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                  {...register("reporting", {
                     required: true,
+                    onChange: (e) =>
+                      handleInputChange("reporting", e.target.value),
                   })}
-                  name="status"
-                  onChange={(e) => handleInputChange("status", e.target.value)}
-                  defaultValue={"Dhaka Office"}
-                  placeholder="Enter your customer name"
-                  className="uppercase block w-full px-4 py-2 text-gray-700 bg-white focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-                />
+                >
+                  <option value="China">China</option>
+                  <option value="Hongkong">Hongkong</option>
+                  <option value="Chongqing">Chongqing</option>
+                  <option value="South-korea">South Korea</option>
+                </select>
               }
             />
             <DataField

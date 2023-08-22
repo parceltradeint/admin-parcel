@@ -214,7 +214,7 @@ export const generatePackingPDF = (info) => {
                 border: [true, false, false, true],
               },
               {
-                text: `${info?.shipmentBy}`,
+                text: `${info?.reporting} BY ${info?.shipmentBy}`,
                 border: [true, false, false, true],
               },
               {
