@@ -213,15 +213,15 @@ export const generatePDF = (info) => {
                 color: "#FFFFFF",
                 bold: true,
               },
-              `${info?.customerName} - ${info?.phone || ""}`,
+              `${info?.customerName || ""}}`,
               {
-                text: "Date :",
+                text: "Phone :",
                 alignment: "left",
                 fillColor: "#555555",
                 color: "#FFFFFF",
                 bold: true,
               },
-              { text: `${formartDate(new Date())}`, alignment: "left" },
+              { text: `${info?.phone}`}
             ],
           ],
         },
@@ -242,22 +242,17 @@ export const generatePDF = (info) => {
                 border: [true, false, false, true],
               },
               {
-                text: `${info?.shipmentBy}`,
+                text: `${info?.shipmentBy} -- ${info?.reporting}`,
                 border: [true, false, false, true],
               },
               {
-                text: "Reporting :",
+                text: "Date :",
                 alignment: "left",
                 fillColor: "#555555",
                 color: "#FFFFFF",
-                bold: true,
-                border: [true, false, false, true],
+                border: [true, false, false, true]
               },
-              {
-                text: `${info?.reporting}`,
-                alignment: "left",
-                border: [true, false, true, true],
-              },
+              { text: `${formartDate(new Date())}`, alignment: "left", border: [true, false, true, true]}
             ],
           ],
         },

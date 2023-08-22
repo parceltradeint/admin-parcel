@@ -16,14 +16,14 @@ export const generatePackingPDF = (info) => {
       ];
     });
 
-    for (let i = 0; i < 14 - info?.data.length; i++) {
-      newData.push([
-        { text: `${info?.data.length + i + 1}`, fontSize: 12 },
-        "",
-        "",
-        ""
-      ]);
-    }
+    // for (let i = 0; i < 14 - info?.data.length; i++) {
+    //   newData.push([
+    //     { text: `${info?.data.length + i + 1}`, fontSize: 12 },
+    //     "",
+    //     "",
+    //     ""
+    //   ]);
+    // }
     renderData = [...newData];
   }
   let docDefinition = {
@@ -89,68 +89,68 @@ export const generatePackingPDF = (info) => {
           defaultBorder: false,
         },
       },
-      {
-        table: {
-          widths: ["13%", "73%", "14%"],
-          body: [
-            [
-              {
-                stack: [
-                  {
-                    image: wechat,
-                    width: 50,
-                    margin: [10, 0, 0, 0],
-                  },
-                  {
-                    text: "WeChat",
-                    color: "#333",
-                    alignment: "center",
-                    fontSize: 9,
-                    margin: [4, 4, 0, 0],
-                  },
-                ],
-              },
-              {
-                stack: [
-                  {
-                    text: "H-2553, Sayednagor, Vatara, Gulshan-2, Dhaka-1212.\n",
-                    fontSize: 15,
-                    border: [false, true, false, true],
-                  },
-                  {
-                    text: "Cell: 01879314050, 01521584929\n",
-                    fontSize: 15,
-                    margin: [0, 5, 0, 0],
-                  },
-                ],
-                fillColor: "#555555",
-                color: "#FFFFFF",
-                bold: true,
-                alignment: "center",
-                margin: [0, 10, 0, 0],
-              },
+      // {
+      //   table: {
+      //     widths: ["*"],
+      //     body: [
+      //       [
+      //         // {
+      //         //   stack: [
+      //         //     {
+      //         //       image: wechat,
+      //         //       width: 50,
+      //         //       margin: [10, 0, 0, 0],
+      //         //     },
+      //         //     {
+      //         //       text: "WeChat",
+      //         //       color: "#333",
+      //         //       alignment: "center",
+      //         //       fontSize: 9,
+      //         //       margin: [4, 4, 0, 0],
+      //         //     },
+      //         //   ],
+      //         // },
+      //         {
+      //           stack: [
+      //             {
+      //               text: "H-2553, Sayednagor, Vatara, Gulshan-2, Dhaka-1212.\n",
+      //               fontSize: 15,
+      //               border: [false, true, false, true],
+      //             },
+      //             {
+      //               text: "Cell: 01879314050, 01521584929\n",
+      //               fontSize: 15,
+      //               margin: [0, 5, 0, 0],
+      //             },
+      //           ],
+      //           fillColor: "#555555",
+      //           color: "#FFFFFF",
+      //           bold: true,
+      //           alignment: "center",
+      //           margin: [0, 10, 0, 0],
+      //         }
 
-              {
-                stack: [
-                  {
-                    image: whatsApp,
-                    width: 53,
-                    margin: [10, 0, 0, 0],
-                  },
-                  {
-                    text: "WhatsApp",
-                    color: "#333",
-                    alignment: "center",
-                    fontSize: 9,
-                    margin: [4, 0, 0, 0],
-                  },
-                ],
-              },
-            ],
-          ],
-        },
-        layout: "borders",
-      },
+      //         // {
+      //         //   stack: [
+      //         //     {
+      //         //       image: whatsApp,
+      //         //       width: 53,
+      //         //       margin: [10, 0, 0, 0],
+      //         //     },
+      //         //     {
+      //         //       text: "WhatsApp",
+      //         //       color: "#333",
+      //         //       alignment: "center",
+      //         //       fontSize: 9,
+      //         //       margin: [4, 0, 0, 0],
+      //         //     },
+      //         //   ],
+      //         // },
+      //       ],
+      //     ],
+      //   },
+      //   layout: "borders",
+      // },
       {
         style: "section",
         table: {

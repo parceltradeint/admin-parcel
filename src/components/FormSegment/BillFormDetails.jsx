@@ -11,14 +11,20 @@ import AutoSuggestInput from "@/common/AutoInputSuggest";
 import NumberFormat from "react-number-format";
 
 const BillFormDetails = (props) => {
-  const { data, setData, aditionalInfo, setAditionalInfo, setSuggestionData, type } =
-    props;
+  const {
+    data,
+    setData,
+    aditionalInfo,
+    setAditionalInfo,
+    setSuggestionData,
+    type,
+  } = props;
 
-    const handleKeyDown = (event) => {
-      if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-        event.preventDefault();
-      }
-    };
+  const handleKeyDown = (event) => {
+    if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+      event.preventDefault();
+    }
+  };
 
   const renderEditable = (cellInfo, fixed) => {
     const cellValue = data[cellInfo.index][cellInfo.column.id];
@@ -27,8 +33,10 @@ const BillFormDetails = (props) => {
       <>
         <input
           className={`block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 ${
-            cellInfo.column.id == "goodsName" 
-              ? "text-left" : cellInfo.column.id == "totalAmount" ? "text-right"
+            cellInfo.column.id == "goodsName"
+              ? "text-left"
+              : cellInfo.column.id == "totalAmount"
+              ? "text-right"
               : "text-center"
           }`}
           name="input"
@@ -201,17 +209,17 @@ const BillFormDetails = (props) => {
               // Cell: renderEditable,
               Cell: (row) => (
                 <NumberFormat
-                    thousandSeparator={true}
-                    onValueChange={(values, sourceInfo) => {
-                      const { formattedValue, value } = values;
-                      handleCellRenderChange(row, value);
-                    }}
-                    className={`text-center block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40`}
-                    value={row?.original?.kg}
-                    inputMode="numeric"
-                    decimalScale={2}
-                    fixedDecimalScale={2}
-                  />
+                  thousandSeparator={true}
+                  onValueChange={(values, sourceInfo) => {
+                    const { formattedValue, value } = values;
+                    handleCellRenderChange(row, value);
+                  }}
+                  className={`text-center block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40`}
+                  value={row?.original?.kg}
+                  inputMode="numeric"
+                  decimalScale={2}
+                  fixedDecimalScale={2}
+                />
               ),
               Footer: (row) => (
                 <div className={" text-xl font-semibold text-center"}>
@@ -228,17 +236,17 @@ const BillFormDetails = (props) => {
               show: type === "packing" ? false : true,
               Cell: (row) => (
                 <NumberFormat
-                    thousandSeparator={true}
-                    onValueChange={(values, sourceInfo) => {
-                      const { formattedValue, value } = values;
-                      handleCellRenderChange(row, value);
-                    }}
-                    className={`text-center block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40`}
-                    value={row?.original?.rate}
-                    inputMode="numeric"
-                    // decimalScale={0}
-                    // fixedDecimalScale={2}
-                  />
+                  thousandSeparator={true}
+                  onValueChange={(values, sourceInfo) => {
+                    const { formattedValue, value } = values;
+                    handleCellRenderChange(row, value);
+                  }}
+                  className={`text-center block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40`}
+                  value={row?.original?.rate}
+                  inputMode="numeric"
+                  // decimalScale={0}
+                  // fixedDecimalScale={2}
+                />
               ),
               Footer: (row) => (
                 <div
@@ -263,7 +271,17 @@ const BillFormDetails = (props) => {
                       {convertTotalAmount(netTotalAmount(row?.data))}
                     </span>
                     <span>
-                      <input
+                      <NumberFormat
+                        thousandSeparator={true}
+                        onValueChange={(values, sourceInfo) => {
+                          const { formattedValue, value } = values;
+                          handleAditionalInfo(value, "due");
+                        }}
+                        className="text-right block w-full bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                        defaultValue={aditionalInfo?.due}
+                        inputMode="numeric"
+                      />
+                      {/* <input
                         className="text-right block w-full bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                         name="input"
                         type={"number"}
@@ -272,10 +290,20 @@ const BillFormDetails = (props) => {
                           handleAditionalInfo(e.target.value, "due")
                         }
                         defaultValue={aditionalInfo?.due}
-                      />
+                      /> */}
                     </span>
                     <span>
-                      <input
+                      <NumberFormat
+                        thousandSeparator={true}
+                        onValueChange={(values, sourceInfo) => {
+                          const { formattedValue, value } = values;
+                          handleAditionalInfo(value, "paid");
+                        }}
+                        className="text-right block w-full bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                        defaultValue={aditionalInfo?.paid}
+                        inputMode="numeric"
+                      />
+                      {/* <input
                         className="block w-full text-right bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                         name="input"
                         type={"number"}
@@ -284,7 +312,7 @@ const BillFormDetails = (props) => {
                         onChange={(e) =>
                           handleAditionalInfo(e.target.value, "paid")
                         }
-                      />
+                      /> */}
                     </span>
                     <span className="block w-full text-right bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40">
                       {convertTotalAmount(

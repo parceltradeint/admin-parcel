@@ -69,12 +69,12 @@ const OverViewForm = (props) => {
             />
           </div>
         </div>
-        <div className="bg-primaryBg text-white text-center font-semibold md:text-2xl mb-2">
+        <div className="bg-primaryBg text-white text-center font-semibold md:text-2xl mb-2 uppercase">
           <p>Shipment Bill</p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} c>
-          <div className=" grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <div className=" grid grid-cols-1 sm:grid-cols-3 gap-2 uppercase">
             <DataField
               label={"Customer Name"}
               value={
@@ -87,7 +87,7 @@ const OverViewForm = (props) => {
                   onChange={(e) =>
                     handleInputChange("customerName", e.target.value)
                   }
-                  className="block w-full px-4 py-2 text-gray-700 bg-white  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                  className="uppercase block w-full px-4 py-2 text-gray-700 bg-white  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                 />
               }
               // className=""
@@ -110,7 +110,7 @@ const OverViewForm = (props) => {
               label={"Delivery Date"}
               value={
                 <input
-                  className="block w-full px-4 py-2 text-gray-700 bg-white  focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                  className="uppercase block w-full px-4 py-2 text-gray-700 bg-white  focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                   defaultValue={
                     editMode
                       ? formartDate(editMode?.date)
@@ -135,7 +135,7 @@ const OverViewForm = (props) => {
                   onChange={(e) =>
                     handleInputChange("shipmentNo", e.target.value)
                   }
-                  className="block w-full px-4 py-2 text-gray-700 bg-white  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                  className="uppercase block w-full px-4 py-2 text-gray-700 bg-white  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                 />
               }
             />
@@ -150,7 +150,7 @@ const OverViewForm = (props) => {
                     onChange: (e) =>
                       handleInputChange("shipmentBy", e.target.value),
                   })}
-                  className="block w-full px-4 py-2 text-gray-700 bg-white focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                  className="uppercase block w-full px-4 py-2 text-gray-700 bg-white focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                 >
                   <option value="">Choose a Shipment</option>
                   <option value="Air">Air</option>
@@ -164,7 +164,7 @@ const OverViewForm = (props) => {
                 <select
                   id="reporting"
                   defaultValue={customerInfo?.reporting || "China"}
-                  className="block w-full px-4 py-2 text-gray-700 bg-white focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                  className="uppercase block w-full px-4 py-2 text-gray-700 bg-white focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                   {...register("reporting", {
                     required: true,
                     onChange: (e) =>
@@ -188,7 +188,7 @@ const OverViewForm = (props) => {
                   onChange={(e) => handleInputChange("address", e.target.value)}
                   name="address"
                   placeholder="Enter address"
-                  className="block w-full px-4 py-2 text-gray-700 bg-white  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                  className="uppercase block w-full px-4 py-2 text-gray-700 bg-white  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                 />
               }
               // className={"col-span-2"}
@@ -204,7 +204,7 @@ const OverViewForm = (props) => {
                   onChange={(e) => handleInputChange("status", e.target.value)}
                   defaultValue={"Dhaka Office"}
                   placeholder="Enter your customer name"
-                  className="block w-full px-4 py-2 text-gray-700 bg-white focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                  className="uppercase block w-full px-4 py-2 text-gray-700 bg-white focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                 />
               }
             />
@@ -218,7 +218,7 @@ const OverViewForm = (props) => {
                   name="remarks"
                   onChange={(e) => handleInputChange("remarks", e.target.value)}
                   placeholder="Enter remarks"
-                  className="block w-full px-4 py-2 text-gray-700 bg-white focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                  className="uppercase block w-full px-4 py-2 text-gray-700 bg-white focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                 />
               }
             />
