@@ -28,7 +28,7 @@ const MonthsPage = ({ type }) => {
 
 export async function getStaticPaths() {
   return {
-    paths: [{ params: { type: "customer" } }, { params: { type: "cnf" } }],
+    paths: [{ params: { type: "customer" } }, { params: { type: "cnf" } }, {params: {type: "packing"}}],
     fallback: false,
   };
 }

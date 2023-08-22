@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { FiChevronRight, FiHome } from "react-icons/fi";
 
 const Breadcrumb = ({ items = [], type }) => {
-  const billType = type == "customer" ? "outbound" : type == "cnf" ? "inbound" : false;
+  const billType = type == "customer" ? "outbound" : type == "cnf" ? "inbound": type == "packing" ? type : false;
   const router = useRouter();
   const billNew = async () => {
     // const billType = type == "customer" ? "outbound" : "inbound"
@@ -59,7 +59,7 @@ const Breadcrumb = ({ items = [], type }) => {
             type="button"
             className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
           >
-            Add New Invoice
+            Add New
           </button>
         </div>
       )}

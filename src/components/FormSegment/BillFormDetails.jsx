@@ -11,7 +11,7 @@ import AutoSuggestInput from "@/common/AutoInputSuggest";
 import NumberFormat from "react-number-format";
 
 const BillFormDetails = (props) => {
-  const { data, setData, aditionalInfo, setAditionalInfo, setSuggestionData } =
+  const { data, setData, aditionalInfo, setAditionalInfo, setSuggestionData, type } =
     props;
 
     const handleKeyDown = (event) => {
@@ -26,7 +26,6 @@ const BillFormDetails = (props) => {
     return (
       <>
         <input
-          text-center
           className={`block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 ${
             cellInfo.column.id == "goodsName" 
               ? "text-left" : cellInfo.column.id == "totalAmount" ? "text-right"
@@ -123,7 +122,7 @@ const BillFormDetails = (props) => {
       };
       setData([{ ...newBill }]);
     }
-  }, []);
+  }, [data?.length, setData]);
 
   const handleAditionalInfo = (val, type) => {
     setAditionalInfo({
@@ -226,6 +225,7 @@ const BillFormDetails = (props) => {
               Header: "RATE",
               accessor: "rate",
               // Cell: renderEditable,
+              show: type === "packing" ? false : true,
               Cell: (row) => (
                 <NumberFormat
                     thousandSeparator={true}
@@ -254,6 +254,7 @@ const BillFormDetails = (props) => {
             {
               Header: "AMOUNT",
               accessor: "totalAmount",
+              show: type === "packing" ? false : true,
               Cell: renderEditable,
               Footer: (row) => (
                 <div className={" text-xl font-semibold text-right"}>

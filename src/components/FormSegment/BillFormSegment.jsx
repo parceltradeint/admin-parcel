@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import OverViewFrom from "./OverViewFrom";
+import OverViewForm from "./OverViewForm";
 import BillFormDetails from "./BillFormDetails";
 import Section from "@/common/Section";
 import pdfMake from "pdfmake/build/pdfmake";
@@ -11,6 +11,8 @@ import OverlayLoading from "@/common/OverlayLoading";
 import { Router, useRouter } from "next/router";
 import PlaceHolderLoading from "@/common/PlaceHolderLoading";
 import { monthNames } from "../Module/FolderComponents";
+import PackingOverviewForm from "./PackingOverviewForm";
+import { generatePackingPDF } from "../PDF/packingDef";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const BillFormSegment = (props) => {
@@ -21,6 +23,15 @@ const BillFormSegment = (props) => {
   const [loading, setLoading] = useState(false);
   const [aditionalInfo, setAditionalInfo] = useState({});
   const [suggestionData, setSuggestionData] = useState([]);
+
+  let type =
+    router?.query?.type == "outbound"
+      ? "customer"
+      : router?.query?.type == "inbound"
+      ? "cnf"
+      : router?.query?.type == "packing"
+      ? "packing"
+      : "";
   const downloadPDF = () => {
     // var win = window.open("", "_blank");
     const newInfo = {
@@ -28,36 +39,37 @@ const BillFormSegment = (props) => {
       ...aditionalInfo,
       data: data,
     };
-    generatePDF(newInfo);
+    if (router.query.type === "packing") {
+      generatePackingPDF(newInfo);
+    } else {
+      generatePDF(newInfo);
+    }
   };
   const save = async () => {
     setLoading(true);
     const newData = {
       ...customerInfo,
       ...aditionalInfo,
-      data: data
+      data: data,
     };
     if (!editMode) {
-      newData["month"] = monthNames[new Date().getMonth()],
-      newData["year"] = `${new Date().getFullYear()}`,
-      newData["invoiceNumber"] =  Date.now(),
-      newData["type"] = router?.query?.type == "outbound" ? "customer" : "cnf",
-  
-      await axios
-        .post(`/api/${router?.query?.type}`, { ...newData })
-        .then((res) => {
-          successAlert("Successfully Saved Invoice.");
-          router.push(
-            `/bills/${
-              router?.query?.type == "outbound" ? "customer" : "cnf"
-            }/month/${newData.month}/${newData.shipmentBy}/${newData.shipmentNo}`
-          );
-        })
-        .catch((err) => {
-          console.log("err", err);
-          errorAlert("Something went wrong!");
-        })
-        .finally(() => setLoading(false));
+      (newData["month"] = monthNames[new Date().getMonth()]),
+        (newData["year"] = `${new Date().getFullYear()}`),
+        (newData["invoiceNumber"] = Date.now()),
+        (newData["type"] = type),
+        await axios
+          .post(`/api/${router?.query?.type}`, { ...newData })
+          .then((res) => {
+            successAlert("Successfully Saved.");
+            router.push(
+              `/bills/${type}/month/${newData.month}/${newData.shipmentBy}/${newData.shipmentNo}`
+            );
+          })
+          .catch((err) => {
+            console.log("err", err);
+            errorAlert("Something went wrong!");
+          })
+          .finally(() => setLoading(false));
     } else {
       delete newData?._id;
       await axios
@@ -66,7 +78,7 @@ const BillFormSegment = (props) => {
           data: { ...newData },
         })
         .then((res) => {
-          successAlert("Successfully Update Invoice");
+          successAlert("Successfully Update");
           router.push(
             `/bills/customer/month/${editMode.month}/${editMode.shipmentBy}/${editMode.shipmentNo}`
           );
@@ -116,11 +128,19 @@ const BillFormSegment = (props) => {
 
   return (
     <Section>
-      <OverViewFrom
-        editMode={editMode}
-        setCustomerInfo={setCustomerInfo}
-        customerInfo={customerInfo}
-      />
+      {router?.query?.type === "packing" ? (
+        <PackingOverviewForm
+          editMode={editMode}
+          setCustomerInfo={setCustomerInfo}
+          customerInfo={customerInfo}
+        />
+      ) : (
+        <OverViewForm
+          editMode={editMode}
+          setCustomerInfo={setCustomerInfo}
+          customerInfo={customerInfo}
+        />
+      )}
 
       {customerInfo &&
         customerInfo?.customerName &&
@@ -133,6 +153,7 @@ const BillFormSegment = (props) => {
               aditionalInfo={aditionalInfo}
               setAditionalInfo={setAditionalInfo}
               setSuggestionData={setSuggestionData}
+              type={router.query.type}
             />
             <Section>
               <div className="flex space-x-2 justify-center mt-2">
@@ -141,7 +162,7 @@ const BillFormSegment = (props) => {
                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3"
                   onClick={downloadPDF}
                 >
-                  View Inovice
+                  View PDF
                 </button>
                 <button
                   type="button"

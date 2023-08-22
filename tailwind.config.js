@@ -82,6 +82,7 @@ module.exports = {
     },
     extend: {
       colors: {
+        primaryBg: "#3182ce",
         bannerBgColor: "#5e72e4",
         boxColor: "#f8f9fe",
         primaryText: "#1b1b32",

@@ -3,7 +3,7 @@ import { contact27, parcelLogo, wechat, whatsApp } from "./image";
 import { formartDate } from "@/common/formartDate";
 // title: `${customerName}- ${type}- ${new Date().toLocaleString()}`,
 
-export const generatePDF = (info) => {
+export const generatePackingPDF = (info) => {
   let renderData = [];
   if (info?.data) {
     let newData = info?.data?.map((item, i) => {
@@ -12,15 +12,7 @@ export const generatePDF = (info) => {
         { text: `${i + 1}`, fontSize: 12 },
         { text: `${item?.goodsName}`, fontSize: 12, alignment: "left" },
         { text: `${item?.ctn}`, fontSize: 12 },
-        { text: `${Number(item?.kg).toFixed(2)}`, fontSize: 12 },
-        { text: `${item?.rate}`, fontSize: 12 },
-        {
-          text: `${convertBengaliToEnglishNumber(
-            totalAmount.toLocaleString("bn")
-          )}`,
-          fontSize: 12,
-          alignment: "right",
-        },
+        { text: `${Number(item?.kg).toFixed(2)}`, fontSize: 12 }
       ];
     });
 
@@ -29,39 +21,18 @@ export const generatePDF = (info) => {
         { text: `${info?.data.length + i + 1}`, fontSize: 12 },
         "",
         "",
-        "",
-        "",
-        { text: ``, fontSize: 12, alignment: "right" },
+        ""
       ]);
     }
     renderData = [...newData];
   }
-
-  const netTotalAmount = (data) => {
-    return sumBy(data, (val) => Number(val?.totalAmount || 0));
-  };
-  // const netTotalAmount = (data) => {
-  //   return convertBengaliToEnglishNumber(
-  //     sumBy(data, (val) => Number(val?.totalAmount || 0)).toLocaleString("bn", {
-  //       minimumFractionDigits: 2,
-  //     })
-  //   );
-  // };
-  const convertTotalAmount = (val) => {
-    return convertBengaliToEnglishNumber(
-      val.toLocaleString("bn", {
-        minimumFractionDigits: 0,
-      })
-    );
-  };
-
   let docDefinition = {
     info: {
       title: `${info?.customerName}- ${info?.shipmentBy}- ${formartDate(
         new Date()
       )}`,
       author: "Parcel",
-      subject: "Shipment Bill",
+      subject: "Packing Lists",
     },
     content: [
       {
@@ -70,7 +41,7 @@ export const generatePDF = (info) => {
         columns: [
           {
             alignment: "left",
-            text: `Customer Invoice`,
+            text: `Customer Packing Lists`,
           },
           {
             alignment: "right",
@@ -187,7 +158,7 @@ export const generatePDF = (info) => {
           body: [
             [
               {
-                text: [{ text: "Shipment Bill\n", fontSize: 20 }],
+                text: [{ text: "Packing Lists\n", fontSize: 20 }],
                 fillColor: "#1586D5",
                 color: "#FFFFFF",
                 alignment: "center",
@@ -246,42 +217,6 @@ export const generatePDF = (info) => {
                 border: [true, false, false, true],
               },
               {
-                text: "Reporting :",
-                alignment: "left",
-                fillColor: "#555555",
-                color: "#FFFFFF",
-                bold: true,
-                border: [true, false, false, true],
-              },
-              {
-                text: `${info?.reporting}`,
-                alignment: "left",
-                border: [true, false, true, true],
-              },
-            ],
-          ],
-        },
-      },
-      {
-        margin: [0, 0, 0, 0],
-        fontSize: 11,
-        table: {
-          widths: ["15%", "50%", "15%", "20%"],
-          body: [
-            [
-              {
-                text: "Address :",
-                alignment: "left",
-                fillColor: "#555555",
-                color: "#FFFFFF",
-                bold: true,
-                border: [true, false, false, true],
-              },
-              {
-                text: `${info?.address || ""}`,
-                border: [true, false, false, true],
-              },
-              {
                 text: "Shipment No :",
                 alignment: "left",
                 fillColor: "#555555",
@@ -298,6 +233,7 @@ export const generatePDF = (info) => {
           ],
         },
       },
+
       
       {
         fontSize: 11,
@@ -333,7 +269,7 @@ export const generatePDF = (info) => {
           headerRows: 1,
           dontBreakRows: true,
           // keepWithHeaderRows: 1,
-          widths: ["8%", "35%", "11%", "15%", "15%", "*"],
+          widths: ["8%", "52%", "20%", "20%"],
           body: [
             [
               {
@@ -351,15 +287,7 @@ export const generatePDF = (info) => {
               {
                 text: "KG",
                 style: "tableHeader",
-              },
-              {
-                text: "RATE",
-                style: "tableHeader",
-              },
-              {
-                text: "AMOUNT",
-                style: "tableHeader",
-              },
+              }
             ],
             //   ...foremanDataDetails,
             ...renderData,
@@ -372,13 +300,7 @@ export const generatePDF = (info) => {
                   sumBy(info?.data, (val) => Number(val?.kg))
                 ).toFixed(2)}`,
                 style: "tableFooter",
-              },
-              { text: "", style: "tableFooter" },
-              {
-                text: `${convertTotalAmount(netTotalAmount(info?.data))}`,
-                style: "tableFooter",
-                alignment: "right",
-              },
+              }             
             ],
           ],
         },
@@ -396,156 +318,7 @@ export const generatePDF = (info) => {
             return i === 0 || i === node.table.widths.length ? "black" : "gray";
           },
         },
-      },
-
-      {
-        stack: [
-          {
-            table: {
-              widths: ["71%", "14%", "15%"],
-              body: [
-                [
-                  {
-                    rowSpan: 3,
-                    text: `Total Due Bill- ${convertTotalAmount(
-                      Number(netTotalAmount(info?.data)) +
-                        Number(info?.due || 0) -
-                        Number(info?.paid || 0)
-                    )}`,
-                    alignment: "left",
-                    margin: [40, 15, 0, 0],
-                    fontSize: 25,
-                    bold: true,
-                    color: "red",
-                    border: [true, false, false, true],
-                  },
-                  {
-                    text: "Due",
-                    fillColor: "#555555",
-                    color: "#FFFFFF",
-                    fontSize: 13,
-                    border: [true, false, false, false],
-                  },
-                  {
-                    text: `${convertTotalAmount(Number(info?.due || 0))}`,
-                    alignment: "right",
-                    fontSize: 13,
-                    border: [true, false, true, false],
-                  },
-                ],
-                [
-                  "",
-                  {
-                    text: "Paid",
-                    fillColor: "#555555",
-                    color: "#FFFFFF",
-                    fontSize: 13,
-                  },
-                  {
-                    text: `${convertTotalAmount(Number(info?.paid || 0))}`,
-                    alignment: "right",
-                    fontSize: 13,
-                  },
-                ],
-                [
-                  "",
-                  {
-                    text: "Total",
-                    fillColor: "#555555",
-                    color: "#FFFFFF",
-                    fontSize: 13,
-                  },
-                  {
-                    text: `${convertTotalAmount(
-                      Number(netTotalAmount(info?.data)) +
-                        Number(info?.due || 0) -
-                        Number(info?.paid || 0)
-                    )}`,
-                    alignment: "right",
-                    bold: true,
-                    fontSize: 13,
-                  },
-                ],
-              ],
-            },
-            layout: "noBorder",
-          },
-          {
-            style: "summartTable",
-            fontSize: 11,
-            margin: [0, 5, 0, 0],
-            table: {
-              widths: ["15%", "85%"],
-              body: [
-                [
-                  "Taka In Words:",
-                  {
-                    text: `${convertNumberToWords(
-                      Number(netTotalAmount(info?.data)) +
-                        Number(info?.due || 0) -
-                        Number(info?.paid || 0)
-                    )} Taka Only.`,
-                    alignment: "left",
-                  },
-                ],
-              ],
-            },
-          },
-          {
-            // margin: [0, 35, 0, 0],
-            // border:[true, true, true, true],
-            table: {
-              widths: ["50%", "50%"],
-              body: [
-                [
-                  {
-                    text: "Customer Signature:",
-                    alignment: "left",
-                    bold: true,
-                    // border: [true, true, true, false],
-                    decoration: "overline",
-                    margin: [5, 40, 0, 0],
-                    border: [true, false, true, false],
-                  },
-                  {
-                    text: "Authoities Signature",
-                    alignment: "right",
-                    bold: true,
-                    decoration: "overline",
-                    // border: [true, true, true, false],
-                    margin: [0, 40, 10, -2],
-                    border: [false, false, true, false],
-                  },
-                ],
-              ],
-            },
-          },
-          {
-            // margin: [0, 5],
-            table: {
-              widths: ["70%", "30%"],
-              body: [
-                [
-                  {
-                    text: "https://facebook.com/parceltradeinternational",
-                    alignment: "left",
-                    link: "https://facebook.com/parceltradeinternational",
-                    bold: true,
-                    fontSize: 16,
-                  },
-                  {
-                    text: "Your Getway to China",
-                    bold: true,
-                    fontSize: 15,
-                  },
-                ],
-              ],
-            },
-          },
-        ],
-        // margin: [40, -150],
-        border: [true, true, true, true],
-      },
+      }
     ],
 
     // pageBreakBefore: (currentNode, followingNodes) => {

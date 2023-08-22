@@ -35,7 +35,7 @@ const EditBill = () => {
     if (router.query?.slug) {
       fetchData();
     }
-  }, [router.query?.slug]);
+  }, [router.query?.slug, type]);
   return (
     <Layout>
       {loading ? (

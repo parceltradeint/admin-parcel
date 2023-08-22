@@ -45,7 +45,7 @@ const ShipmentNoPage = ({ type, month, folder, year }) => {
   ];
 
   return (
-    <Layout breadcrumbs={breadcrumbs}>
+    <Layout breadcrumbs={breadcrumbs} billType={type}>
       <div className="flex flex-col w-full py-5 bg-gray-100">
         {loading ? (
           <PlaceHolderLoading loading={true} />
@@ -77,7 +77,7 @@ const ShipmentNoPage = ({ type, month, folder, year }) => {
 export async function getStaticPaths(props) {
   return {
     paths: monthNames.flatMap((month) =>
-      ["customer", "cnf"].flatMap((type) =>
+      ["customer", "cnf", "packing"].flatMap((type) =>
         ["air", "sea"].flatMap((folder) => ({
           params: { type, month, folder },
         }))

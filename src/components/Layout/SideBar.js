@@ -2,6 +2,7 @@ import { faMoneyBillAlt } from "@fortawesome/free-regular-svg-icons";
 import {
   faAd,
   faAirFreshener,
+  faBoxesPacking,
   faBriefcase,
   faCheckCircle,
   faCircleInfo,
@@ -126,6 +127,22 @@ const SideBar = () => {
               <div>
                 <FontAwesomeIcon icon={faShop} />
                 <span className="mx-4 font-medium">CnF Bill</span>
+              </div>
+            </Link>
+
+            <Link
+              href={`/bills/packing/months`}
+              className={`${
+                pathname === "/bills/packing/months" ||
+                query?.type === "packing" ||
+                type === "packing"
+                  ? "bg-sideBarHoverBg  text-sideBarHoverText "
+                  : "text-sideBarText  "
+              } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg hover:text-sideBarHoverText`}
+            >
+              <div>
+                <FontAwesomeIcon icon={faBoxesPacking} />
+                <span className="mx-4 font-medium">Packing Lists</span>
               </div>
             </Link>
 

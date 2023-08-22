@@ -14,7 +14,7 @@ const ShipmentType = ({ type, month }) => {
     }
   ]
   return (
-    <Layout breadcrumbs={breadcrumbs}>
+    <Layout breadcrumbs={breadcrumbs} billType={type}>
       <div className="flex flex-col w-full py-5 bg-gray-100">
         <div className="grid grid-cols-3 gap-4">
           {shipmentTypes.map((item, i) => (
@@ -38,6 +38,7 @@ export async function getStaticPaths() {
     paths: monthNames.flatMap((month) => [
       { params: { type: "customer", month } },
       { params: { type: "cnf", month } },
+      { params: {type: "packing", month}}
     ]),
     fallback: false,
   };
