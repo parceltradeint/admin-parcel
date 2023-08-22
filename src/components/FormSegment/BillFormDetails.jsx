@@ -32,7 +32,7 @@ const BillFormDetails = (props) => {
     return (
       <>
         <input
-          className={`block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 ${
+          className={`uppercase block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 ${
             cellInfo.column.id == "goodsName"
               ? "text-left"
               : cellInfo.column.id == "totalAmount"
@@ -166,7 +166,7 @@ const BillFormDetails = (props) => {
               Header: "SL",
               accessor: "sl",
               Cell: (info) => (
-                <p className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40">
+                <p className="uppercase block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40">
                   {info?.index + 1}
                 </p>
               ),
@@ -187,7 +187,7 @@ const BillFormDetails = (props) => {
               accessor: "goodsName",
               Cell: renderEditable,
               Footer: (row) => (
-                <div className={" text-xl font-semibold text-left"}>
+                <div className={"uppercase text-xl font-semibold text-left"}>
                   <span>Total</span>
                 </div>
               ),
@@ -198,7 +198,7 @@ const BillFormDetails = (props) => {
               accessor: "ctn",
               Cell: renderEditable,
               Footer: (row) => (
-                <div className={" text-xl font-semibold text-center"}>
+                <div className={"uppercase text-xl font-semibold text-center"}>
                   <span>CTN= {row?.data?.length}</span>
                 </div>
               ),
@@ -241,7 +241,7 @@ const BillFormDetails = (props) => {
                     const { formattedValue, value } = values;
                     handleCellRenderChange(row, value);
                   }}
-                  className={`text-center block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40`}
+                  className={` text-center block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40`}
                   value={row?.original?.rate}
                   inputMode="numeric"
                   // decimalScale={0}
@@ -250,7 +250,7 @@ const BillFormDetails = (props) => {
               ),
               Footer: (row) => (
                 <div
-                  className={" text-xl font-semibold text-left flex flex-col"}
+                  className={"uppercase text-xl font-semibold text-left flex flex-col"}
                 >
                   <span className=" border-y-2">Total</span>
                   <span>Due</span>
@@ -265,7 +265,7 @@ const BillFormDetails = (props) => {
               show: type === "packing" ? false : true,
               Cell: renderEditable,
               Footer: (row) => (
-                <div className={" text-xl font-semibold text-right"}>
+                <div className={" text-xl font-semibold text-right "}>
                   <div className="flex flex-col">
                     <span className=" border-y-2 text-right">
                       {convertTotalAmount(netTotalAmount(row?.data))}

@@ -56,7 +56,7 @@ export const generatePackingPDF = (info) => {
           body: [
             [
               {
-                border: [true, true, true, false],
+                border: [true, true, true, true],
                 columns: [
                   {
                     alignment: "left",
@@ -153,12 +153,13 @@ export const generatePackingPDF = (info) => {
       // },
       {
         style: "section",
+        margin: [0, 5, 0, 0],
         table: {
           widths: ["*"],
           body: [
             [
               {
-                text: [{ text: "Packing Lists\n", fontSize: 20 }],
+                text: [{ text: "PACKING LIST\n", fontSize: 20 }],
                 fillColor: "#1586D5",
                 color: "#FFFFFF",
                 alignment: "center",
@@ -184,7 +185,7 @@ export const generatePackingPDF = (info) => {
                 color: "#FFFFFF",
                 bold: true,
               },
-              `${info?.customerName} - ${info?.phone || ""}`,
+              `${info?.customerName || ""}`,
               {
                 text: "Date :",
                 alignment: "left",
@@ -205,7 +206,7 @@ export const generatePackingPDF = (info) => {
           body: [
             [
               {
-                text: "Shipment By :",
+                text: "Shipment :",
                 alignment: "left",
                 fillColor: "#555555",
                 color: "#FFFFFF",

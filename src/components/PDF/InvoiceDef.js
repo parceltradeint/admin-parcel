@@ -213,7 +213,7 @@ export const generatePDF = (info) => {
                 color: "#FFFFFF",
                 bold: true,
               },
-              `${info?.customerName || ""}}`,
+              `${info?.customerName || ""}`,
               {
                 text: "Phone :",
                 alignment: "left",
@@ -234,7 +234,7 @@ export const generatePDF = (info) => {
           body: [
             [
               {
-                text: "Shipment By :",
+                text: "Shipment :",
                 alignment: "left",
                 fillColor: "#555555",
                 color: "#FFFFFF",
@@ -242,7 +242,7 @@ export const generatePDF = (info) => {
                 border: [true, false, false, true],
               },
               {
-                text: `${info?.shipmentBy} -- ${info?.reporting}`,
+                text: `${info?.reporting} BY ${info?.shipmentBy}`,
                 border: [true, false, false, true],
               },
               {
@@ -328,7 +328,7 @@ export const generatePDF = (info) => {
           headerRows: 1,
           dontBreakRows: true,
           // keepWithHeaderRows: 1,
-          widths: ["8%", "35%", "11%", "15%", "15%", "*"],
+          widths: ["8%", "35%", "15%", "11%", "15%", "*"],
           body: [
             [
               {
