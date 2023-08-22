@@ -35,8 +35,8 @@ const PackingOverviewForm = (props) => {
           : `Edit Bill - ${editMode?.invoiceNumber}`}
       </p>
 
-      <div className="md:w-full mx-auto border border-slate-950">
-        <div className="flex items-center justify-between border-b border-slate-950">
+      <div className="md:w-full mx-auto border border-black">
+        <div className="flex items-center justify-between border-b border-black">
           <div className="w-[20%]">
             <Image src={"/parcel.png"} width={80} height={80} alt="parcel" />
           </div>
@@ -53,7 +53,7 @@ const PackingOverviewForm = (props) => {
           <div className="w-[20%]">
             <Image src={"/wechat.png"} width={80} height={80} alt="wechat" />
           </div>
-          <div className="w-[60%] border-l border-r border-slate-950 px-2 bg-[#555555]">
+          <div className="w-[60%] border-l border-r border-black px-2 bg-[#555555]">
             <div className="md:text-xl text-black font-medium text-center ">
               <p>H-2553, Sayednagor, Vatara, Gulshan-2, Dhaka-1212.</p>
               <p>Cell: 01879314050, 01521584929</p>
