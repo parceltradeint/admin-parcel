@@ -182,6 +182,7 @@ export const generatePDF = (info) => {
       },
       {
         style: "section",
+        margin: [0, 5, 0, 0],
         table: {
           widths: ["*"],
           body: [
