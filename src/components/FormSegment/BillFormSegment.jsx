@@ -13,6 +13,8 @@ import PlaceHolderLoading from "@/common/PlaceHolderLoading";
 import { monthNames } from "../Module/FolderComponents";
 import PackingOverviewForm from "./PackingOverviewForm";
 import { generatePackingPDF } from "../PDF/packingDef";
+import Swal from "sweetalert2";
+import { sumBy } from "lodash";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const BillFormSegment = (props) => {
@@ -46,50 +48,70 @@ const BillFormSegment = (props) => {
     }
   };
   const save = async () => {
-    setLoading(true);
     const newData = {
       ...customerInfo,
       ...aditionalInfo,
       data: data,
+      totalKg: sumBy(data, (item) => Number(item.kg)),
+      totalCtn: data?.filter((item) => item?.ctn?.length > 1)?.length,
     };
-    if (!editMode) {
-      (newData["month"] = monthNames[new Date().getMonth()]),
-        (newData["year"] = `${new Date().getFullYear()}`),
-        (newData["invoiceNumber"] = Date.now()),
-        (newData["type"] = type),
-        await axios
-          .post(`/api/${router?.query?.type}`, { ...newData })
-          .then((res) => {
-            successAlert("Successfully Saved.");
-            router.push(
-              `/bills/${type}/month/${newData.month}/${newData.shipmentBy}/${newData.shipmentNo}`
-            );
-          })
-          .catch((err) => {
-            console.log("err", err);
-            errorAlert("Something went wrong!");
-          })
-          .finally(() => setLoading(false));
-    } else {
-      delete newData?._id;
-      await axios
-        .patch(`/api/${router?.query?.type}`, {
-          id: editMode?._id,
-          data: { ...newData },
-        })
-        .then((res) => {
-          successAlert("Successfully Update");
-          router.push(
-            `/bills/customer/month/${editMode.month}/${editMode.shipmentBy}/${editMode.shipmentNo}`
-          );
-        })
-        .catch((err) => {
-          errorAlert("Something went wrong!");
-        })
-        .finally(() => setLoading(false));
-    }
+    Swal.fire({
+      text: `ARE YOU ${
+        editMode ? "UPDATE" : "SAVE"
+      } FOR ${type.toUpperCase()} INVOICE`,
+      icon: "warning",
+      confirmButtonColor: "#006EB8",
+      confirmButtonText: `Confirm`,
+      allowOutsideClick: false,
+      // cancelButtonText: "No",
+      showCloseButton: true,
+      showConfirmButton: true,
+      showCancelButton: true,
+    }).then(async (resP) => {
+      if (resP.isConfirmed) {
+        setLoading(true);
+        if (!editMode) {
+          (newData["month"] = monthNames[new Date().getMonth()]),
+            (newData["year"] = `${new Date().getFullYear()}`),
+            (newData["invoiceNumber"] = Date.now()),
+            (newData["type"] = type),
+            await axios
+              .post(`/api/${router?.query?.type}`, { ...newData })
+              .then((res) => {
+                successAlert("Successfully Saved.");
+                router.push(
+                  `/bills/${type}/month/${newData.month}/${newData.shipmentBy}/${newData.shipmentNo}`
+                );
+              })
+              .catch((err) => {
+                console.log("err", err);
+                errorAlert("Something went wrong!");
+              })
+              .finally(() => setLoading(false));
+        } else {
+          delete newData?._id;
+          await axios
+            .patch(`/api/${router?.query?.type}`, {
+              id: editMode?._id,
+              data: { ...newData },
+            })
+            .then((res) => {
+              successAlert("Successfully Update");
+              router.push(
+                `/bills/customer/month/${editMode.month}/${editMode.shipmentBy}/${editMode.shipmentNo}`
+              );
+            })
+            .catch((err) => {
+              errorAlert("Something went wrong!");
+            })
+            .finally(() => setLoading(false));
+        }
 
-    localStorage.setItem("suggestInput", JSON.stringify(suggestionData));
+        localStorage.setItem("suggestInput", JSON.stringify(suggestionData));
+      } else {
+        return;
+      }
+    });
   };
 
   const deleteData = async () => {
@@ -156,17 +178,17 @@ const BillFormSegment = (props) => {
               type={router.query.type}
             />
             <Section>
-              <div className="flex space-x-2 justify-center mt-2">
+              <div className="flex space-x-2 justify-center mt-2 ">
                 <button
                   type="button"
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3"
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3 uppercase"
                   onClick={downloadPDF}
                 >
-                  View PDF
+                  View Print
                 </button>
                 <button
                   type="button"
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3"
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3 uppercase"
                   onClick={save}
                 >
                   {!editMode ? "Save" : "Update"}
@@ -175,7 +197,7 @@ const BillFormSegment = (props) => {
                   <button
                     type="button"
                     onClick={deleteData}
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3"
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3 uppercase"
                   >
                     Delete
                   </button>

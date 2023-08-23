@@ -44,6 +44,7 @@ const Packing = () => {
             total: res.data?.total,
             currentPage: res.data?.currentPage,
             totalPages: res.data?.totalPages,
+            aggregationResult: res.data?.aggregationResult,
           });
           setPageCount(res.data?.totalPages);
         })
@@ -90,7 +91,7 @@ const Packing = () => {
       page: pageNumber,
       filter: {},
       type: folder,
-      shipmentNo: shipmentNo
+      shipmentNo: shipmentNo,
     };
     async function fetchBills() {
       setLoading(true);
@@ -104,6 +105,7 @@ const Packing = () => {
             total: res.data?.total,
             currentPage: res.data?.currentPage,
             totalPages: res.data?.totalPages,
+            aggregationResult: res.data?.aggregationResult,
           });
           setPageCount(res.data?.totalPages);
         })
@@ -207,7 +209,17 @@ const Packing = () => {
           <PlaceHolderLoading loading={true} />
         ) : (
           <>
-            <p className="text-2xl text-black text-center">{`Total- ${dataInfo?.total}`}</p>
+            <div className="flex flex-col w-full py-5 bg-gray-100">
+              <div className="grid grid-cols-3 gap-4">
+                <p className="text-2xl text-black text-center">
+                  Total Kg- {dataInfo?.aggregationResult?.totalKg}
+                </p>
+                <p className="text-2xl text-black text-center">
+                  Total Ctn- {dataInfo?.aggregationResult?.totalCtn}
+                </p>
+                <p className="text-2xl text-black text-center">{`Total Item- ${dataInfo?.total}`}</p>
+              </div>
+            </div>
             <div className=" py-4 sm:px-0">
               <ShipmentBillGrid data={data} type={"packing"} />
             </div>

@@ -6,6 +6,8 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { twMerge } from "tailwind-merge";
 import DataField from "../Shared/DataField";
+import InputField from "../Shared/InputField";
+import SelectField from "../Shared/SelectField";
 
 const OverViewForm = (props) => {
   const { editMode, setCustomerInfo, customerInfo } = props;
@@ -78,117 +80,101 @@ const OverViewForm = (props) => {
             <DataField
               label={"Customer Name"}
               value={
-                <input
-                  {...register("customerName", {
-                    required: true,
-                  })}
-                  name="customerName"
-                  placeholder="Enter customer name"
-                  onChange={(e) =>
-                    handleInputChange("customerName", e.target.value)
-                  }
-                  className="uppercase block w-full px-4 py-2 text-gray-700 bg-white  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                <InputField
+                  register={register}
+                  required={true}
+                  handleInputChange={handleInputChange}
+                  name={"customerName"}
+                  placeholder={"Enter customer name"}
                 />
               }
-              // className=""
             />
             <DataField
               label={"Phone"}
               value={
-                <input
-                  {...register("phone", {
-                    required: true,
-                  })}
-                  name="phone"
-                  placeholder="Enter Phone Number"
-                  onChange={(e) => handleInputChange("phone", e.target.value)}
-                  className="uppercase block w-full px-4 py-2 text-gray-700 bg-white  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                <InputField
+                  register={register}
+                  required={true}
+                  handleInputChange={handleInputChange}
+                  name={"phone"}
+                  placeholder={"Enter Phone Number"}
                 />
               }
             />
             <DataField
               label={"Delivery Date"}
               value={
-                <input
-                  className="uppercase block w-full px-4 py-2 text-gray-700 bg-white  focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                <InputField
+                  register={register}
+                  required={true}
+                  handleInputChange={handleInputChange}
+                  name={"deliveryDate"}
+                  readOnly={true}
                   defaultValue={
                     editMode
                       ? formartDate(editMode?.date)
                       : formartDate(new Date())
                   }
-                  {...register("deliveryDate", {
-                    required: true,
-                  })}
-                  readOnly
                 />
               }
             />
             <DataField
               label={"Shipment No"}
               value={
-                <input
-                  {...register("shipmentNo", {
-                    required: true,
-                  })}
-                  name="shipmentNo"
-                  placeholder="Enter Shipment No"
-                  onChange={(e) =>
-                    handleInputChange("shipmentNo", e.target.value)
-                  }
-                  className="uppercase block w-full px-4 py-2 text-gray-700 bg-white  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                <InputField
+                  register={register}
+                  required={true}
+                  handleInputChange={handleInputChange}
+                  name={"shipmentNo"}
+                  placeholder={"Enter Shipment No"}
                 />
               }
             />
             <DataField
               label={"Shipment By"}
               value={
-                <select
+                <SelectField
+                  register={register}
                   defaultValue={customerInfo?.shipmentBy}
-                  name="shipmentBy"
-                  {...register("shipmentBy", {
-                    required: true,
-                    onChange: (e) =>
-                      handleInputChange("shipmentBy", e.target.value),
-                  })}
-                  className="uppercase block w-full px-4 py-2 text-gray-700 bg-white focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-                >
-                  <option value="">Choose a Shipment</option>
-                  <option value="Air">Air</option>
-                  <option value="Sea">Sea</option>
-                </select>
+                  name={"shipmentBy"}
+                  required={true}
+                  options={[
+                    { name: "Choose a Shipment", value: "" },
+                    { name: "Air", value: "Air" },
+                    { name: "Sea", value: "Sea" },
+                    { name: "Road", value: "Road" },
+                  ]}
+                  handleInputChange={handleInputChange}
+                />
               }
             />
             <DataField
               label={"Reporting"}
               value={
-                <select
-                  id="reporting"
-                  defaultValue={customerInfo?.reporting || "China"}
-                  className="uppercase block w-full px-4 py-2 text-gray-700 bg-white focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-                  {...register("reporting", {
-                    required: true,
-                    onChange: (e) =>
-                      handleInputChange("reporting", e.target.value),
-                  })}
-                >
-                  <option value="China">China</option>
-                  <option value="Hongkong">Hongkong</option>
-                  <option value="Chongqing">Chongqing</option>
-                  <option value="South-korea">South Korea</option>
-                </select>
+                <SelectField
+                  register={register}
+                  defaultValue={customerInfo?.reporting || "CHINA"}
+                  name={"reporting"}
+                  required={true}
+                  options={[
+                    { name: "CHINA", value: "CHINA" },
+                    { name: "Hongkong", value: "Hongkong" },
+                    { name: "Chongqing", value: "Chongqing" },
+                    { name: "South-korea", value: "South-korea" },
+                  ]}
+                  handleInputChange={handleInputChange}
+                />
               }
             />
             <DataField
               label={"Address"}
               value={
-                <input
-                  {...register("address", {
-                    required: true,
-                  })}
-                  onChange={(e) => handleInputChange("address", e.target.value)}
-                  name="address"
-                  placeholder="Enter address"
-                  className="uppercase block w-full px-4 py-2 text-gray-700 bg-white  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                <InputField
+                  register={register}
+                  required={true}
+                  handleInputChange={handleInputChange}
+                  name={"address"}
+                  placeholder={"Enter address"}
                 />
               }
               // className={"col-span-2"}
@@ -196,29 +182,25 @@ const OverViewForm = (props) => {
             <DataField
               label={"Status"}
               value={
-                <input
-                  {...register("status", {
-                    required: true,
-                  })}
-                  name="status"
-                  onChange={(e) => handleInputChange("status", e.target.value)}
+                <InputField
+                  register={register}
+                  required={true}
+                  handleInputChange={handleInputChange}
+                  name={"status"}
                   defaultValue={"Dhaka Office"}
                   placeholder="Enter Status"
-                  className="uppercase block w-full px-4 py-2 text-gray-700 bg-white focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                 />
               }
             />
             <DataField
               label={"Remarks"}
               value={
-                <input
-                  {...register("remarks", {
-                    required: true,
-                  })}
-                  name="remarks"
-                  onChange={(e) => handleInputChange("remarks", e.target.value)}
+                <InputField
+                  register={register}
+                  required={false}
+                  handleInputChange={handleInputChange}
+                  name={"remarks"}
                   placeholder="Enter remarks"
-                  className="uppercase block w-full px-4 py-2 text-gray-700 bg-white focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                 />
               }
             />

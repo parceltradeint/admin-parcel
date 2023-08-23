@@ -1,4 +1,5 @@
 import { dbClient } from "@/lib/mongodb";
+import { sumBy } from "lodash";
 import { ObjectId } from "mongodb";
 
 export default async function newShipmentBill(req, res) {
@@ -10,15 +11,19 @@ export default async function newShipmentBill(req, res) {
     month: req.body.month,
     shipmentNo: req.body.shipmentNo,
     shipmentBy: req.body.shipmentBy?.toLowerCase(),
-    type: req.body.type
+    type: req.body.type,
   };
 
   if (req.method == "POST") {
     try {
       const result = await collection.insertOne({ ...req.body });
       // shipmentData(shipmentCollection, { ...shipmentInfo });
-      const shipmentInfoData = await shipmentCollection.insertOne({...shipmentInfo });
-      res.status(200).json({ status: 200, data: {...result, ...shipmentInfoData} });
+      const shipmentInfoData = await shipmentCollection.insertOne({
+        ...shipmentInfo,
+      });
+      res
+        .status(200)
+        .json({ status: 200, data: { ...result, ...shipmentInfoData } });
       await client.close();
     } catch (error) {
       res.status(500).json({ status: false, data: {} });
@@ -66,13 +71,53 @@ export default async function newShipmentBill(req, res) {
 
       const totalDocuments = await collection.countDocuments(searchQuery);
       const documents = await collection.find(searchQuery, options).toArray();
+      const aggregationResult = await collection
+        .aggregate([
+          {
+            $match: {
+              // Your condition here
+              shipmentBy: new RegExp(type, "i"),
+              shipmentNo: new RegExp(shipmentNo, "i"),
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              totalKg: { $sum: { $toDouble: "$totalKg" } },
+              totalCtn: { $sum: { $toDouble: "$totalCtn" } },
+            },
+          },
+        ])
+        .toArray();
 
+
+        // const updatedDocuments = documents.map((document) => {
+        //   // Modify the document here
+        //   // For example, you can update a property or perform some calculations
+        //   return {
+        //     ...document,
+        //     totalKg: sumBy(document.data, (item) => Number(item.kg)),
+        //     totalCtn: document.data?.filter((item) => item?.ctn?.length > 1)
+        //       ?.length,
+        //   };
+        // });
+  
+        // const bulkOperations = updatedDocuments.map(document => ({
+        //   updateOne: {
+        //     filter: { _id: document._id },
+        //     update: { $set: document }
+        //   }
+        // }));
+    
+        // // Perform the bulk update
+        // const updateResults = await collection.bulkWrite(bulkOperations);
       const response = {
         data: documents,
         total: totalDocuments,
         currentPage: page,
         limit: limit,
         totalPages: Math.ceil(totalDocuments / limit),
+        aggregationResult: aggregationResult[0],
       };
       res.status(200).json(response);
     }
@@ -136,7 +181,6 @@ export default async function newShipmentBill(req, res) {
       res.status(500).json({ status: false, data: {} });
     }
   }
-  
 }
 
 // const { dbClient } = require("@/lib/mongodb");

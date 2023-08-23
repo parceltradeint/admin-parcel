@@ -49,7 +49,7 @@ const BillFormDetails = (props) => {
           //     : "number"
           // }
           onKeyDown={handleKeyDown}
-          onChange={(e) => handleCellRenderChange(cellInfo, e.target.value)}
+          onChange={(e) => handleCellRenderChange(cellInfo, e.target.value.toUpperCase())}
           value={
             cellInfo.column.id == "totalAmount"
               ? convertBengaliToEnglishNumber(

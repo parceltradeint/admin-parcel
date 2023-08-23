@@ -10,15 +10,19 @@ export default async function newShipmentBill(req, res) {
     month: req.body.month,
     shipmentNo: req.body.shipmentNo,
     shipmentBy: req.body.shipmentBy,
-    type: req.body.type
+    type: req.body.type,
   };
 
   if (req.method == "POST") {
     try {
       const result = await collection.insertOne({ ...req.body });
       // shipmentData(shipmentCollection, { ...shipmentInfo });
-      const shipmentInfoData = await shipmentCollection.insertOne({...shipmentInfo });
-      res.status(200).json({ status: 200, data: {...result, ...shipmentInfoData} });
+      const shipmentInfoData = await shipmentCollection.insertOne({
+        ...shipmentInfo,
+      });
+      res
+        .status(200)
+        .json({ status: 200, data: { ...result, ...shipmentInfoData } });
       await client.close();
     } catch (error) {
       res.status(500).json({ status: false, data: {} });
@@ -54,8 +58,8 @@ export default async function newShipmentBill(req, res) {
               { customerName: regexPattern },
               { phoneNumber: regexPattern },
             ],
-          }
-        ]
+          },
+        ],
       };
 
       const options = {
@@ -67,45 +71,36 @@ export default async function newShipmentBill(req, res) {
       const totalDocuments = await collection.countDocuments(searchQuery);
       const documents = await collection.find(searchQuery, options).toArray();
 
+      const aggregationResult = await collection
+        .aggregate([
+          {
+            $match: {
+              // Your condition here
+              shipmentBy: new RegExp(type, "i"),
+              shipmentNo: new RegExp(shipmentNo, "i"),
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              totalKg: { $sum: { $toDouble: "$totalKg" } },
+              totalCtn: { $sum: { $toDouble: "$totalCtn" } },
+            },
+          },
+        ])
+        .toArray();
+
       const response = {
         data: documents,
         total: totalDocuments,
         currentPage: page,
         limit: limit,
         totalPages: Math.ceil(totalDocuments / limit),
+        aggregationResult: aggregationResult[0],
       };
       res.status(200).json(response);
     }
 
-    // try {
-    //   let data;
-    //   if (req?.query?.id) {
-    //     const objectId = new ObjectId(req?.query?.id);
-    //     data = await collection.findOne({ _id: objectId });
-    //   } else if (req?.query?.search) {
-    //     const regexQuery = { $regex: req?.query?.search, $options: "i" };
-    //     const regexPattern = new RegExp(req?.query?.search, "i"); // Case-insensitive search pattern
-    //     const query = {
-    //       $or: [
-    //         { invoiceNumber: regexPattern },
-    //         { shipmentBy: regexPattern },
-    //         { shipmentNo: regexPattern },
-    //         { deliveryDate: regexPattern },
-    //         { customerName: regexPattern },
-    //         { phoneNumber: regexPattern },
-    //       ],
-    //     };
-    //     data = await collection.find(query).toArray();
-    //   } else {
-    //     data = await collection.find({}).limit(50).toArray();
-    //   }
-    //   // console.log("res Data", data);
-    //   await client.close();
-    //   res.status(200).json(data);
-    // } catch (error) {
-    //   console.log("err", error);
-    //   res.status(500).json({ status: false, data: {} });
-    // }
   } else if (req.method == "PATCH") {
     try {
       let data;
@@ -136,7 +131,6 @@ export default async function newShipmentBill(req, res) {
       res.status(500).json({ status: false, data: {} });
     }
   }
-  
 }
 
 // const { dbClient } = require("@/lib/mongodb");

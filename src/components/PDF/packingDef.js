@@ -173,13 +173,13 @@ export const generatePackingPDF = (info) => {
 
       {
         margin: [0, 5, 0, 0],
-        fontSize: 11,
+        fontSize: 10,
         table: {
           widths: ["15%", "50%", "15%", "20%"],
           body: [
             [
               {
-                text: "Name :",
+                text: "NAME :",
                 alignment: "left",
                 fillColor: "#555555",
                 color: "#FFFFFF",
@@ -187,7 +187,7 @@ export const generatePackingPDF = (info) => {
               },
               `${info?.customerName || ""}`,
               {
-                text: "Date :",
+                text: "DATE :",
                 alignment: "left",
                 fillColor: "#555555",
                 color: "#FFFFFF",
@@ -200,13 +200,13 @@ export const generatePackingPDF = (info) => {
       },
       {
         margin: [0, 0, 0, 0],
-        fontSize: 11,
+        fontSize: 10,
         table: {
           widths: ["15%", "50%", "15%", "20%"],
           body: [
             [
               {
-                text: "Shipment :",
+                text: "SHIPMENT :",
                 alignment: "left",
                 fillColor: "#555555",
                 color: "#FFFFFF",
@@ -218,7 +218,7 @@ export const generatePackingPDF = (info) => {
                 border: [true, false, false, true],
               },
               {
-                text: "Shipment No :",
+                text: "SHIPMENT NO :",
                 alignment: "left",
                 fillColor: "#555555",
                 color: "#FFFFFF",
@@ -245,7 +245,7 @@ export const generatePackingPDF = (info) => {
           body: [
             [
               {
-                text: "Remarks :",
+                text: "REMARKS :",
                 alignment: "left",
                 fillColor: "#555555",
                 color: "#FFFFFF",
@@ -293,7 +293,7 @@ export const generatePackingPDF = (info) => {
             //   ...foremanDataDetails,
             ...renderData,
             [
-              { text: "Total", style: "tableFooter" },
+              { text: "TOTAL", style: "tableFooter" },
               { text: "", style: "tableFooter" },
               { text: `${info?.data?.length}`, style: "tableFooter" },
               {
@@ -360,7 +360,7 @@ export const generatePackingPDF = (info) => {
       },
       tableFooter: {
         bold: true,
-        fontSize: 13,
+        fontSize: 12,
         color: "#FFFFFF",
         fillColor: "#555555",
         alignment: "center",
@@ -394,70 +394,70 @@ export const generatePackingPDF = (info) => {
 function convertNumberToWords(number) {
   var words = [
     "",
-    "One",
-    "Two",
-    "Three",
-    "Four",
-    "Five",
-    "Six",
-    "Seven",
-    "Eight",
-    "Nine",
-    "Ten",
-    "Eleven",
-    "Twelve",
-    "Thirteen",
-    "Fourteen",
-    "Fifteen",
-    "Sixteen",
-    "Seventeen",
-    "Eighteen",
-    "Nineteen",
+    "ONE",
+    "TWO",
+    "THREE",
+    "FOUR",
+    "FIVE",
+    "SIX",
+    "SEVEN",
+    "EIGHT",
+    "NINE",
+    "TEN",
+    "ELEVEN",
+    "TWELVE",
+    "THIRTEEN",
+    "FOURTEEN",
+    "FIFTEEN",
+    "SIXTEEN",
+    "SEVENTEEN",
+    "EIGHTEEN",
+    "NINETEEN",
   ];
   var tens = [
     "",
     "",
-    "Twenty",
-    "Thirty",
-    "Forty",
-    "Fifty",
-    "Sixty",
-    "Seventy",
-    "Eighty",
-    "Ninety",
+    "TWENTY",
+    "THIRTY",
+    "FORTY",
+    "FIFTY",
+    "SIXTY",
+    "SEVENTY",
+    "EIGHTY",
+    "NINETY",
   ];
 
   if (number == 0) {
-    return "Zero ";
+    return "ZERO";
   }
 
   if (number < 0) {
-    return "Minus " + convertNumberToWords(Math.abs(number));
+    return "MINUS " + convertNumberToWords(Math.abs(number));
   }
 
   var wordsArr = [];
 
   if (Math.floor(number / 10000000) > 0) {
     wordsArr.push(
-      convertNumberToWords(Math.floor(number / 10000000)) + " Crore"
+      convertNumberToWords(Math.floor(number / 10000000)) + " CRORE"
     );
     number %= 10000000;
   }
 
   if (Math.floor(number / 100000) > 0) {
-    wordsArr.push(convertNumberToWords(Math.floor(number / 100000)) + " Lakh");
+    wordsArr.push(convertNumberToWords(Math.floor(number / 100000)) + " LAKH");
     number %= 100000;
   }
 
   if (Math.floor(number / 1000) > 0) {
     wordsArr.push(
-      convertNumberToWords(Math.floor(number / 1000)) + " Thousand"
+      convertNumberToWords(Math.floor(number / 1000)) + " THOUSAND"
     );
     number %= 1000;
   }
 
   if (Math.floor(number / 100) > 0) {
-    wordsArr.push(convertNumberToWords(Math.floor(number / 100)) + " Hundred");
+    wordsArr.push(convertNumberToWords(Math.floor(number / 100)) + " HUNDRED");
     number %= 100;
   }
 

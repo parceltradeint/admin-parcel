@@ -188,7 +188,7 @@ export const generatePDF = (info) => {
           body: [
             [
               {
-                text: [{ text: "Shipment Bill\n", fontSize: 20 }],
+                text: [{ text: "SHIPMENT BILL\n", fontSize: 20 }],
                 fillColor: "#1586D5",
                 color: "#FFFFFF",
                 alignment: "center",
@@ -202,13 +202,13 @@ export const generatePDF = (info) => {
 
       {
         margin: [0, 5, 0, 0],
-        fontSize: 11,
+        fontSize: 10,
         table: {
           widths: ["15%", "50%", "15%", "20%"],
           body: [
             [
               {
-                text: "Name :",
+                text: "NAME :",
                 alignment: "left",
                 fillColor: "#555555",
                 color: "#FFFFFF",
@@ -216,7 +216,7 @@ export const generatePDF = (info) => {
               },
               `${info?.customerName || ""}`,
               {
-                text: "Phone :",
+                text: "PHONE :",
                 alignment: "left",
                 fillColor: "#555555",
                 color: "#FFFFFF",
@@ -229,13 +229,13 @@ export const generatePDF = (info) => {
       },
       {
         margin: [0, 0, 0, 0],
-        fontSize: 11,
+        fontSize: 10,
         table: {
           widths: ["15%", "50%", "15%", "20%"],
           body: [
             [
               {
-                text: "Shipment :",
+                text: "SHIPMENT :",
                 alignment: "left",
                 fillColor: "#555555",
                 color: "#FFFFFF",
@@ -247,7 +247,7 @@ export const generatePDF = (info) => {
                 border: [true, false, false, true],
               },
               {
-                text: "Date :",
+                text: "DATE :",
                 alignment: "left",
                 fillColor: "#555555",
                 color: "#FFFFFF",
@@ -260,13 +260,13 @@ export const generatePDF = (info) => {
       },
       {
         margin: [0, 0, 0, 0],
-        fontSize: 11,
+        fontSize: 10,
         table: {
           widths: ["15%", "50%", "15%", "20%"],
           body: [
             [
               {
-                text: "Address :",
+                text: "ADDRESS :",
                 alignment: "left",
                 fillColor: "#555555",
                 color: "#FFFFFF",
@@ -278,7 +278,7 @@ export const generatePDF = (info) => {
                 border: [true, false, false, true],
               },
               {
-                text: "Shipment No :",
+                text: "SHIPMENT NO :",
                 alignment: "left",
                 fillColor: "#555555",
                 color: "#FFFFFF",
@@ -304,7 +304,7 @@ export const generatePDF = (info) => {
           body: [
             [
               {
-                text: "Remarks :",
+                text: "REMARKS :",
                 alignment: "left",
                 fillColor: "#555555",
                 color: "#FFFFFF",
@@ -360,7 +360,7 @@ export const generatePDF = (info) => {
             //   ...foremanDataDetails,
             ...renderData,
             [
-              { text: "Total", style: "tableFooter" },
+              { text: "TOTAL", style: "tableFooter" },
               { text: "", style: "tableFooter" },
               { text: `${info?.data?.length}`, style: "tableFooter" },
               {
@@ -403,7 +403,7 @@ export const generatePDF = (info) => {
                 [
                   {
                     rowSpan: 3,
-                    text: `Total Due Bill- ${convertTotalAmount(
+                    text: `TOTAL DUE BILL- ${convertTotalAmount(
                       Number(netTotalAmount(info?.data)) +
                         Number(info?.due || 0) -
                         Number(info?.paid || 0)
@@ -416,7 +416,7 @@ export const generatePDF = (info) => {
                     border: [true, false, false, true],
                   },
                   {
-                    text: "Due",
+                    text: "DUE",
                     fillColor: "#555555",
                     color: "#FFFFFF",
                     fontSize: 13,
@@ -432,7 +432,7 @@ export const generatePDF = (info) => {
                 [
                   "",
                   {
-                    text: "Paid",
+                    text: "PAID",
                     fillColor: "#555555",
                     color: "#FFFFFF",
                     fontSize: 13,
@@ -446,7 +446,7 @@ export const generatePDF = (info) => {
                 [
                   "",
                   {
-                    text: "Total",
+                    text: "TOTAL",
                     fillColor: "#555555",
                     color: "#FFFFFF",
                     fontSize: 13,
@@ -471,16 +471,16 @@ export const generatePDF = (info) => {
             fontSize: 11,
             margin: [0, 5, 0, 0],
             table: {
-              widths: ["15%", "85%"],
+              widths: ["18%", "82%"],
               body: [
                 [
-                  "Taka In Words:",
+                  "TAKA IN WORDS:",
                   {
                     text: `${convertNumberToWords(
                       Number(netTotalAmount(info?.data)) +
                         Number(info?.due || 0) -
                         Number(info?.paid || 0)
-                    )} Taka Only.`,
+                    )} TAKA ONLY.`,
                     alignment: "left",
                   },
                 ],
@@ -495,19 +495,19 @@ export const generatePDF = (info) => {
               body: [
                 [
                   {
-                    text: "Customer Signature:",
+                    text: "CUSTOMER SIGNATURE:",
                     alignment: "left",
                     bold: true,
                     // border: [true, true, true, false],
-                    decoration: "overline",
+                    // decoration: "overline",
                     margin: [5, 40, 0, 0],
                     border: [true, false, true, false],
                   },
                   {
-                    text: "Authoities Signature",
+                    text: "AUTHOITIES SIGNATURE:",
                     alignment: "right",
                     bold: true,
-                    decoration: "overline",
+                    // decoration: "overline",
                     // border: [true, true, true, false],
                     margin: [0, 40, 10, -2],
                     border: [false, false, true, false],
@@ -523,16 +523,16 @@ export const generatePDF = (info) => {
               body: [
                 [
                   {
-                    text: "https://facebook.com/parceltradeinternational",
+                    text: "VISIT OUR FACEBOOK PAGE- PARCEL TRADE INTERNATIONAL",
                     alignment: "left",
                     link: "https://facebook.com/parceltradeinternational",
                     bold: true,
-                    fontSize: 16,
+                    fontSize: 12,
                   },
                   {
-                    text: "Your Getway to China",
+                    text: "YOUR GETWAY TO CHINA",
                     bold: true,
-                    fontSize: 15,
+                    fontSize: 12,
                   },
                 ],
               ],
@@ -582,7 +582,7 @@ export const generatePDF = (info) => {
       },
       tableFooter: {
         bold: true,
-        fontSize: 13,
+        fontSize: 12,
         color: "#FFFFFF",
         fillColor: "#555555",
         alignment: "center",
@@ -616,70 +616,70 @@ export const generatePDF = (info) => {
 function convertNumberToWords(number) {
   var words = [
     "",
-    "One",
-    "Two",
-    "Three",
-    "Four",
-    "Five",
-    "Six",
-    "Seven",
-    "Eight",
-    "Nine",
-    "Ten",
-    "Eleven",
-    "Twelve",
-    "Thirteen",
-    "Fourteen",
-    "Fifteen",
-    "Sixteen",
-    "Seventeen",
-    "Eighteen",
-    "Nineteen",
+    "ONE",
+    "TWO",
+    "THREE",
+    "FOUR",
+    "FIVE",
+    "SIX",
+    "SEVEN",
+    "EIGHT",
+    "NINE",
+    "TEN",
+    "ELEVEN",
+    "TWELVE",
+    "THIRTEEN",
+    "FOURTEEN",
+    "FIFTEEN",
+    "SIXTEEN",
+    "SEVENTEEN",
+    "EIGHTEEN",
+    "NINETEEN",
   ];
   var tens = [
     "",
     "",
-    "Twenty",
-    "Thirty",
-    "Forty",
-    "Fifty",
-    "Sixty",
-    "Seventy",
-    "Eighty",
-    "Ninety",
+    "TWENTY",
+    "THIRTY",
+    "FORTY",
+    "FIFTY",
+    "SIXTY",
+    "SEVENTY",
+    "EIGHTY",
+    "NINETY",
   ];
 
   if (number == 0) {
-    return "Zero ";
+    return "ZERO";
   }
 
   if (number < 0) {
-    return "Minus " + convertNumberToWords(Math.abs(number));
+    return "MINUS " + convertNumberToWords(Math.abs(number));
   }
 
   var wordsArr = [];
 
   if (Math.floor(number / 10000000) > 0) {
     wordsArr.push(
-      convertNumberToWords(Math.floor(number / 10000000)) + " Crore"
+      convertNumberToWords(Math.floor(number / 10000000)) + " CRORE"
     );
     number %= 10000000;
   }
 
   if (Math.floor(number / 100000) > 0) {
-    wordsArr.push(convertNumberToWords(Math.floor(number / 100000)) + " Lakh");
+    wordsArr.push(convertNumberToWords(Math.floor(number / 100000)) + " LAKH");
     number %= 100000;
   }
 
   if (Math.floor(number / 1000) > 0) {
     wordsArr.push(
-      convertNumberToWords(Math.floor(number / 1000)) + " Thousand"
+      convertNumberToWords(Math.floor(number / 1000)) + " THOUSAND"
     );
     number %= 1000;
   }
 
   if (Math.floor(number / 100) > 0) {
-    wordsArr.push(convertNumberToWords(Math.floor(number / 100)) + " Hundred");
+    wordsArr.push(convertNumberToWords(Math.floor(number / 100)) + " HUNDRED");
     number %= 100;
   }
 
