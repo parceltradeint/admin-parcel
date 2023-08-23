@@ -11,7 +11,7 @@ export const generatePackingPDF = (info) => {
       return [
         { text: `${i + 1}`, fontSize: 12 },
         { text: `${item?.goodsName}`, fontSize: 12, alignment: "left" },
-        { text: `${item?.ctn}`, fontSize: 12 },
+        { text: `${item?.ctn}`, fontSize: 12, alignment: "left" },
         { text: `${Number(item?.kg).toFixed(2)}`, fontSize: 12 }
       ];
     });

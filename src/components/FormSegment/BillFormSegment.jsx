@@ -55,10 +55,51 @@ const BillFormSegment = (props) => {
       totalKg: sumBy(data, (item) => Number(item.kg)),
       totalCtn: data?.filter((item) => item?.ctn?.length > 1)?.length,
     };
+    const options = ["customer", "cnf", "packing"];
+
     Swal.fire({
-      text: `ARE YOU ${
+      title: `ARE YOU ${
         editMode ? "UPDATE" : "SAVE"
       } FOR ${type.toUpperCase()} INVOICE`,
+      input: "select",
+      inputOptions: {
+        "": "Select an option", // Empty value
+        ...options.reduce((obj, option) => {
+          obj[option] = option;
+          return obj;
+        }, {}),
+      },
+      inputValue: type,
+      showCancelButton: true,
+      inputValidator: (value) => {
+        return new Promise((resolve) => {
+          if (value) {
+            resolve();
+          } else {
+            resolve("You need to select an option");
+          }
+        });
+      },
+      didOpen: () => {
+        // Apply custom styles to the select options
+        const optionElements = Swal.getPopup().querySelectorAll(
+          ".swal2-select option"
+        );
+        optionElements.forEach((option) => {
+          option.classList.add("uppercase");
+        });
+      },
+      didRender: () => {
+        const selectElement = document.querySelector(".swal2-select");
+        selectElement.addEventListener("change", (event) => {
+          const selectedOption = event.target.value;
+          Swal.update({
+            title: `ARE YOU ${
+              editMode ? "UPDATE" : "SAVE"
+            } FOR ${selectedOption.toUpperCase()} INVOICE`,
+          });
+        });
+      },
       icon: "warning",
       confirmButtonColor: "#006EB8",
       confirmButtonText: `Confirm`,
@@ -69,18 +110,26 @@ const BillFormSegment = (props) => {
       showCancelButton: true,
     }).then(async (resP) => {
       if (resP.isConfirmed) {
+        let selectedType =
+          resP.value == "customer"
+            ? "outbound"
+            : resP.value == "cnf"
+            ? "inbound"
+            : resP.value == "packing"
+            ? "packing"
+            : "";
         setLoading(true);
         if (!editMode) {
           (newData["month"] = monthNames[new Date().getMonth()]),
             (newData["year"] = `${new Date().getFullYear()}`),
             (newData["invoiceNumber"] = Date.now()),
-            (newData["type"] = type),
+            (newData["type"] = resP.value),
             await axios
-              .post(`/api/${router?.query?.type}`, { ...newData })
+              .post(`/api/${selectedType}`, { ...newData })
               .then((res) => {
                 successAlert("Successfully Saved.");
                 router.push(
-                  `/bills/${type}/month/${newData.month}/${newData.shipmentBy}/${newData.shipmentNo}`
+                  `/bills/${resP.value}/month/${newData.month}/${newData.shipmentBy}/${newData.shipmentNo}`
                 );
               })
               .catch((err) => {
@@ -91,14 +140,14 @@ const BillFormSegment = (props) => {
         } else {
           delete newData?._id;
           await axios
-            .patch(`/api/${router?.query?.type}`, {
+            .patch(`/api/${selectedType}`, {
               id: editMode?._id,
               data: { ...newData },
             })
             .then((res) => {
               successAlert("Successfully Update");
               router.push(
-                `/bills/customer/month/${editMode.month}/${editMode.shipmentBy}/${editMode.shipmentNo}`
+                `/bills/${resP.value}/month/${editMode.month}/${editMode.shipmentBy}/${editMode.shipmentNo}`
               );
             })
             .catch((err) => {

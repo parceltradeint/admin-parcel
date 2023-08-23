@@ -504,7 +504,7 @@ export const generatePDF = (info) => {
                     border: [true, false, true, false],
                   },
                   {
-                    text: "AUTHOITIES SIGNATURE:",
+                    text: "AUTHORISE SIGNATURE:",
                     alignment: "right",
                     bold: true,
                     // decoration: "overline",

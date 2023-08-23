@@ -160,7 +160,8 @@ const OverViewForm = (props) => {
                     { name: "CHINA", value: "CHINA" },
                     { name: "Hongkong", value: "Hongkong" },
                     { name: "Chongqing", value: "Chongqing" },
-                    { name: "South-korea", value: "South-korea" },
+                    { name: "South Korea", value: "South Korea" },
+                    { name: "India", value: "India" },
                   ]}
                   handleInputChange={handleInputChange}
                 />
