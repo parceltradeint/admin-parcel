@@ -523,7 +523,7 @@ export const generatePDF = (info) => {
               body: [
                 [
                   {
-                    text: "VISIT OUR FACEBOOK PAGE- PARCEL TRADE INTERNATIONAL",
+                    text: "https://facebook.com/parceltradeinternational",
                     alignment: "left",
                     link: "https://facebook.com/parceltradeinternational",
                     bold: true,
