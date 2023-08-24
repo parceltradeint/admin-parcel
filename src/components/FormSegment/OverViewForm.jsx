@@ -2,15 +2,18 @@
 import Section from "@/common/Section";
 import { formartDate } from "@/common/formartDate";
 import Image from "next/image";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { twMerge } from "tailwind-merge";
 import DataField from "../Shared/DataField";
 import InputField from "../Shared/InputField";
 import SelectField from "../Shared/SelectField";
-
+import AsyncSelect from "react-select/async";
+import AsyncCreatableSelect from "react-select/async-creatable";
+import axios from "axios";
 const OverViewForm = (props) => {
   const { editMode, setCustomerInfo, customerInfo } = props;
+  const [newCustomer, setNewCustomer] = useState({});
   const {
     handleSubmit,
     register,
@@ -22,14 +25,59 @@ const OverViewForm = (props) => {
   const onSubmit = (data) => {
     // setCustomerInfo(data);
   };
+
   // useEffect(() => {
   //   setCustomerInfo({ ...getValues(), ...watch() });
-  //   console.log("customer", { ...getValues(), ...watch() });
   // }, [getValues, setCustomerInfo, watch]);
 
   const handleInputChange = (name, value) => {
     setCustomerInfo({ ...watch(), ...customerInfo, [name]: value });
   };
+
+  const getCustomers = async (inputText, callback) => {
+    const response = await axios.get(`/api/customers?search=${inputText}`);
+    if (response.data?.data.length > 0) {
+      callback(
+        response.data?.data.map((item) => ({
+          label: item.customerName,
+          value: item,
+        }))
+      );
+    }
+  };
+
+  const handleSelectChange = (newValue, actionMeta) => {
+    if (actionMeta.action === "create-option") {
+      // A new option was created
+      setCustomerInfo({
+        ...watch(),
+        ...customerInfo,
+        customerName: newValue?.value?.toUpperCase(),
+        isNew: true,
+      });
+    } else {
+      // Existing option(s) selected
+      const { value } = newValue;
+      setCustomerInfo({
+        ...watch(),
+        ...customerInfo,
+        customerName: value?.customerName?.toUpperCase(),
+        phone: value?.customerPhone,
+        shipmentBy: value?.shipmentBy,
+        address: value?.customerAddress,
+        remarks: value?.remarks,
+      });
+    }
+  };
+  const customCreateLabel = (inputValue) => (
+    // <p className=" bg-primaryBg text-white cursor-pointer">
+    //   Add New Customer: {inputValue}
+    // </p>
+    <p className="inline-flex items-center cursor-pointer px-1 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150">
+      Add New Customer
+    </p>
+  );
+
   return (
     <div>
       <p className="text-center text-2xl text-gray-950 underline">
@@ -80,13 +128,23 @@ const OverViewForm = (props) => {
             <DataField
               label={"Customer Name"}
               value={
-                <InputField
-                  register={register}
-                  required={true}
-                  handleInputChange={handleInputChange}
-                  name={"customerName"}
+                <AsyncCreatableSelect
+                  cacheOptions
+                  loadOptions={getCustomers}
+                  // defaultOptions
+                  className={`uppercase z-50 border-0 block lg:w-full w-auto px-1 text-gray-700 bg-white  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40`}
+                  onChange={handleSelectChange}
+                  formatCreateLabel={customCreateLabel}
                   placeholder={"Enter customer name"}
+                  defaultValue={customerInfo && {label: customerInfo?.customerName, value: customerInfo?.customerName}}
                 />
+                // <InputField
+                //   register={register}
+                //   required={true}
+                //   handleInputChange={handleInputChange}
+                //   name={"customerName"}
+                //   placeholder={"Enter customer name"}
+                // />
               }
             />
             <DataField
@@ -98,6 +156,7 @@ const OverViewForm = (props) => {
                   handleInputChange={handleInputChange}
                   name={"phone"}
                   placeholder={"Enter Phone Number"}
+                  defaultValue={customerInfo?.phone}
                 />
               }
             />
@@ -140,9 +199,21 @@ const OverViewForm = (props) => {
                   required={true}
                   options={[
                     { name: "Choose a Shipment", value: "" },
-                    { name: "Air", value: "Air" },
-                    { name: "Sea", value: "Sea" },
-                    { name: "Road", value: "Road" },
+                    {
+                      name: "Air",
+                      value: "Air",
+                      isSelected: customerInfo?.shipmentBy?.toLowerCase() == "air",
+                    },
+                    {
+                      name: "Sea",
+                      value: "Sea",
+                      isSelected: customerInfo?.shipmentBy?.toLowerCase() == "sea",
+                    },
+                    {
+                      name: "Road",
+                      value: "Road",
+                      isSelected: customerInfo?.shipmentBy?.toLowerCase() == "road",
+                    },
                   ]}
                   handleInputChange={handleInputChange}
                 />
@@ -157,11 +228,31 @@ const OverViewForm = (props) => {
                   name={"reporting"}
                   required={true}
                   options={[
-                    { name: "CHINA", value: "CHINA" },
-                    { name: "Hongkong", value: "Hongkong" },
-                    { name: "Chongqing", value: "Chongqing" },
-                    { name: "South Korea", value: "South Korea" },
-                    { name: "India", value: "India" },
+                    {
+                      name: "CHINA",
+                      value: "CHINA",
+                      isSelected: customerInfo?.reporting?.toLowerCase() == "china",
+                    },
+                    {
+                      name: "Hongkong",
+                      value: "Hongkong",
+                      isSelected: customerInfo?.reporting?.toLowerCase() == "hongkong",
+                    },
+                    {
+                      name: "Chongqing",
+                      value: "Chongqing",
+                      isSelected: customerInfo?.reporting?.toLowerCase() == "chongqing",
+                    },
+                    {
+                      name: "South Korea",
+                      value: "South Korea",
+                      isSelected: customerInfo?.reporting?.toLowerCase() == "south korea",
+                    },
+                    {
+                      name: "India",
+                      value: "India",
+                      isSelected: customerInfo?.reporting == "India",
+                    },
                   ]}
                   handleInputChange={handleInputChange}
                 />
@@ -176,6 +267,7 @@ const OverViewForm = (props) => {
                   handleInputChange={handleInputChange}
                   name={"address"}
                   placeholder={"Enter address"}
+                  defaultValue={customerInfo?.address}
                 />
               }
               // className={"col-span-2"}
@@ -202,6 +294,7 @@ const OverViewForm = (props) => {
                   handleInputChange={handleInputChange}
                   name={"remarks"}
                   placeholder="Enter remarks"
+                  defaultValue={customerInfo?.remarks}
                 />
               }
             />

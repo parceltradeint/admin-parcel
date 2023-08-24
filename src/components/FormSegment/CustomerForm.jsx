@@ -13,6 +13,7 @@ shortid.seed(1000);
 const CustomerForm = (props) => {
   const { editMode, setIsOpen, data, setData } = props;
   const [loading, setLoading] = useState(false);
+
   const {
     handleSubmit,
     register,
@@ -158,6 +159,22 @@ const CustomerForm = (props) => {
                 <option value="">Choose a Shipment</option>
                 <option value="Air">Air</option>
                 <option value="Sea">Sea</option>
+              </select>
+            </div>
+
+            <div>
+              <label htmlFor="listed" className="block text-sm text-gray-800 ">
+                Listed Customer
+              </label>
+              <select
+                id="listed"
+                {...register("listed", { required: false })}
+                className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                placeholder="Choose a type"
+              >
+                <option value="">Choose a Type</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
               </select>
             </div>
             <div className="">

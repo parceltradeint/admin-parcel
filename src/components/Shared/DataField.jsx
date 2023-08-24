@@ -5,7 +5,7 @@ const DataField = ({ label, value, className }) => {
   return (
     <div
       className={twMerge(
-        "flex overflow-hidden flex-col sm:flex-row bg-white dark:bg-dark-800", className
+        "flex flex-col sm:flex-row bg-white dark:bg-dark-800", className
       )}
     >
       <div className="flex sm:w-2/5 items-center justify-between bg-primaryBg px-4 py-2 text-sm text-white">

@@ -1,4 +1,4 @@
-import { errorAlert } from "@/common/SweetAlert";
+import { errorAlert, successAlert } from "@/common/SweetAlert";
 import { formartDate } from "@/common/formartDate";
 import axios from "axios";
 import Link from "next/link";

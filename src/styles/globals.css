@@ -84,3 +84,10 @@ input::-webkit-inner-spin-button {
 .swal2-select {
   text-transform: uppercase;
 }
+
+.css-tj5bde-Svg, .css-1u9des2-indicatorSeparator{
+  display: none !important;
+}
+.css-13cymwt-control {
+  border: none !important;
+}

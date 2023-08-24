@@ -7,8 +7,12 @@ export default async function customersAPI(req, res) {
 
   if (req.method == "POST") {
     try {
-      const result = await collection.insertOne({ ...req.body });
+      const lastDocument = await collection.findOne({}, { sort: { customerId: -1 } });
+      let customerId = Number(lastDocument?.customerId) + 1 || 1
+      // await collection.createIndex({ customerId: customerId }, { unique: true });
+      const result = await collection.insertOne({ ...req.body, customerId: customerId});
       res.status(200).json({ status: 200, data: result });
+
       await client.close();
     } catch (error) {
       res.status(500).json({ status: false, data: {} });
@@ -26,16 +30,17 @@ export default async function customersAPI(req, res) {
       };
       const search = req?.query?.search || "";
       const regexPattern = new RegExp(search, "i");
+      // const searchQuery = { customerName: { $regex: search, $options: 'i' } };
 
       const searchQuery = {
         $and: [
           {
             $or: [
-              { customerId: regexPattern },
-              { shipmentBy: regexPattern },
-              { customerName: regexPattern },
-              { customerPhone: regexPattern },
-              { weChatId: regexPattern },
+              { customerId: { $regex: search, $options: 'i' } },
+              { shipmentBy: { $regex: search, $options: 'i' } },
+              { customerName: { $regex: search, $options: 'i' } },
+              { customerPhone: { $regex: search, $options: 'i' } },
+              { weChatId: { $regex: search, $options: 'i' } },
             ],
           },
         ],

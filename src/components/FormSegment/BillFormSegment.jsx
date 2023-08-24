@@ -136,7 +136,20 @@ const BillFormSegment = (props) => {
                 console.log("err", err);
                 errorAlert("Something went wrong!");
               })
-              .finally(() => setLoading(false));
+              .finally(async () => {
+                if (newData?.isNew) {
+                  const newCustomer = {
+                    customerName: newData?.customerName,
+                    customerPhone: newData?.phone,
+                    shipmentBy: newData?.shipmentBy,
+                    customerAddress: newData?.address,
+                    remarks: newData?.remarks,
+                    listed: "true",
+                  };
+                  await axios.post(`/api/customers`, { ...newCustomer });
+                }
+                setLoading(false);
+              });
         } else {
           delete newData?._id;
           await axios
