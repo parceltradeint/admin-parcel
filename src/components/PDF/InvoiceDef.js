@@ -208,7 +208,7 @@ export const generatePDF = (info) => {
           body: [
             [
               {
-                text: "NAME :",
+                text: "NAME",
                 alignment: "left",
                 fillColor: "#555555",
                 color: "#FFFFFF",
@@ -216,13 +216,14 @@ export const generatePDF = (info) => {
               },
               `${info?.customerName || ""}`,
               {
-                text: "PHONE :",
+                text: "DATE",
                 alignment: "left",
                 fillColor: "#555555",
                 color: "#FFFFFF",
                 bold: true,
               },
-              { text: `${info?.phone}`}
+              { text: `${formartDate(new Date())}`, alignment: "left"}
+              // { text: `${info?.phone}`}
             ],
           ],
         },
@@ -235,7 +236,7 @@ export const generatePDF = (info) => {
           body: [
             [
               {
-                text: "SHIPMENT :",
+                text: "SHIPMENT",
                 alignment: "left",
                 fillColor: "#555555",
                 color: "#FFFFFF",
@@ -243,17 +244,18 @@ export const generatePDF = (info) => {
                 border: [true, false, false, true],
               },
               {
-                text: `${info?.reporting} BY ${info?.shipmentBy}`,
+                text: `BY ${info?.shipmentBy}`,
                 border: [true, false, false, true],
               },
               {
-                text: "DATE :",
+                text: "REPORTING",
                 alignment: "left",
                 fillColor: "#555555",
                 color: "#FFFFFF",
-                border: [true, false, false, true]
+                border: [true, false, false, true],
+                bold: true,
               },
-              { text: `${formartDate(new Date())}`, alignment: "left", border: [true, false, true, true]}
+              { text: `${info?.reporting}`, alignment: "left", border: [true, false, true, true]}
             ],
           ],
         },
@@ -266,7 +268,7 @@ export const generatePDF = (info) => {
           body: [
             [
               {
-                text: "ADDRESS :",
+                text: "ADDRESS",
                 alignment: "left",
                 fillColor: "#555555",
                 color: "#FFFFFF",
@@ -278,7 +280,7 @@ export const generatePDF = (info) => {
                 border: [true, false, false, true],
               },
               {
-                text: "SHIPMENT NO :",
+                text: "SHIPMENT NO",
                 alignment: "left",
                 fillColor: "#555555",
                 color: "#FFFFFF",
@@ -304,7 +306,7 @@ export const generatePDF = (info) => {
           body: [
             [
               {
-                text: "REMARKS :",
+                text: "REMARKS",
                 alignment: "left",
                 fillColor: "#555555",
                 color: "#FFFFFF",
@@ -329,7 +331,7 @@ export const generatePDF = (info) => {
           headerRows: 1,
           dontBreakRows: true,
           // keepWithHeaderRows: 1,
-          widths: ["8%", "35%", "15%", "11%", "15%", "*"],
+          widths: ["8%", "35%", "15%", "12%", "15%", "*"],
           body: [
             [
               {
@@ -410,7 +412,7 @@ export const generatePDF = (info) => {
                     )}`,
                     alignment: "left",
                     margin: [40, 15, 0, 0],
-                    fontSize: 25,
+                    fontSize: 20,
                     bold: true,
                     color: "red",
                     border: [true, false, false, true],
@@ -495,7 +497,7 @@ export const generatePDF = (info) => {
               body: [
                 [
                   {
-                    text: "CUSTOMER SIGNATURE:",
+                    text: "CUSTOMER SIGNATURE",
                     alignment: "left",
                     bold: true,
                     // border: [true, true, true, false],
@@ -504,7 +506,7 @@ export const generatePDF = (info) => {
                     border: [true, false, true, false],
                   },
                   {
-                    text: "AUTHORISE SIGNATURE:",
+                    text: "AUTHORISE SIGNATURE",
                     alignment: "right",
                     bold: true,
                     // decoration: "overline",
@@ -519,7 +521,7 @@ export const generatePDF = (info) => {
           {
             // margin: [0, 5],
             table: {
-              widths: ["70%", "30%"],
+              widths: ["50%", "50%"],
               body: [
                 [
                   {
@@ -527,12 +529,12 @@ export const generatePDF = (info) => {
                     alignment: "left",
                     link: "https://facebook.com/parceltradeinternational",
                     bold: true,
-                    fontSize: 12,
+                    fontSize: 11,
                   },
                   {
                     text: "YOUR GETWAY TO CHINA",
                     bold: true,
-                    fontSize: 12,
+                    fontSize: 11,
                   },
                 ],
               ],

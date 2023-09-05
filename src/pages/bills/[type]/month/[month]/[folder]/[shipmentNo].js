@@ -25,13 +25,13 @@ const ShipmentPage = () => {
   return (
     <Layout breadcrumbs={breadcrumbs} billType={type}>
       {
-        type === "customer" && <OutBound type={folder?.toLowerCase()} shipmentNo={`${shipmentNo}`} />
+        type === "customer" && <OutBound type={folder?.toLowerCase()} shipmentNo={`${shipmentNo}`} month={month} />
       }
       {
-        type === "cnf" && <InBound type={folder?.toLowerCase()} shipmentNo={`${shipmentNo}`} />
+        type === "cnf" && <InBound type={folder?.toLowerCase()} shipmentNo={`${shipmentNo}`} month={month} />
       }
       {
-        type === "packing" && <Packing type={folder?.toLowerCase()} shipmentNo={`${shipmentNo}`} />
+        type === "packing" && <Packing type={folder?.toLowerCase()} shipmentNo={`${shipmentNo}`} month={month} />
       }
       {/* <h1>Month: {month}</h1>
       <h2>Shipment Type: {folder} </h2>

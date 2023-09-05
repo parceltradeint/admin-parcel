@@ -155,7 +155,6 @@ const BillFormDetails = (props) => {
       })
     );
   };
-
   return (
     <div className="md:w-full mx-auto border border-slate-950 mt-3">
       <form onSubmit={handleSubmit(onSubmit)} className="text-black">
@@ -300,8 +299,8 @@ const BillFormDetails = (props) => {
                           handleAditionalInfo(value, "paid");
                         }}
                         className="text-right block w-full bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-                        defaultValue={aditionalInfo?.paid}
-                        inputMode="numeric"
+                        value={aditionalInfo.paid || "0"}
+                        // inputMode="numeric"
                       />
                       {/* <input
                         className="block w-full text-right bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
