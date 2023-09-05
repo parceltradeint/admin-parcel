@@ -400,7 +400,7 @@ export const generatePDF = (info) => {
         stack: [
           {
             table: {
-              widths: ["71%", "14%", "15%"],
+              widths: ["71.6%", "14.2%", "15%"],
               body: [
                 [
                   {
