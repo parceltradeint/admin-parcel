@@ -535,6 +535,7 @@ export const generatePDF = (info) => {
                     text: "YOUR GETWAY TO CHINA",
                     bold: true,
                     fontSize: 11,
+                    alignment: "right"
                   },
                 ],
               ],
