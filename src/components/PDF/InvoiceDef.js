@@ -7,12 +7,13 @@ export const generatePDF = (info) => {
   let renderData = [];
   if (info?.data) {
     let newData = info?.data?.map((item, i) => {
-      let totalAmount = Number(item?.kg) * Number(item?.rate);
+      console.log("item", item);
+      let totalAmount = Number(item?.kg || item?.qty || 0) * Number(item?.rate || 0);
       return [
         { text: `${i + 1}`, fontSize: 12 },
-        { text: `${item?.goodsName}`, fontSize: 12, alignment: "left" },
-        { text: `${item?.ctn}`, fontSize: 12 },
-        { text: `${Number(item?.kg).toFixed(2)}`, fontSize: 12 },
+        { text: `${item?.goodsName || item?.des}`, fontSize: 12, alignment: "left" },
+        { text: `${item?.ctn || ""}`, fontSize: 12 },
+        { text: `${Number(item?.kg || item?.qty).toFixed(2)}`, fontSize: 12 },
         { text: `${item?.rate}`, fontSize: 12 },
         {
           text: `${convertBengaliToEnglishNumber(
@@ -24,7 +25,7 @@ export const generatePDF = (info) => {
       ];
     });
 
-    for (let i = 0; i < 14 - info?.data.length; i++) {
+    for (let i = 0; i < 13 - info?.data.length; i++) {
       newData.push([
         { text: `${info?.data.length + i + 1}`, fontSize: 12 },
         "",
@@ -367,7 +368,7 @@ export const generatePDF = (info) => {
               { text: `${info?.data?.length}`, style: "tableFooter" },
               {
                 text: `${Number(
-                  sumBy(info?.data, (val) => Number(val?.kg))
+                  sumBy(info?.data, (val) => Number(val?.kg || 0))
                 ).toFixed(2)}`,
                 style: "tableFooter",
               },
@@ -400,7 +401,7 @@ export const generatePDF = (info) => {
         stack: [
           {
             table: {
-              widths: ["71.6%", "14.2%", "15%"],
+              widths: ["71.6%", "14.2%", "14.2%"],
               body: [
                 [
                   {

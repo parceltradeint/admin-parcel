@@ -21,6 +21,7 @@ const Customers = () => {
   const pagesVisited = pageNumber * quotesPerPage;
   const [pageCount, setPageCount] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [editData, setEditData] = useState(false)
 
   const pagginationHandler = ({ selected }) => {
     setPageNumber(selected);
@@ -182,7 +183,7 @@ const Customers = () => {
             <PlaceHolderLoading loading={true} />
           ) : (
             <div className=" py-4 sm:px-0">
-              <CustomerGrid data={data} setData={setData} setIsOpen={setIsOpen}/>
+                <CustomerGrid data={data} setData={setData} setIsOpen={setIsOpen} setEditData={setEditData} />
             </div>
           )}
         </div>
@@ -195,7 +196,7 @@ const Customers = () => {
           <Modal.Title>Add New Customer</Modal.Title>
           <Modal.Content>
             <div>
-              <CustomerForm setIsOpen={setIsOpen} data={data} setData={setData}/>
+              <CustomerForm setIsOpen={setIsOpen} data={data} setData={setData} editMode={editData} />
             </div>
           </Modal.Content>
         </Modal>

@@ -14,7 +14,7 @@ import { monthNames } from "../Module/FolderComponents";
 import PackingOverviewForm from "./PackingOverviewForm";
 import { generatePackingPDF } from "../PDF/packingDef";
 import Swal from "sweetalert2";
-import { sumBy } from "lodash";
+import { isEmpty, sumBy } from "lodash";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const BillFormSegment = (props) => {
@@ -36,10 +36,19 @@ const BillFormSegment = (props) => {
       : "";
   const downloadPDF = () => {
     // var win = window.open("", "_blank");
+    const newData = [...data]
+    if (!isEmpty(aditionalInfo?.rmb)) {
+      newData.push({
+        des: aditionalInfo?.rmb?.des || "RMB",
+        qty: aditionalInfo?.rmb?.qty,
+        rate: aditionalInfo?.rmb?.rate,
+        totalAmount: Number(aditionalInfo?.rmb?.qty) * Number(aditionalInfo?.rmb?.rate) || 0
+      })
+    }
     const newInfo = {
       ...customerInfo,
       ...aditionalInfo,
-      data: data,
+      data: newData,
     };
     if (router.query.type === "packing") {
       generatePackingPDF(newInfo);

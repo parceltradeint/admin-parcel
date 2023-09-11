@@ -1,24 +1,14 @@
-import NoRecord from "@/common/NoRecord";
 import { faPlus, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { sumBy } from "lodash";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useTable } from "react-table";
 import ReactTable from "react-table-v6";
 import { convertBengaliToEnglishNumber } from "../PDF/InvoiceDef";
-import AutoSuggestInput from "@/common/AutoInputSuggest";
 import NumberFormat from "react-number-format";
 
 const BillFormDetails = (props) => {
-  const {
-    data,
-    setData,
-    aditionalInfo,
-    setAditionalInfo,
-    setSuggestionData,
-    type,
-  } = props;
+  const { data, setData, aditionalInfo, setAditionalInfo, type } = props;
 
   const handleKeyDown = (event) => {
     if (event.key === "ArrowUp" || event.key === "ArrowDown") {
@@ -49,7 +39,9 @@ const BillFormDetails = (props) => {
           //     : "number"
           // }
           onKeyDown={handleKeyDown}
-          onChange={(e) => handleCellRenderChange(cellInfo, e.target.value.toUpperCase())}
+          onChange={(e) =>
+            handleCellRenderChange(cellInfo, e.target.value.toUpperCase())
+          }
           value={
             cellInfo.column.id == "totalAmount"
               ? convertBengaliToEnglishNumber(
@@ -155,6 +147,31 @@ const BillFormDetails = (props) => {
       })
     );
   };
+
+  const handleRMBChange = (val, type) => {
+    const newAditionalInfo = {...aditionalInfo}
+    if (type === "qty") {
+      newAditionalInfo["rmb"] = {
+        ...newAditionalInfo["rmb"],
+        qty: val 
+      }
+    }
+    if (type === "rate") {
+      newAditionalInfo["rmb"] = {
+        ...newAditionalInfo["rmb"],
+        rate: val 
+      }
+    }
+    if (type === "des") {
+      newAditionalInfo["rmb"] = {
+        ...newAditionalInfo["rmb"],
+        des: val 
+      }
+    }
+    setAditionalInfo({
+      ...newAditionalInfo
+    })
+  }
   return (
     <div className="md:w-full mx-auto border border-slate-950 mt-3">
       <form onSubmit={handleSubmit(onSubmit)} className="text-black">
@@ -173,7 +190,7 @@ const BillFormDetails = (props) => {
                 <div className={"text-center"}>
                   <button
                     type="submit"
-                    className="inline-flex items-center px-1.5 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
+                    className="inline-flex items-center px-2 py-2 mt-10 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
                   >
                     <FontAwesomeIcon icon={faPlus} />
                   </button>
@@ -186,7 +203,18 @@ const BillFormDetails = (props) => {
               accessor: "goodsName",
               Cell: renderEditable,
               Footer: (row) => (
-                <div className={"uppercase text-xl font-semibold text-left"}>
+                <div
+                  className={
+                    "uppercase text-xl font-semibold text-left flex flex-col"
+                  }
+                >
+                  <input
+                      className={`py-1 px-1 uppercase mb-2 block w-full text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40`}
+                      name="input"
+                      step={"any"}
+                      onChange={(e) => handleRMBChange(e.target.value, "des")}
+                      value={aditionalInfo?.rmb?.des || "RMB"}
+                    />
                   <span>Total</span>
                 </div>
               ),
@@ -197,7 +225,18 @@ const BillFormDetails = (props) => {
               accessor: "ctn",
               Cell: renderEditable,
               Footer: (row) => (
-                <div className={"uppercase text-xl font-semibold text-center"}>
+                <div
+                  className={
+                    "uppercase text-xl font-semibold text-center flex flex-col"
+                  }
+                >
+                  <span>
+                    <input
+                      className={`py-1 px-1 mb-2 invisible uppercase block w-full text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40`}
+                      name="input"
+                      step={"any"}
+                    />
+                  </span>
                   <span>CTN= {row?.data?.length}</span>
                 </div>
               ),
@@ -221,7 +260,18 @@ const BillFormDetails = (props) => {
                 />
               ),
               Footer: (row) => (
-                <div className={" text-xl font-semibold text-center"}>
+                <div
+                  className={" text-xl font-semibold text-center flex flex-col"}
+                >
+                  <span>
+                    <input
+                      className={`py-1 px-1 text-center mb-2 uppercase block w-full text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40`}
+                      name="input"
+                      step={"any"}
+                      onChange={(e) => handleRMBChange(e.target.value, "qty")}
+                      value={aditionalInfo?.rmb?.qty || 0}
+                    />
+                  </span>
                   <span>
                     KG= {sumBy(row?.data, (val) => Number(val?.kg)).toFixed(2)}
                   </span>
@@ -249,8 +299,19 @@ const BillFormDetails = (props) => {
               ),
               Footer: (row) => (
                 <div
-                  className={"uppercase text-xl font-semibold text-left flex flex-col"}
+                  className={
+                    "uppercase text-xl font-semibold text-left flex flex-col"
+                  }
                 >
+                  <span className=" border-y-2">
+                    <input
+                      className={`py-1 px-1 text-center mb-2 uppercase block w-full text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40`}
+                      name="input"
+                      step={"any"}
+                      onChange={(e) => handleRMBChange(e.target.value, "rate")}
+                      value={aditionalInfo?.rmb?.rate || 0}
+                    />
+                  </span>
                   <span className=" border-y-2">Total</span>
                   <span>Due</span>
                   <span className=" border-y-2">Paid</span>
@@ -266,6 +327,9 @@ const BillFormDetails = (props) => {
               Footer: (row) => (
                 <div className={" text-xl font-semibold text-right "}>
                   <div className="flex flex-col">
+                    <span className=" border-y-2 text-right py-1 px-1 mb-2">
+                      {convertTotalAmount(Number(aditionalInfo?.rmb?.qty) * Number(aditionalInfo?.rmb?.rate) || 0)}
+                    </span>
                     <span className=" border-y-2 text-right">
                       {convertTotalAmount(netTotalAmount(row?.data))}
                     </span>

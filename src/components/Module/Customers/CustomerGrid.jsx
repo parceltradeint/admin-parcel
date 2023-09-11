@@ -5,8 +5,8 @@ import Link from "next/link";
 import React, { useState } from "react";
 
 const CustomerGrid = (props) => {
-  const { data, setData, setIsOpen } = props;
-  const [loading, setLoading] = useState(false)
+  const { data, setData, setIsOpen, setEditData } = props;
+  const [loading, setLoading] = useState(false);
   const handleDelete = async (index, id) => {
     let newData = [...data];
     if (index !== -1) {
@@ -88,7 +88,10 @@ const CustomerGrid = (props) => {
 
                         <td className="px-6 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium flex gap-3 items-center">
                           <button
-                            onClick={() => setIsOpen({type: true})}
+                            onClick={() => {
+                              setIsOpen(true);
+                              setEditData({...item})
+                            }}
                             type="button"
                             className=" bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded mt-3"
                             // onClick={() => setIsOpen(false)}

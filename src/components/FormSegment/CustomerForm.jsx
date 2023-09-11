@@ -13,7 +13,6 @@ shortid.seed(1000);
 const CustomerForm = (props) => {
   const { editMode, setIsOpen, data, setData } = props;
   const [loading, setLoading] = useState(false);
-
   const {
     handleSubmit,
     register,
