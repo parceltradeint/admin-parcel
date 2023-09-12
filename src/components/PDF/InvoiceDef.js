@@ -7,7 +7,6 @@ export const generatePDF = (info) => {
   let renderData = [];
   if (info?.data) {
     let newData = info?.data?.map((item, i) => {
-      console.log("item", item);
       let totalAmount = Number(item?.kg || item?.qty || 0) * Number(item?.rate || 0);
       return [
         { text: `${i + 1}`, fontSize: 12 },

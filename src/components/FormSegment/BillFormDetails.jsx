@@ -131,7 +131,7 @@ const BillFormDetails = (props) => {
     });
   };
   const netTotalAmount = (data) => {
-    return sumBy(data, (val) => Number(val?.totalAmount || 0));
+    return sumBy(data, (val) => Number(val?.totalAmount || 0)) + (  Number(aditionalInfo?.rmb?.qty) * Number(aditionalInfo?.rmb?.rate) || 0);
   };
   // const netTotalAmount = (data) => {
   //   return convertBengaliToEnglishNumber(
@@ -212,8 +212,9 @@ const BillFormDetails = (props) => {
                       className={`py-1 px-1 uppercase mb-2 block w-full text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40`}
                       name="input"
                       step={"any"}
-                      onChange={(e) => handleRMBChange(e.target.value, "des")}
-                      value={aditionalInfo?.rmb?.des || "RMB"}
+                      onChange={(e) => handleRMBChange(e.target.value.toUpperCase(), "des")}
+                      value={aditionalInfo?.rmb?.des}
+                      defaultValue={"RMB"}
                     />
                   <span>Total</span>
                 </div>
@@ -264,13 +265,22 @@ const BillFormDetails = (props) => {
                   className={" text-xl font-semibold text-center flex flex-col"}
                 >
                   <span>
-                    <input
+                    {/* <input
                       className={`py-1 px-1 text-center mb-2 uppercase block w-full text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40`}
                       name="input"
                       step={"any"}
                       onChange={(e) => handleRMBChange(e.target.value, "qty")}
-                      value={aditionalInfo?.rmb?.qty || 0}
-                    />
+                      value={aditionalInfo?.rmb?.qty}
+                    /> */}
+                     <NumberFormat
+                        thousandSeparator={true}
+                        onValueChange={(values, sourceInfo) => {
+                          const { formattedValue, value } = values;
+                          handleRMBChange(value, "qty");
+                        }}
+                        className="text-center mb-2 block w-full bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                        value={aditionalInfo?.rmb?.qty}
+                      />
                   </span>
                   <span>
                     KG= {sumBy(row?.data, (val) => Number(val?.kg)).toFixed(2)}
@@ -304,13 +314,23 @@ const BillFormDetails = (props) => {
                   }
                 >
                   <span className=" border-y-2">
-                    <input
+                      <NumberFormat
+                        thousandSeparator={true}
+                        onValueChange={(values, sourceInfo) => {
+                          const { formattedValue, value } = values;
+                          handleRMBChange(value, "rate");
+                        }}
+                        className="text-center mb-2 block w-full bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                        value={aditionalInfo?.rmb?.rate}
+                        // inputMode="numeric"
+                      />
+                    {/* <input
                       className={`py-1 px-1 text-center mb-2 uppercase block w-full text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40`}
                       name="input"
                       step={"any"}
                       onChange={(e) => handleRMBChange(e.target.value, "rate")}
-                      value={aditionalInfo?.rmb?.rate || 0}
-                    />
+                      value={aditionalInfo?.rmb?.rate}
+                    /> */}
                   </span>
                   <span className=" border-y-2">Total</span>
                   <span>Due</span>
@@ -328,10 +348,23 @@ const BillFormDetails = (props) => {
                 <div className={" text-xl font-semibold text-right "}>
                   <div className="flex flex-col">
                     <span className=" border-y-2 text-right py-1 px-1 mb-2">
-                      {convertTotalAmount(Number(aditionalInfo?.rmb?.qty) * Number(aditionalInfo?.rmb?.rate) || 0)}
+                      <NumberFormat
+                        thousandSeparator={true}
+                        className="text-right font-semibold block w-full bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                        value={convertTotalAmount(Number(aditionalInfo?.rmb?.qty) * Number(aditionalInfo?.rmb?.rate) || 0)}
+                        disabled
+                        // inputMode="numeric"
+                      />
                     </span>
                     <span className=" border-y-2 text-right">
-                      {convertTotalAmount(netTotalAmount(row?.data))}
+                      <NumberFormat
+                        thousandSeparator={true}
+                        className="text-right font-semibold block w-full bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                        value={convertTotalAmount(netTotalAmount(row?.data))}
+                        disabled
+                        // inputMode="numeric"
+                      />
+                      {/* {convertTotalAmount(netTotalAmount(row?.data))} */}
                     </span>
                     <span>
                       <NumberFormat
@@ -363,7 +396,7 @@ const BillFormDetails = (props) => {
                           handleAditionalInfo(value, "paid");
                         }}
                         className="text-right block w-full bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-                        value={aditionalInfo.paid || "0"}
+                        value={aditionalInfo.paid}
                         // inputMode="numeric"
                       />
                       {/* <input
