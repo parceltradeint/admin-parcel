@@ -25,7 +25,6 @@ const BillFormSegment = (props) => {
   const [loading, setLoading] = useState(false);
   const [aditionalInfo, setAditionalInfo] = useState({});
   const [suggestionData, setSuggestionData] = useState([]);
-
   let type =
     router?.query?.type == "outbound"
       ? "customer"
@@ -56,6 +55,7 @@ const BillFormSegment = (props) => {
       generatePDF(newInfo);
     }
   };
+
   const save = async () => {
     const newData = {
       ...customerInfo,
@@ -63,6 +63,7 @@ const BillFormSegment = (props) => {
       data: data,
       totalKg: sumBy(data, (item) => Number(item.kg)),
       totalCtn: data?.filter((item) => item?.ctn?.length > 1)?.length,
+      totalAmount: sumBy(data, (item) => Number(item.totalAmount))
     };
     const options = ["customer", "cnf", "packing"];
 
@@ -211,6 +212,7 @@ const BillFormSegment = (props) => {
       setAditionalInfo({
         due: editMode?.due,
         paid: editMode?.paid,
+        rmb: editMode?.rmb
       });
     }
   }, [editMode]);

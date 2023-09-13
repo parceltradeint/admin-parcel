@@ -364,7 +364,7 @@ export const generatePDF = (info) => {
             [
               { text: "TOTAL", style: "tableFooter" },
               { text: "", style: "tableFooter" },
-              { text: `${info?.data?.length}`, style: "tableFooter" },
+              { text: `${info?.data?.filter((item) => item?.ctn?.length > 0).length}`, style: "tableFooter" },
               {
                 text: `${Number(
                   sumBy(info?.data, (val) => Number(val?.kg || 0))

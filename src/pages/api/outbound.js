@@ -88,30 +88,26 @@ export default async function newShipmentBill(req, res) {
               _id: null,
               totalKg: { $sum: { $toDouble: "$totalKg" } },
               totalCtn: { $sum: { $toDouble: "$totalCtn" } },
+              totalAmount: { $sum: { $toDouble: "$totalAmount" } }
             },
           },
         ])
         .toArray();
 
-
-        // const updatedDocuments = documents.map((document) => {
-        //   // Modify the document here
-        //   // For example, you can update a property or perform some calculations
-        //   return {
-        //     ...document,
-        //     totalKg: sumBy(document.data, (item) => Number(item.kg)),
-        //     totalCtn: document.data?.filter((item) => item?.ctn?.length > 1)
-        //       ?.length,
-        //   };
-        // });
+    //     const updatedDocuments = documents.map((document) => {
+    //       return {
+    //         ...document,
+    //         totalAmount: sumBy(document.data, (item) => Number(item.totalAmount)),
+    //       };
+    //     });
   
-        // const bulkOperations = updatedDocuments.map(document => ({
-        //   updateOne: {
-        //     filter: { _id: document._id },
-        //     update: { $set: document }
-        //   }
-        // }));
-    
+    //     const bulkOperations = updatedDocuments.map(document => ({
+    //       updateOne: {
+    //         filter: { _id: document._id },
+    //         update: { $set: document }
+    //       }
+    //     }));
+    // console.log("bulkOperations", bulkOperations);
         // // Perform the bulk update
         // const updateResults = await collection.bulkWrite(bulkOperations);
       const response = {

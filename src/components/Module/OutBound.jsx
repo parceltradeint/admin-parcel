@@ -120,7 +120,6 @@ const OutBound = () => {
     fetchBills();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading == "clear"]);
-
   return (
     <>
       <div className=" bg-white shadow-sm">
@@ -219,6 +218,9 @@ const OutBound = () => {
                 </p>
                 <p className="text-2xl text-black text-center">
                   Total Ctn- {dataInfo?.aggregationResult?.totalCtn}
+                  </p>
+                  <p className="text-2xl text-black text-center">
+                  Total Amount- {dataInfo?.aggregationResult?.totalAmount}
                 </p>
                 <p className="text-2xl text-black text-center">{`Total Item- ${dataInfo?.total}`}</p>
               </div>

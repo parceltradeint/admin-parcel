@@ -88,6 +88,7 @@ export default async function newShipmentBill(req, res) {
               _id: null,
               totalKg: { $sum: { $toDouble: "$totalKg" } },
               totalCtn: { $sum: { $toDouble: "$totalCtn" } },
+              totalAmount: { $sum: { $toDouble: "$totalAmount" } }
             },
           },
         ])
