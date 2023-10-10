@@ -457,9 +457,9 @@ const BillFormDetails = (props) => {
           defaultPageSize={100}
           minRows={12}
           showPageJump={false}
-          pageSizeOptions={[100]}
-          //   showPagination={100}
-          showPagination={false}
+          pageSizeOptions={[100, 150, 200, 250, 300]}
+            showPagination={true}
+          // showPagination={false}
           sortable={true}
         />
       </form>
