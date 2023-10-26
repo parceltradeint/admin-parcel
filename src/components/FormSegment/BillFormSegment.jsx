@@ -35,14 +35,16 @@ const BillFormSegment = (props) => {
       : "";
   const downloadPDF = () => {
     // var win = window.open("", "_blank");
-    const newData = [...data]
+    const newData = [...data];
     if (!isEmpty(aditionalInfo?.rmb)) {
       newData.push({
         des: aditionalInfo?.rmb?.des || "RMB",
         qty: aditionalInfo?.rmb?.qty,
         rate: aditionalInfo?.rmb?.rate,
-        totalAmount: Number(aditionalInfo?.rmb?.qty) * Number(aditionalInfo?.rmb?.rate) || 0
-      })
+        totalAmount:
+          Number(aditionalInfo?.rmb?.qty) * Number(aditionalInfo?.rmb?.rate) ||
+          0,
+      });
     }
     const newInfo = {
       ...customerInfo,
@@ -63,7 +65,15 @@ const BillFormSegment = (props) => {
       data: data,
       totalKg: sumBy(data, (item) => Number(item.kg || 0)),
       totalCtn: data?.filter((item) => item?.ctn?.length > 1)?.length,
-      totalAmount: sumBy(data, (item) => Number(item.totalAmount || 0))
+      totalAmount:
+        sumBy(data, (item) => Number(item.totalAmount || 0)) +
+       ( Number(aditionalInfo?.rmb.qty) * Number(aditionalInfo?.rmb.rate)),
+      totalDueBill:
+        sumBy(data, (item) => Number(item.totalAmount || 0)) +
+        (Number(aditionalInfo?.rmb.qty || 0) *
+          Number(aditionalInfo?.rmb.rate || 0)) +
+        Number(aditionalInfo?.due || 0) -
+        Number(aditionalInfo?.paid || 0),
     };
     const options = ["customer", "cnf", "packing"];
 
@@ -212,7 +222,7 @@ const BillFormSegment = (props) => {
       setAditionalInfo({
         due: editMode?.due,
         paid: editMode?.paid,
-        rmb: editMode?.rmb
+        rmb: editMode?.rmb,
       });
     }
   }, [editMode]);

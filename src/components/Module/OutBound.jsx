@@ -69,7 +69,7 @@ const OutBound = () => {
       }
     }
   };
-
+  
   const handleClear = () => {
     setSearchText("");
     setLoading("clear");

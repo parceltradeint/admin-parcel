@@ -4,7 +4,20 @@ import React from "react";
 
 const ShipmentBillGrid = (props) => {
   const { data, type } = props;
-  // console.log("newData", newData);
+  const calculationDueBill = (item) => {
+    if (item.totalDueBill) {
+      return item.totalDueBill
+    }
+    else {
+     let total =  sumBy(item.data, (v) => Number(v.totalAmount || 0)) +
+        (Number(item?.rmb?.qty || 0) *
+          Number(item?.rmb?.rate || 0)) +
+        Number(item?.due || 0) -
+       Number(item?.paid || 0)
+       return total
+    }
+     
+  }
   return (
     <div>
       <div className="flex flex-col">
@@ -59,7 +72,7 @@ const ShipmentBillGrid = (props) => {
                         </td>
 
                         <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
-                          {(Number(item.totalAmount || 0) + Number(item.due || 0)) - Number(item.paid || 0)}
+                          {calculationDueBill(item)}
                         </td>
 
                         <td className="px-6 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium">
