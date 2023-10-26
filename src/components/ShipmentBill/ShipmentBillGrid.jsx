@@ -1,8 +1,10 @@
+import { sumBy } from "lodash";
 import Link from "next/link";
 import React from "react";
 
 const ShipmentBillGrid = (props) => {
   const { data, type } = props;
+  // console.log("newData", newData);
   return (
     <div>
       <div className="flex flex-col">
@@ -28,6 +30,9 @@ const ShipmentBillGrid = (props) => {
                     <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                       Shipment By
                     </th>
+                    <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                      Total Bill
+                    </th>
                     <th colSpan={2} className="px-6 py-3 bg-gray-50" />
                   </tr>
                 </thead>
@@ -51,6 +56,10 @@ const ShipmentBillGrid = (props) => {
                         </td>
                         <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
                           {item?.shipmentBy}
+                        </td>
+
+                        <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                          {(Number(item.totalAmount || 0) + Number(item.due || 0)) - Number(item.paid || 0)}
                         </td>
 
                         <td className="px-6 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium">

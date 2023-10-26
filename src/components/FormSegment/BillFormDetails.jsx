@@ -374,7 +374,7 @@ const BillFormDetails = (props) => {
                           handleAditionalInfo(value, "due");
                         }}
                         className="text-right block w-full bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-                        defaultValue={aditionalInfo?.due}
+                        value={aditionalInfo?.due}
                         inputMode="numeric"
                       />
                       {/* <input

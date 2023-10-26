@@ -61,9 +61,9 @@ const BillFormSegment = (props) => {
       ...customerInfo,
       ...aditionalInfo,
       data: data,
-      totalKg: sumBy(data, (item) => Number(item.kg)),
+      totalKg: sumBy(data, (item) => Number(item.kg || 0)),
       totalCtn: data?.filter((item) => item?.ctn?.length > 1)?.length,
-      totalAmount: sumBy(data, (item) => Number(item.totalAmount))
+      totalAmount: sumBy(data, (item) => Number(item.totalAmount || 0))
     };
     const options = ["customer", "cnf", "packing"];
 
