@@ -67,11 +67,11 @@ const BillFormSegment = (props) => {
       totalCtn: data?.filter((item) => item?.ctn?.length > 1)?.length,
       totalAmount:
         sumBy(data, (item) => Number(item.totalAmount || 0)) +
-       ( Number(aditionalInfo?.rmb.qty) * Number(aditionalInfo?.rmb.rate)),
+       ( Number(aditionalInfo?.rmb?.qty|| 0) * Number(aditionalInfo?.rmb?.rate|| 0)),
       totalDueBill:
         sumBy(data, (item) => Number(item.totalAmount || 0)) +
-        (Number(aditionalInfo?.rmb.qty || 0) *
-          Number(aditionalInfo?.rmb.rate || 0)) +
+        (Number(aditionalInfo?.rmb?.qty || 0) *
+          Number(aditionalInfo?.rmb?.rate || 0)) +
         Number(aditionalInfo?.due || 0) -
         Number(aditionalInfo?.paid || 0),
     };
