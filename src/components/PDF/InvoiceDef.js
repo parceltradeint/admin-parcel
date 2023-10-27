@@ -558,8 +558,14 @@ export const generatePDF = (info) => {
     //   }
     //   return false; // Return false if currentNode._pdfmakeWrapper.node is undefined
     // },
-    pageSize: "A4",
-
+    // pageBreakBefore: function(currentNode, followingNodesOnPage, nodesOnNextPage, previousNodesOnPage) {
+    //   return currentNode.startPosition.top >= 850;
+    //   },
+    pageSize: {
+      width: 595.28,
+      height: 'auto'
+    },
+    pageBreak: 'before',
     defaultStyle: {
       border: [true, true, true, true], // Specify the border for all sides
       columnGap: 15,

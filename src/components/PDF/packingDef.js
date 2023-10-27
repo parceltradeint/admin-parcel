@@ -3,27 +3,19 @@ import { contact27, parcelLogo, wechat, whatsApp } from "./image";
 import { formartDate } from "@/common/formartDate";
 // title: `${customerName}- ${type}- ${new Date().toLocaleString()}`,
 
-export const generatePackingPDF = (info) => {
+export const generatePackingPDF = (info, type) => {
   let renderData = [];
   if (info?.data) {
-    let newData = info?.data?.map((item, i) => {
+    let newData = info?.data?.filter((item) => item?.kg && item?.rate && item?.goodsName).map((item, i) => {
       let totalAmount = Number(item?.kg) * Number(item?.rate);
       return [
         { text: `${i + 1}`, fontSize: 12 },
-        { text: `${item?.goodsName}`, fontSize: 12, alignment: "left" },
-        { text: `${item?.ctn}`, fontSize: 12, alignment: "left" },
-        { text: `${Number(item?.kg).toFixed(2)}`, fontSize: 12 }
+        { text: `${item?.goodsName || ""}`, fontSize: 12, alignment: "left" },
+        { text: `${item?.ctn || ""}`, fontSize: 12, alignment: "left" },
+        { text: `${Number(item?.kg || "").toFixed(2)}`, fontSize: 12 }
       ];
     });
 
-    // for (let i = 0; i < 14 - info?.data.length; i++) {
-    //   newData.push([
-    //     { text: `${info?.data.length + i + 1}`, fontSize: 12 },
-    //     "",
-    //     "",
-    //     ""
-    //   ]);
-    // }
     renderData = [...newData];
   }
   let docDefinition = {
@@ -32,7 +24,7 @@ export const generatePackingPDF = (info) => {
         new Date()
       )}`,
       author: "Parcel",
-      subject: "Packing Lists",
+      subject: type,
     },
     content: [
       {
@@ -41,7 +33,7 @@ export const generatePackingPDF = (info) => {
         columns: [
           {
             alignment: "left",
-            text: `Customer Packing Lists`,
+            text: `Customer ${type}`,
           },
           {
             alignment: "right",
@@ -159,7 +151,7 @@ export const generatePackingPDF = (info) => {
           body: [
             [
               {
-                text: [{ text: "PACKING LIST\n", fontSize: 20 }],
+                text: [{ text: `${type}\n`, fontSize: 20 }],
                 fillColor: "#1586D5",
                 color: "#FFFFFF",
                 alignment: "center",
@@ -298,7 +290,7 @@ export const generatePackingPDF = (info) => {
               { text: `${info?.data?.length}`, style: "tableFooter" },
               {
                 text: `${Number(
-                  sumBy(info?.data, (val) => Number(val?.kg))
+                  sumBy(info?.data, (val) => Number(val?.kg || 0))
                 ).toFixed(2)}`,
                 style: "tableFooter",
               }             

@@ -52,10 +52,31 @@ const BillFormSegment = (props) => {
       data: newData,
     };
     if (router.query.type === "packing") {
-      generatePackingPDF(newInfo);
+      generatePackingPDF(newInfo, "Packing Lists");
     } else {
       generatePDF(newInfo);
     }
+  };
+
+  const downloadChallan = () => {
+    // var win = window.open("", "_blank");
+    const newData = [...data];
+    if (!isEmpty(aditionalInfo?.rmb)) {
+      newData.push({
+        des: aditionalInfo?.rmb?.des || "RMB",
+        qty: aditionalInfo?.rmb?.qty,
+        rate: aditionalInfo?.rmb?.rate,
+        totalAmount:
+          Number(aditionalInfo?.rmb?.qty) * Number(aditionalInfo?.rmb?.rate) ||
+          0,
+      });
+    }
+    const newInfo = {
+      ...customerInfo,
+      ...aditionalInfo,
+      data: newData,
+    };
+    generatePackingPDF(newInfo, "Challan");
   };
 
   const save = async () => {
@@ -267,7 +288,14 @@ const BillFormSegment = (props) => {
                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3 uppercase"
                   onClick={downloadPDF}
                 >
-                  View Print
+                  View Bill
+              </button>
+              <button
+                  type="button"
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3 uppercase"
+                  onClick={downloadChallan}
+                >
+                  View Challan
                 </button>
                 <button
                   type="button"
