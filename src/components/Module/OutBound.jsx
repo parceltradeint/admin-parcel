@@ -120,6 +120,8 @@ const OutBound = () => {
     fetchBills();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading == "clear"]);
+
+  
   return (
     <>
       <div className=" bg-white shadow-sm">
@@ -214,13 +216,13 @@ const OutBound = () => {
             <div className="flex flex-col w-full py-5 bg-gray-100">
               <div className="grid grid-cols-3 gap-4">
                 <p className="text-2xl text-black text-center">
-                  Total Kg- {dataInfo?.aggregationResult?.totalKg}
+                  Total Kg- {Number(dataInfo?.aggregationResult?.totalKg).toFixed(2)}
                 </p>
                 <p className="text-2xl text-black text-center">
                   Total Ctn- {dataInfo?.aggregationResult?.totalCtn}
                   </p>
                   <p className="text-2xl text-black text-center">
-                  Total Amount- {dataInfo?.aggregationResult?.totalAmount}
+                  Total Amount- {Number(dataInfo?.aggregationResult?.totalAmount).toFixed(2)}
                 </p>
                 <p className="text-2xl text-black text-center">{`Total Item- ${dataInfo?.total}`}</p>
               </div>

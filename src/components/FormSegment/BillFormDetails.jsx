@@ -76,6 +76,35 @@ const BillFormDetails = (props) => {
     );
   };
 
+  const renderEditMark = (cellInfo, type) => {
+    const cellValue = data[cellInfo.index]?.[cellInfo.column.id];
+    return (
+      <>
+        <input
+          className={`flex items-center ${type == "all" ? "mt-1":"mt-5"} ml-2 text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 mark-box`}
+          type="checkbox"
+          onChange={(e) =>
+            handleCellMarkChange(cellInfo, e.target.checked, type)
+          }
+          defaultChecked={cellValue || false}
+        />
+      </>
+    );
+  };
+  const handleCellMarkChange = (cellInfo, val, type) => {
+    const newData = [...data];
+    if (type === "all") {
+      const markDatas = newData.map((item) => ({ ...item, mark: val }));
+      const rowCheckboxes = document.querySelectorAll('.mark-box');
+      rowCheckboxes.forEach(checkbox => {
+        checkbox.checked = val;
+      });
+      setData(markDatas);
+    } else {
+      newData[cellInfo.index][cellInfo.column.id] = val;
+      setData(newData);
+    }
+  };
   const handleCellRenderChange = (cellInfo, val) => {
     const newData = [...data];
     newData[cellInfo.index][cellInfo.column.id] = val;
@@ -131,7 +160,10 @@ const BillFormDetails = (props) => {
     });
   };
   const netTotalAmount = (data) => {
-    return sumBy(data, (val) => Number(val?.totalAmount || 0)) + (  Number(aditionalInfo?.rmb?.qty) * Number(aditionalInfo?.rmb?.rate) || 0);
+    return (
+      sumBy(data, (val) => Number(val?.totalAmount || 0)) +
+      (Number(aditionalInfo?.rmb?.qty) * Number(aditionalInfo?.rmb?.rate) || 0)
+    );
   };
   // const netTotalAmount = (data) => {
   //   return convertBengaliToEnglishNumber(
@@ -149,29 +181,29 @@ const BillFormDetails = (props) => {
   };
 
   const handleRMBChange = (val, type) => {
-    const newAditionalInfo = {...aditionalInfo}
+    const newAditionalInfo = { ...aditionalInfo };
     if (type === "qty") {
       newAditionalInfo["rmb"] = {
         ...newAditionalInfo["rmb"],
-        qty: val 
-      }
+        qty: val,
+      };
     }
     if (type === "rate") {
       newAditionalInfo["rmb"] = {
         ...newAditionalInfo["rmb"],
-        rate: val 
-      }
+        rate: val,
+      };
     }
     if (type === "des") {
       newAditionalInfo["rmb"] = {
         ...newAditionalInfo["rmb"],
-        des: val 
-      }
+        des: val,
+      };
     }
     setAditionalInfo({
-      ...newAditionalInfo
-    })
-  }
+      ...newAditionalInfo,
+    });
+  };
   return (
     <div className="md:w-full mx-auto border border-slate-950 mt-3">
       <form onSubmit={handleSubmit(onSubmit)} className="text-black">
@@ -179,11 +211,35 @@ const BillFormDetails = (props) => {
           data={data}
           columns={[
             {
+              Header: (row) => renderEditMark(row, "all"),
+              accessor: "mark",
+              Cell: renderEditMark,
+              width: 40,
+              show: type === "customer" ? true : false,
+            },
+            {
+              Header: "Status",
+              accessor: "status",
+              Cell: (row) => (
+                <span
+                  className={`${
+                    row.original.mark == true
+                      ? "bg-red-100 text-red-800"
+                      : "bg-green-100 text-green-800"
+                  } uppercase block w-full px-2 py-1 mt-3 border rounded-md text-sm font-medium`}
+                >
+                  {row.original.mark == true ? "Pending" : "Done"}
+                </span>
+              ),
+              width: 90,
+              show: type === "customer" ? true : false,
+            },
+            {
               Header: "SL",
               accessor: "sl",
               Cell: (info) => (
                 <p className="uppercase block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40">
-                  {info?.index + 1}
+                  {info?.viewIndex + 1}
                 </p>
               ),
               Footer: (row) => (
@@ -209,13 +265,15 @@ const BillFormDetails = (props) => {
                   }
                 >
                   <input
-                      className={`py-1 px-1 uppercase mb-2 block w-full text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40`}
-                      name="input"
-                      step={"any"}
-                      onChange={(e) => handleRMBChange(e.target.value.toUpperCase(), "des")}
-                      value={aditionalInfo?.rmb?.des}
-                      defaultValue={"RMB"}
-                    />
+                    className={`py-1 px-1 uppercase mb-2 block w-full text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40`}
+                    name="input"
+                    step={"any"}
+                    onChange={(e) =>
+                      handleRMBChange(e.target.value.toUpperCase(), "des")
+                    }
+                    value={aditionalInfo?.rmb?.des}
+                    defaultValue={"RMB"}
+                  />
                   <span>Total</span>
                 </div>
               ),
@@ -272,17 +330,17 @@ const BillFormDetails = (props) => {
                       onChange={(e) => handleRMBChange(e.target.value, "qty")}
                       value={aditionalInfo?.rmb?.qty}
                     /> */}
-                     <NumberFormat
-                        thousandSeparator={true}
-                        onValueChange={(values, sourceInfo) => {
-                          const { formattedValue, value } = values;
-                          handleRMBChange(value, "qty");
-                        }}
-                        className="text-center mb-2 block w-full bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-                        value={aditionalInfo?.rmb?.qty}
-                      />
+                    <NumberFormat
+                      thousandSeparator={true}
+                      onValueChange={(values, sourceInfo) => {
+                        const { formattedValue, value } = values;
+                        handleRMBChange(value, "qty");
+                      }}
+                      className="text-center mb-2 block w-full bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                      value={aditionalInfo?.rmb?.qty}
+                    />
                   </span>
-                  <span>
+                  <span className="mt-2">
                     KG= {sumBy(row?.data, (val) => Number(val?.kg)).toFixed(2)}
                   </span>
                 </div>
@@ -314,16 +372,16 @@ const BillFormDetails = (props) => {
                   }
                 >
                   <span className=" border-y-2">
-                      <NumberFormat
-                        thousandSeparator={true}
-                        onValueChange={(values, sourceInfo) => {
-                          const { formattedValue, value } = values;
-                          handleRMBChange(value, "rate");
-                        }}
-                        className="text-center mb-2 block w-full bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-                        value={aditionalInfo?.rmb?.rate}
-                        // inputMode="numeric"
-                      />
+                    <NumberFormat
+                      thousandSeparator={true}
+                      onValueChange={(values, sourceInfo) => {
+                        const { formattedValue, value } = values;
+                        handleRMBChange(value, "rate");
+                      }}
+                      className="text-center mb-2 block w-full bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                      value={aditionalInfo?.rmb?.rate}
+                      // inputMode="numeric"
+                    />
                     {/* <input
                       className={`py-1 px-1 text-center mb-2 uppercase block w-full text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40`}
                       name="input"
@@ -332,10 +390,10 @@ const BillFormDetails = (props) => {
                       value={aditionalInfo?.rmb?.rate}
                     /> */}
                   </span>
-                  <span className=" border-y-2">Total</span>
+                  <span className=" border-y-2 mt-4">Total</span>
                   <span>Due</span>
                   <span className=" border-y-2">Paid</span>
-                  <span className=" border-b-2">Total Bill</span>
+                  <span className=" ">Total Bill</span>
                 </div>
               ),
             },
@@ -351,7 +409,10 @@ const BillFormDetails = (props) => {
                       <NumberFormat
                         thousandSeparator={true}
                         className="text-right font-semibold block w-full bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-                        value={convertTotalAmount(Number(aditionalInfo?.rmb?.qty) * Number(aditionalInfo?.rmb?.rate) || 0)}
+                        value={convertTotalAmount(
+                          Number(aditionalInfo?.rmb?.qty) *
+                            Number(aditionalInfo?.rmb?.rate) || 0
+                        )}
                         disabled
                         // inputMode="numeric"
                       />
@@ -458,7 +519,7 @@ const BillFormDetails = (props) => {
           minRows={12}
           showPageJump={false}
           pageSizeOptions={[100, 150, 200, 250, 300]}
-            showPagination={true}
+          showPagination={true}
           // showPagination={false}
           sortable={true}
         />

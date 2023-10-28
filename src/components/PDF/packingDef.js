@@ -6,15 +6,24 @@ import { formartDate } from "@/common/formartDate";
 export const generatePackingPDF = (info, type) => {
   let renderData = [];
   if (info?.data) {
-    let newData = info?.data?.filter((item) => item?.kg && item?.rate && item?.goodsName).map((item, i) => {
-      let totalAmount = Number(item?.kg) * Number(item?.rate);
-      return [
-        { text: `${i + 1}`, fontSize: 12 },
-        { text: `${item?.goodsName || ""}`, fontSize: 12, alignment: "left" },
-        { text: `${item?.ctn || ""}`, fontSize: 12, alignment: "left" },
-        { text: `${Number(item?.kg || "").toFixed(2)}`, fontSize: 12 }
-      ];
-    });
+    const conditions = (val) => {
+      if (type === "Challan") {
+        return val.mark === true;
+      } else {
+        val?.kg && val?.rate && val?.goodsName
+      }
+    };
+    let newData = info?.data
+      ?.filter((item) => conditions(item))
+      .map((item, i) => {
+        let totalAmount = Number(item?.kg) * Number(item?.rate);
+        return [
+          { text: `${i + 1}`, fontSize: 12 },
+          { text: `${item?.goodsName || ""}`, fontSize: 12, alignment: "left" },
+          { text: `${item?.ctn || ""}`, fontSize: 12, alignment: "left" },
+          { text: `${Number(item?.kg || "").toFixed(2)}`, fontSize: 12 },
+        ];
+      });
 
     renderData = [...newData];
   }
@@ -227,7 +236,6 @@ export const generatePackingPDF = (info, type) => {
         },
       },
 
-      
       {
         fontSize: 11,
         margin: [0, 0, 0, 5],
@@ -243,7 +251,7 @@ export const generatePackingPDF = (info, type) => {
                 color: "#FFFFFF",
                 bold: true,
                 border: [true, false, true, true],
-                margin: [0, -2, 0, 0]
+                margin: [0, -2, 0, 0],
               },
               {
                 text: `${info?.remarks}`,
@@ -280,7 +288,7 @@ export const generatePackingPDF = (info, type) => {
               {
                 text: "KG",
                 style: "tableHeader",
-              }
+              },
             ],
             //   ...foremanDataDetails,
             ...renderData,
@@ -293,7 +301,7 @@ export const generatePackingPDF = (info, type) => {
                   sumBy(info?.data, (val) => Number(val?.kg || 0))
                 ).toFixed(2)}`,
                 style: "tableFooter",
-              }             
+              },
             ],
           ],
         },
@@ -311,7 +319,7 @@ export const generatePackingPDF = (info, type) => {
             return i === 0 || i === node.table.widths.length ? "black" : "gray";
           },
         },
-      }
+      },
     ],
 
     // pageBreakBefore: (currentNode, followingNodes) => {

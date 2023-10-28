@@ -88,11 +88,12 @@ const BillFormSegment = (props) => {
       totalCtn: data?.filter((item) => item?.ctn?.length > 1)?.length,
       totalAmount:
         sumBy(data, (item) => Number(item.totalAmount || 0)) +
-       ( Number(aditionalInfo?.rmb?.qty|| 0) * Number(aditionalInfo?.rmb?.rate|| 0)),
+        Number(aditionalInfo?.rmb?.qty || 0) *
+          Number(aditionalInfo?.rmb?.rate || 0),
       totalDueBill:
         sumBy(data, (item) => Number(item.totalAmount || 0)) +
-        (Number(aditionalInfo?.rmb?.qty || 0) *
-          Number(aditionalInfo?.rmb?.rate || 0)) +
+        Number(aditionalInfo?.rmb?.qty || 0) *
+          Number(aditionalInfo?.rmb?.rate || 0) +
         Number(aditionalInfo?.due || 0) -
         Number(aditionalInfo?.paid || 0),
     };
@@ -279,7 +280,7 @@ const BillFormSegment = (props) => {
               aditionalInfo={aditionalInfo}
               setAditionalInfo={setAditionalInfo}
               setSuggestionData={setSuggestionData}
-              type={router.query.type}
+              type={type}
             />
             <Section>
               <div className="flex space-x-2 justify-center mt-2 ">
@@ -289,14 +290,17 @@ const BillFormSegment = (props) => {
                   onClick={downloadPDF}
                 >
                   View Bill
-              </button>
-              <button
-                  type="button"
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3 uppercase"
-                  onClick={downloadChallan}
-                >
-                  View Challan
                 </button>
+                {type === "customer" && (
+                  <button
+                    type="button"
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3 uppercase"
+                    onClick={downloadChallan}
+                  >
+                    View Challan
+                  </button>
+                )}
+
                 <button
                   type="button"
                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3 uppercase"

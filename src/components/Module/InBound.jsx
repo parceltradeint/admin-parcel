@@ -213,7 +213,7 @@ const InBound = () => {
             <div className="flex flex-col w-full py-5 bg-gray-100">
               <div className="grid grid-cols-3 gap-4">
                 <p className="text-2xl text-black text-center">
-                  Total Kg- {dataInfo?.aggregationResult?.totalKg}
+                  Total Kg- {Number(dataInfo?.aggregationResult?.totalKg).toFixed(2)}
                 </p>
                 <p className="text-2xl text-black text-center">
                   Total Ctn- {dataInfo?.aggregationResult?.totalCtn}
