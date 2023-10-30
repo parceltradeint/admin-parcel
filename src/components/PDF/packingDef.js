@@ -10,7 +10,7 @@ export const generatePackingPDF = (info, type) => {
       if (type === "Challan") {
         return val.mark === true;
       } else {
-        val?.kg && val?.rate && val?.goodsName
+       return val?.kg && val?.goodsName
       }
     };
     let newData = info?.data
