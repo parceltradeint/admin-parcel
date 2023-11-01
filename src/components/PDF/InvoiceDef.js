@@ -561,10 +561,12 @@ export const generatePDF = (info) => {
     // pageBreakBefore: function(currentNode, followingNodesOnPage, nodesOnNextPage, previousNodesOnPage) {
     //   return currentNode.startPosition.top >= 850;
     //   },
-    pageSize: {
-      width: 595.28,
-      height: 'auto'
-    },
+
+    pageSize: "A4",
+    // pageSize: {
+    //   width: 595.28,
+    //   height: 'auto'
+    // },
     pageBreak: 'before',
     defaultStyle: {
       border: [true, true, true, true], // Specify the border for all sides
