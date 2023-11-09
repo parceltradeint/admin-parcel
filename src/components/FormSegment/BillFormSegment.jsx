@@ -15,6 +15,8 @@ import PackingOverviewForm from "./PackingOverviewForm";
 import { generatePackingPDF } from "../PDF/packingDef";
 import Swal from "sweetalert2";
 import { isEmpty, sumBy } from "lodash";
+import { MyDocument } from "../PDF/makeNewPdf";
+import { PDFDownloadLink } from "@react-pdf/renderer";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const BillFormSegment = (props) => {
@@ -289,7 +291,15 @@ const BillFormSegment = (props) => {
                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3 uppercase"
                   onClick={downloadPDF}
                 >
-                  View Bill
+                  {/* <PDFDownloadLink
+                    document={<MyDocument />}
+                    fileName="somename.pdf"
+                  >
+                    {({ blob, url, loading, error }) =>
+                      loading ? "Loading document..." : "View Bill"
+                    }
+                  </PDFDownloadLink> */}
+                View Bill
                 </button>
                 {type === "customer" && (
                   <button
@@ -321,6 +331,7 @@ const BillFormSegment = (props) => {
             </Section>
           </>
         )}
+      <MyDocument />
     </Section>
   );
 };

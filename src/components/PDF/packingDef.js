@@ -17,11 +17,12 @@ export const generatePackingPDF = (info, type) => {
       ?.filter((item) => conditions(item))
       .map((item, i) => {
         let totalAmount = Number(item?.kg) * Number(item?.rate);
+        const isBrand = item?.goodsName?.match(/copy|brand/i) ? true : false;
         return [
-          { text: `${i + 1}`, fontSize: 12 },
-          { text: `${item?.goodsName || ""}`, fontSize: 12, alignment: "left" },
-          { text: `${item?.ctn || ""}`, fontSize: 12, alignment: "left" },
-          { text: `${Number(item?.kg || "").toFixed(2)}`, fontSize: 12 },
+          { text: `${i + 1}`, fontSize: 12, color: `${isBrand ? "red" : "black"}` },
+          { text: `${item?.goodsName || ""}`, fontSize: 12, alignment: "left", color: `${isBrand ? "red" : "black"}` },
+          { text: `${item?.ctn || ""}`, fontSize: 12, alignment: "left", color: `${isBrand ? "red" : "black"}` },
+          { text: `${Number(item?.kg || "").toFixed(2)}`, fontSize: 12, color: `${isBrand ? "red" : "black"}` },
         ];
       });
 
@@ -90,68 +91,68 @@ export const generatePackingPDF = (info, type) => {
           defaultBorder: false,
         },
       },
-      // {
-      //   table: {
-      //     widths: ["*"],
-      //     body: [
-      //       [
-      //         // {
-      //         //   stack: [
-      //         //     {
-      //         //       image: wechat,
-      //         //       width: 50,
-      //         //       margin: [10, 0, 0, 0],
-      //         //     },
-      //         //     {
-      //         //       text: "WeChat",
-      //         //       color: "#333",
-      //         //       alignment: "center",
-      //         //       fontSize: 9,
-      //         //       margin: [4, 4, 0, 0],
-      //         //     },
-      //         //   ],
-      //         // },
-      //         {
-      //           stack: [
-      //             {
-      //               text: "H-2553, Sayednagor, Vatara, Gulshan-2, Dhaka-1212.\n",
-      //               fontSize: 15,
-      //               border: [false, true, false, true],
-      //             },
-      //             {
-      //               text: "Cell: 01879314050, 01521584929\n",
-      //               fontSize: 15,
-      //               margin: [0, 5, 0, 0],
-      //             },
-      //           ],
-      //           fillColor: "#555555",
-      //           color: "#FFFFFF",
-      //           bold: true,
-      //           alignment: "center",
-      //           margin: [0, 10, 0, 0],
-      //         }
+      {
+        table: {
+          widths: ["13%", "73%", "14%"],
+          body: [
+            [
+              {
+                stack: [
+                  {
+                    image: wechat,
+                    width: 50,
+                    margin: [10, 0, 0, 0],
+                  },
+                  {
+                    text: "WeChat",
+                    color: "#333",
+                    alignment: "center",
+                    fontSize: 9,
+                    margin: [4, 4, 0, 0],
+                  },
+                ],
+              },
+              {
+                stack: [
+                  {
+                    text: "H-2553, Sayednagor, Vatara, Gulshan-2, Dhaka-1212.\n",
+                    fontSize: 15,
+                    border: [false, true, false, true],
+                  },
+                  {
+                    text: "Cell: 01879314050, 01521584929\n",
+                    fontSize: 15,
+                    margin: [0, 5, 0, 0],
+                  },
+                ],
+                fillColor: "#555555",
+                color: "#FFFFFF",
+                bold: true,
+                alignment: "center",
+                margin: [0, 10, 0, 0],
+              },
 
-      //         // {
-      //         //   stack: [
-      //         //     {
-      //         //       image: whatsApp,
-      //         //       width: 53,
-      //         //       margin: [10, 0, 0, 0],
-      //         //     },
-      //         //     {
-      //         //       text: "WhatsApp",
-      //         //       color: "#333",
-      //         //       alignment: "center",
-      //         //       fontSize: 9,
-      //         //       margin: [4, 0, 0, 0],
-      //         //     },
-      //         //   ],
-      //         // },
-      //       ],
-      //     ],
-      //   },
-      //   layout: "borders",
-      // },
+              {
+                stack: [
+                  {
+                    image: whatsApp,
+                    width: 53,
+                    margin: [10, 0, 0, 0],
+                  },
+                  {
+                    text: "WhatsApp",
+                    color: "#333",
+                    alignment: "center",
+                    fontSize: 9,
+                    margin: [4, 0, 0, 0],
+                  },
+                ],
+              },
+            ],
+          ],
+        },
+        layout: "borders",
+      },
       {
         style: "section",
         margin: [0, 5, 0, 0],
@@ -160,7 +161,7 @@ export const generatePackingPDF = (info, type) => {
           body: [
             [
               {
-                text: [{ text: `${type}\n`, fontSize: 20 }],
+                text: [{ text: `${type?.toUpperCase()}\n`, fontSize: 20 }],
                 fillColor: "#1586D5",
                 color: "#FFFFFF",
                 alignment: "center",
@@ -237,11 +238,10 @@ export const generatePackingPDF = (info, type) => {
       },
 
       {
-        fontSize: 11,
-        margin: [0, 0, 0, 5],
-        // border:[false, false, false, false],
+        margin: [0, 0, 0, 0],
+        fontSize: 10,
         table: {
-          widths: ["14.5%", "85.5%"],
+          widths: ["15%", "50%", "15%", "20%"],
           body: [
             [
               {
@@ -250,19 +250,57 @@ export const generatePackingPDF = (info, type) => {
                 fillColor: "#555555",
                 color: "#FFFFFF",
                 bold: true,
-                border: [true, false, true, true],
-                margin: [0, -2, 0, 0],
+                border: [true, false, false, false],
               },
               {
-                text: `${info?.remarks}`,
-                color: "red",
+                text: ``,
+                border: [true, false, false, false],
+              },
+              {
+                text: "PHONE :",
+                alignment: "left",
+                fillColor: "#555555",
+                color: "#FFFFFF",
                 bold: true,
-                border: [false, false, true, true],
+                border: [true, false, false, false],
+              },
+              {
+                text: `${info?.phone}`,
+                alignment: "left",
+                border: [true, false, true, false],
               },
             ],
           ],
         },
       },
+
+      // {
+      //   fontSize: 11,
+      //   margin: [0, 0, 0, 5],
+      //   // border:[false, false, false, false],
+      //   table: {
+      //     widths: ["14.5%", "85.5%"],
+      //     body: [
+      //       [
+      //         {
+      //           text: "REMARKS :",
+      //           alignment: "left",
+      //           fillColor: "#555555",
+      //           color: "#FFFFFF",
+      //           bold: true,
+      //           border: [true, false, true, true],
+      //           margin: [0, -2, 0, 0],
+      //         },
+      //         {
+      //           text: `${info?.remarks}`,
+      //           color: "red",
+      //           bold: true,
+      //           border: [false, false, true, true],
+      //         },
+      //       ],
+      //     ],
+      //   },
+      // },
 
       {
         style: "summartTable",
@@ -320,6 +358,33 @@ export const generatePackingPDF = (info, type) => {
           },
         },
       },
+      {
+        table: {
+          widths: ["50%", "50%"],
+          body: [
+            [
+              {
+                text: "CUSTOMER SIGNATURE",
+                alignment: "left",
+                bold: true,
+                // border: [true, true, true, false],
+                // decoration: "overline",
+                margin: [5, 40, 0, 0],
+                border: [true, false, true, true],
+              },
+              {
+                text: "AUTHORISE SIGNATURE",
+                alignment: "right",
+                bold: true,
+                // decoration: "overline",
+                // border: [true, true, true, false],
+                margin: [0, 40, 10, -2],
+                border: [false, false, true, true],
+              },
+            ],
+          ],
+        }
+      }
     ],
 
     // pageBreakBefore: (currentNode, followingNodes) => {

@@ -7,19 +7,39 @@ export const generatePDF = (info) => {
   let renderData = [];
   if (info?.data) {
     let newData = info?.data?.map((item, i) => {
-      let totalAmount = Number(item?.kg || item?.qty || 0) * Number(item?.rate || 0);
+      let totalAmount =
+        Number(item?.kg || item?.qty || 0) * Number(item?.rate || 0);
+      const isBrand = item?.goodsName?.match(/copy|brand/i) ? true : false;
       return [
-        { text: `${i + 1}`, fontSize: 12 },
-        { text: `${item?.goodsName || item?.des}`, fontSize: 12, alignment: "left" },
-        { text: `${item?.ctn || ""}`, fontSize: 12 },
-        { text: `${Number(item?.kg || item?.qty).toFixed(2)}`, fontSize: 12 },
-        { text: `${item?.rate}`, fontSize: 12 },
+        { text: `${i + 1}`, fontSize: 12, color: `${isBrand ? "red" : "black"}` },
+        {
+          text: `${item?.goodsName || item?.des}`,
+          fontSize: 12,
+          alignment: "left",
+          color: `${isBrand ? "red" : "black"}`,
+        },
+        {
+          text: `${item?.ctn || ""}`,
+          fontSize: 12,
+          color: `${isBrand ? "red" : "black"}`,
+        },
+        {
+          text: `${Number(item?.kg || item?.qty).toFixed(2)}`,
+          fontSize: 12,
+          color: `${isBrand ? "red" : "black"}`,
+        },
+        {
+          text: `${item?.rate}`,
+          fontSize: 12,
+          color: `${isBrand ? "red" : "black"}`,
+        },
         {
           text: `${convertBengaliToEnglishNumber(
             totalAmount.toLocaleString("bn")
           )}`,
           fontSize: 12,
           alignment: "right",
+          color: `${isBrand ? "red" : "black"}`,
         },
       ];
     });
@@ -222,7 +242,7 @@ export const generatePDF = (info) => {
                 color: "#FFFFFF",
                 bold: true,
               },
-              { text: `${formartDate(new Date())}`, alignment: "left"}
+              { text: `${formartDate(new Date())}`, alignment: "left" },
               // { text: `${info?.phone}`}
             ],
           ],
@@ -255,7 +275,11 @@ export const generatePDF = (info) => {
                 border: [true, false, false, true],
                 bold: true,
               },
-              { text: `${info?.reporting}`, alignment: "left", border: [true, false, true, true]}
+              {
+                text: `${info?.reporting}`,
+                alignment: "left",
+                border: [true, false, true, true],
+              },
             ],
           ],
         },
@@ -296,7 +320,7 @@ export const generatePDF = (info) => {
           ],
         },
       },
-      
+
       {
         fontSize: 11,
         margin: [0, 0, 0, 5],
@@ -312,7 +336,7 @@ export const generatePDF = (info) => {
                 color: "#FFFFFF",
                 bold: true,
                 border: [true, false, true, true],
-                margin: [0, -2, 0, 0]
+                margin: [0, -2, 0, 0],
               },
               {
                 text: `${info?.remarks}`,
@@ -364,7 +388,12 @@ export const generatePDF = (info) => {
             [
               { text: "TOTAL", style: "tableFooter" },
               { text: "", style: "tableFooter" },
-              { text: `${info?.data?.filter((item) => item?.ctn?.length > 0).length}`, style: "tableFooter" },
+              {
+                text: `${
+                  info?.data?.filter((item) => item?.ctn?.length > 0).length
+                }`,
+                style: "tableFooter",
+              },
               {
                 text: `${Number(
                   sumBy(info?.data, (val) => Number(val?.kg || 0))
@@ -535,7 +564,7 @@ export const generatePDF = (info) => {
                     text: "YOUR GETWAY TO CHINA",
                     bold: true,
                     fontSize: 11,
-                    alignment: "right"
+                    alignment: "right",
                   },
                 ],
               ],
@@ -567,7 +596,7 @@ export const generatePDF = (info) => {
     //   width: 595.28,
     //   height: 'auto'
     // },
-    pageBreak: 'before',
+    pageBreak: "before",
     defaultStyle: {
       border: [true, true, true, true], // Specify the border for all sides
       columnGap: 15,

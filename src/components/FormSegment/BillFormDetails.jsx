@@ -210,30 +210,7 @@ const BillFormDetails = (props) => {
         <ReactTable
           data={data}
           columns={[
-            {
-              Header: (row) => renderEditMark(row, "all"),
-              accessor: "mark",
-              Cell: renderEditMark,
-              width: 40,
-              show: type === "customer" ? true : false,
-            },
-            {
-              Header: "Status",
-              accessor: "status",
-              Cell: (row) => (
-                <span
-                  className={`${
-                    row.original.mark == true
-                      ? "bg-red-100 text-red-800"
-                      : "bg-green-100 text-green-800"
-                  } uppercase block w-full px-2 py-1 mt-3 border rounded-md text-sm font-medium`}
-                >
-                  {row.original.mark == true ? "Pending" : "Done"}
-                </span>
-              ),
-              width: 90,
-              show: type === "customer" ? true : false,
-            },
+            
             {
               Header: "SL",
               accessor: "sl",
@@ -405,7 +382,7 @@ const BillFormDetails = (props) => {
               Footer: (row) => (
                 <div className={" text-xl font-semibold text-right "}>
                   <div className="flex flex-col">
-                    <span className=" border-y-2 text-right py-1 px-1 mb-2">
+                    <span className=" border-y-2 text-right pb-1 mb-2">
                       <NumberFormat
                         thousandSeparator={true}
                         className="text-right font-semibold block w-full bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
@@ -481,6 +458,31 @@ const BillFormDetails = (props) => {
                   </div>
                 </div>
               ),
+            },
+           
+            {
+              Header: "Status",
+              accessor: "status",
+              Cell: (row) => (
+                <span
+                  className={`${
+                    row.original.mark == true
+                      ? "bg-green-100 text-green-800"
+                      : " bg-red-100 text-red-800"
+                  } uppercase block w-full px-2 py-1 mt-3 border rounded-md text-sm font-medium`}
+                >
+                  {row.original.mark == true ? "Done" : "Pending"}
+                </span>
+              ),
+              width: 90,
+              show: type === "customer" ? true : false,
+            },
+            {
+              Header: (row) => renderEditMark(row, "all"),
+              accessor: "mark",
+              Cell: renderEditMark,
+              width: 40,
+              show: type === "customer" ? true : false,
             },
             {
               id: "headerId",
