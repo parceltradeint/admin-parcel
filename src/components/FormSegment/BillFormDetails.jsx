@@ -81,7 +81,7 @@ const BillFormDetails = (props) => {
     return (
       <>
         <input
-          className={`flex items-center ${type == "all" ? "mt-1":"mt-5"} ml-2 text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 mark-box`}
+          className={`flex items-center ${type == "all" ? "mt-1":"mt-5"} cursor-pointer ml-2 text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 mark-box`}
           type="checkbox"
           onChange={(e) =>
             handleCellMarkChange(cellInfo, e.target.checked, type)

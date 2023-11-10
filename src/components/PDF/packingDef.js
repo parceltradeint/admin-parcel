@@ -10,7 +10,7 @@ export const generatePackingPDF = (info, type) => {
       if (type === "Challan") {
         return val.mark === true;
       } else {
-       return val?.kg && val?.goodsName
+        return val?.kg && val?.goodsName;
       }
     };
     let newData = info?.data
@@ -19,10 +19,28 @@ export const generatePackingPDF = (info, type) => {
         let totalAmount = Number(item?.kg) * Number(item?.rate);
         const isBrand = item?.goodsName?.match(/copy|brand/i) ? true : false;
         return [
-          { text: `${i + 1}`, fontSize: 12, color: `${isBrand ? "red" : "black"}` },
-          { text: `${item?.goodsName || ""}`, fontSize: 12, alignment: "left", color: `${isBrand ? "red" : "black"}` },
-          { text: `${item?.ctn || ""}`, fontSize: 12, alignment: "left", color: `${isBrand ? "red" : "black"}` },
-          { text: `${Number(item?.kg || "").toFixed(2)}`, fontSize: 12, color: `${isBrand ? "red" : "black"}` },
+          {
+            text: `${i + 1}`,
+            fontSize: 12,
+            // color: `${isBrand ? "red" : "black"}`,
+          },
+          {
+            text: `${item?.goodsName || ""}`,
+            fontSize: 12,
+            alignment: "left",
+            color: `${isBrand ? "red" : "black"}`,
+          },
+          {
+            text: `${item?.ctn || ""}`,
+            fontSize: 12,
+            alignment: "left",
+            // color: `${isBrand ? "red" : "black"}`,
+          },
+          {
+            text: `${Number(item?.kg || "").toFixed(2)}`,
+            fontSize: 12,
+            // color: `${isBrand ? "red" : "black"}`,
+          },
         ];
       });
 
@@ -333,11 +351,11 @@ export const generatePackingPDF = (info, type) => {
             [
               { text: "TOTAL", style: "tableFooter" },
               { text: "", style: "tableFooter" },
-              { text: `${info?.data?.length}`, style: "tableFooter" },
+              { text: `${renderData.length > 0 ? info?.data?.length : 0}`, style: "tableFooter" },
               {
-                text: `${Number(
+                text: `${renderData.length > 0 ? Number(
                   sumBy(info?.data, (val) => Number(val?.kg || 0))
-                ).toFixed(2)}`,
+                ).toFixed(2) : 0}`,
                 style: "tableFooter",
               },
             ],
@@ -358,35 +376,99 @@ export const generatePackingPDF = (info, type) => {
           },
         },
       },
-      {
-        table: {
-          widths: ["50%", "50%"],
-          body: [
-            [
-              {
-                text: "CUSTOMER SIGNATURE",
-                alignment: "left",
-                bold: true,
-                // border: [true, true, true, false],
-                // decoration: "overline",
-                margin: [5, 40, 0, 0],
-                border: [true, false, true, true],
-              },
-              {
-                text: "AUTHORISE SIGNATURE",
-                alignment: "right",
-                bold: true,
-                // decoration: "overline",
-                // border: [true, true, true, false],
-                margin: [0, 40, 10, -2],
-                border: [false, false, true, true],
-              },
-            ],
-          ],
-        }
-      }
+      // {
+      //   margin: [0, 20, 0, 0],
+      //   // border: [true, true, true, true],
+      //   table: {
+      //     widths: ["50%", "50%"],
+      //     body: [
+      //       [
+      //         {
+      //           text: "CUSTOMER SIGNATURE",
+      //           alignment: "left",
+      //           bold: true,
+      //           // border: [true, true, true, false],
+      //           decoration: "overline",
+      //           margin: [5, 40, 0, 0],
+      //           border: [true, true, true, true],
+      //         },
+      //         {
+      //           text: "AUTHORISE SIGNATURE",
+      //           alignment: "right",
+      //           bold: true,
+      //           decoration: "overline",
+      //           // border: [true, true, true, false],
+      //           margin: [0, 40, 10, -2],
+      //           border: [false, true, true, true],
+      //         },
+      //       ],
+      //     ],
+      //   }
+      // }
     ],
 
+    footer: function (currentPage, pageCount) {
+      if (currentPage == pageCount) {
+        return {
+          table: {
+            widths: ["50%", "50%"],
+            headerRows: 1,
+            body: [
+              [
+                {
+                  text: "CUSTOMER SIGNATURE",
+                  alignment: "left",
+                  bold: true,
+                  // border: [true, true, true, false],
+                  decoration: "overline",
+                  margin: [5, 30, 0, 0],
+                  border: [true, true, true, true],
+                },
+                {
+                  text: "AUTHORISE SIGNATURE",
+                  alignment: "right",
+                  bold: true,
+                  decoration: "overline",
+                  // border: [true, true, true, false],
+                  margin: [0, 30, 10, 0],
+                  border: [false, true, true, true],
+                },
+              ],
+            ],
+          },
+          margin: [40, -30, 40, 10],
+        };
+      }
+    },
+    // footer: {
+    //   table: {
+    //     widths: ["50%", "50%"],
+    //     headerRows: 1,
+    //     body: [
+    //       [
+    //         {
+    //           text: "CUSTOMER SIGNATURE",
+    //           alignment: "left",
+    //           bold: true,
+    //           // border: [true, true, true, false],
+    //           decoration: "overline",
+    //           margin: [5, 40, 0, 0],
+    //           border: [true, true, true, true],
+    //         },
+    //         {
+    //           text: "AUTHORISE SIGNATURE",
+    //           alignment: "right",
+    //           bold: true,
+    //           decoration: "overline",
+    //           // border: [true, true, true, false],
+    //           margin: [0, 40, 10, 0],
+    //           border: [false, true, true, true],
+    //         },
+    //       ],
+    //     ],
+    //   },
+    //   margin: [40, -20, 40, 10],
+    // },
     // pageBreakBefore: (currentNode, followingNodes) => {
     //   // Check if currentNode._pdfmakeWrapper.node is defined
     //   if (currentNode._pdfmakeWrapper && currentNode._pdfmakeWrapper.node) {

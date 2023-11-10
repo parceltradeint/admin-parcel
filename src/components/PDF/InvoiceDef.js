@@ -11,7 +11,10 @@ export const generatePDF = (info) => {
         Number(item?.kg || item?.qty || 0) * Number(item?.rate || 0);
       const isBrand = item?.goodsName?.match(/copy|brand/i) ? true : false;
       return [
-        { text: `${i + 1}`, fontSize: 12, color: `${isBrand ? "red" : "black"}` },
+        {
+          text: `${i + 1}`, fontSize: 12,
+          // color: `${isBrand ? "red" : "black"}`
+        },
         {
           text: `${item?.goodsName || item?.des}`,
           fontSize: 12,
@@ -21,17 +24,17 @@ export const generatePDF = (info) => {
         {
           text: `${item?.ctn || ""}`,
           fontSize: 12,
-          color: `${isBrand ? "red" : "black"}`,
+          // color: `${isBrand ? "red" : "black"}`,
         },
         {
           text: `${Number(item?.kg || item?.qty).toFixed(2)}`,
           fontSize: 12,
-          color: `${isBrand ? "red" : "black"}`,
+          // color: `${isBrand ? "red" : "black"}`,
         },
         {
           text: `${item?.rate}`,
           fontSize: 12,
-          color: `${isBrand ? "red" : "black"}`,
+          // color: `${isBrand ? "red" : "black"}`,
         },
         {
           text: `${convertBengaliToEnglishNumber(
@@ -39,7 +42,7 @@ export const generatePDF = (info) => {
           )}`,
           fontSize: 12,
           alignment: "right",
-          color: `${isBrand ? "red" : "black"}`,
+          // color: `${isBrand ? "red" : "black"}`,
         },
       ];
     });
@@ -531,7 +534,7 @@ export const generatePDF = (info) => {
                     bold: true,
                     // border: [true, true, true, false],
                     // decoration: "overline",
-                    margin: [5, 40, 0, 0],
+                    margin: [5, 30, 0, 0],
                     border: [true, false, true, false],
                   },
                   {
@@ -540,7 +543,7 @@ export const generatePDF = (info) => {
                     bold: true,
                     // decoration: "overline",
                     // border: [true, true, true, false],
-                    margin: [0, 40, 10, -2],
+                    margin: [0, 30, 10, -2],
                     border: [false, false, true, false],
                   },
                 ],
@@ -591,11 +594,11 @@ export const generatePDF = (info) => {
     //   return currentNode.startPosition.top >= 850;
     //   },
 
-    pageSize: "A4",
-    // pageSize: {
-    //   width: 595.28,
-    //   height: 'auto'
-    // },
+    // pageSize: "A4",
+    pageSize: {
+      width: 595.28,
+      height: 'auto'
+    },
     pageBreak: "before",
     defaultStyle: {
       border: [true, true, true, true], // Specify the border for all sides
