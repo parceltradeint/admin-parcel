@@ -46,6 +46,52 @@ export const generatePackingPDF = (info, type) => {
 
     renderData = [...newData];
   }
+  const conditionalPhoneRemarks = () => {
+    let newData = {
+      widths: [],
+      body: [
+        {
+          text: "Address :",
+          alignment: "left",
+          fillColor: "#555555",
+          color: "#FFFFFF",
+          bold: true,
+          border: [true, false, false, true],
+        },
+        {
+          text: `${info?.address}`,
+          border: [true, false, true, true],
+        },
+      ],
+    };
+    if (type === "Challan") {
+      newData = {
+        widths: ["15%", "50%", "15%", "20%"],
+        body: [
+          ...newData.body,
+          {
+            text: "PHONE :",
+            alignment: "left",
+            fillColor: "#555555",
+            color: "#FFFFFF",
+            bold: true,
+            border: [true, false, false, true],
+          },
+          {
+            text: `${info?.phone}`,
+            alignment: "left",
+            border: [true, false, true, true],
+          },
+        ],
+      };
+    } else {
+      newData = {
+        widths: ["14.5%", "85.5%"],
+        body: [...newData.body],
+      };
+    }
+    return newData;
+  };
   let docDefinition = {
     info: {
       title: `${info?.customerName}- ${info?.shipmentBy}- ${formartDate(
@@ -173,7 +219,7 @@ export const generatePackingPDF = (info, type) => {
       },
       {
         style: "section",
-        margin: [0, 5, 0, 0],
+        margin: [0, 0, 0, 0],
         table: {
           widths: ["*"],
           body: [
@@ -259,66 +305,42 @@ export const generatePackingPDF = (info, type) => {
         margin: [0, 0, 0, 0],
         fontSize: 10,
         table: {
-          widths: ["15%", "50%", "15%", "20%"],
+          widths: [...conditionalPhoneRemarks().widths],
           body: [
             [
-              {
-                text: "REMARKS :",
-                alignment: "left",
-                fillColor: "#555555",
-                color: "#FFFFFF",
-                bold: true,
-                border: [true, false, false, false],
-              },
-              {
-                text: ``,
-                border: [true, false, false, false],
-              },
-              {
-                text: "PHONE :",
-                alignment: "left",
-                fillColor: "#555555",
-                color: "#FFFFFF",
-                bold: true,
-                border: [true, false, false, false],
-              },
-              {
-                text: `${info?.phone}`,
-                alignment: "left",
-                border: [true, false, true, false],
-              },
+              ...conditionalPhoneRemarks().body
             ],
           ],
         },
       },
 
-      // {
-      //   fontSize: 11,
-      //   margin: [0, 0, 0, 5],
-      //   // border:[false, false, false, false],
-      //   table: {
-      //     widths: ["14.5%", "85.5%"],
-      //     body: [
-      //       [
-      //         {
-      //           text: "REMARKS :",
-      //           alignment: "left",
-      //           fillColor: "#555555",
-      //           color: "#FFFFFF",
-      //           bold: true,
-      //           border: [true, false, true, true],
-      //           margin: [0, -2, 0, 0],
-      //         },
-      //         {
-      //           text: `${info?.remarks}`,
-      //           color: "red",
-      //           bold: true,
-      //           border: [false, false, true, true],
-      //         },
-      //       ],
-      //     ],
-      //   },
-      // },
+      {
+        fontSize: 11,
+        margin: [0, 0, 0, 0],
+        // border:[false, false, false, false],
+        table: {
+          widths: ["14.5%", "85.5%"],
+          body: [
+            [
+              {
+                text: "Remarks :",
+                alignment: "left",
+                fillColor: "#555555",
+                color: "#FFFFFF",
+                bold: true,
+                border: [true, false, true, false],
+                margin: [0, -2, 0, 0],
+              },
+              {
+                text: `${info?.remarks}`,
+                color: "red",
+                bold: true,
+                border: [false, false, true, false],
+              },
+            ],
+          ],
+        },
+      },
 
       {
         style: "summartTable",
@@ -351,11 +373,18 @@ export const generatePackingPDF = (info, type) => {
             [
               { text: "TOTAL", style: "tableFooter" },
               { text: "", style: "tableFooter" },
-              { text: `${renderData.length > 0 ? info?.data?.length : 0}`, style: "tableFooter" },
               {
-                text: `${renderData.length > 0 ? Number(
-                  sumBy(info?.data, (val) => Number(val?.kg || 0))
-                ).toFixed(2) : 0}`,
+                text: `${renderData.length > 0 ? info?.data?.length : 0}`,
+                style: "tableFooter",
+              },
+              {
+                text: `${
+                  renderData.length > 0
+                    ? Number(
+                        sumBy(info?.data, (val) => Number(val?.kg || 0))
+                      ).toFixed(2)
+                    : 0
+                }`,
                 style: "tableFooter",
               },
             ],
@@ -408,7 +437,7 @@ export const generatePackingPDF = (info, type) => {
     ],
 
     footer: function (currentPage, pageCount) {
-      if (currentPage == pageCount) {
+      if (currentPage == pageCount && type === "Challan") {
         return {
           table: {
             widths: ["50%", "50%"],

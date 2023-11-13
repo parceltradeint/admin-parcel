@@ -9,7 +9,7 @@ export const generatePDF = (info) => {
     let newData = info?.data?.map((item, i) => {
       let totalAmount =
         Number(item?.kg || item?.qty || 0) * Number(item?.rate || 0);
-      const isBrand = item?.goodsName?.match(/copy|brand/i) ? true : false;
+      const isBrand = item?.goodsName?.match(/copy|brand|mixed/i) ? true : false;
       return [
         {
           text: `${i + 1}`, fontSize: 12,

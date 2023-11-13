@@ -6,7 +6,7 @@ const ShipmentBillGrid = (props) => {
   const { data, type } = props;
   const calculationDueBill = (item) => {
     if (item.totalDueBill) {
-      return item.totalDueBill
+      return Number(item.totalDueBill).toFixed(2)
     }
     else {
      let total =  sumBy(item.data, (v) => Number(v.totalAmount || 0)) +
@@ -14,7 +14,7 @@ const ShipmentBillGrid = (props) => {
           Number(item?.rmb?.rate || 0)) +
         Number(item?.due || 0) -
        Number(item?.paid || 0)
-       return total
+       return total.toFixed(2)
     }
      
   }

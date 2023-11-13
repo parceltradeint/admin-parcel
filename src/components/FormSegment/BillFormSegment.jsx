@@ -54,7 +54,7 @@ const BillFormSegment = (props) => {
       data: newData,
     };
     if (router.query.type === "packing") {
-      generatePackingPDF(newInfo, "Packing Lists");
+      generatePackingPDF(newInfo, "Packing List");
     } else {
       generatePDF(newInfo);
     }
@@ -299,7 +299,7 @@ const BillFormSegment = (props) => {
                       loading ? "Loading document..." : "View Bill"
                     }
                   </PDFDownloadLink> */}
-                View Bill
+                {type === "packing" ? "View PDF" : "View Bill"}
                 </button>
                 {type === "customer" && (
                   <button
@@ -331,7 +331,6 @@ const BillFormSegment = (props) => {
             </Section>
           </>
         )}
-      <MyDocument />
     </Section>
   );
 };
