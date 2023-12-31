@@ -6,9 +6,13 @@ import { useRouter } from 'next/router';
 
 const ShipmentPage = () => {
   const router = useRouter();
-  const { month, folder, shipmentNo, type } = router.query;
+  const { month, folder, shipmentNo, type, year } = router.query;
   // Replace this with your data retrieval logic for the specific shipmentNo
   const breadcrumbs = [
+    {
+      label: year,
+      href: `/bills/${type}/months`
+    },
     {
       label: month,
       href: `/bills/${type}/months`
@@ -25,13 +29,13 @@ const ShipmentPage = () => {
   return (
     <Layout breadcrumbs={breadcrumbs} billType={type}>
       {
-        type === "customer" && <OutBound type={folder?.toLowerCase()} shipmentNo={`${shipmentNo}`} month={month} />
+        type === "customer" && <OutBound type={folder?.toLowerCase()} shipmentNo={`${shipmentNo}`} month={month} year={year} />
       }
       {
-        type === "cnf" && <InBound type={folder?.toLowerCase()} shipmentNo={`${shipmentNo}`} month={month} />
+        type === "cnf" && <InBound type={folder?.toLowerCase()} shipmentNo={`${shipmentNo}`} month={month} year={year}/>
       }
       {
-        type === "packing" && <Packing type={folder?.toLowerCase()} shipmentNo={`${shipmentNo}`} month={month} />
+        type === "packing" && <Packing type={folder?.toLowerCase()} shipmentNo={`${shipmentNo}`} month={month} year={year}/>
       }
       {/* <h1>Month: {month}</h1>
       <h2>Shipment Type: {folder} </h2>

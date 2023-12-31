@@ -16,7 +16,7 @@ const Packing = () => {
   const [pageCount, setPageCount] = useState(null);
   const [loading, setLoading] = useState(false);
   const [dataInfo, setDataInfo] = useState({});
-  const { folder, shipmentNo } = router.query;
+  const { folder, shipmentNo, year } = router.query;
 
   const pagginationHandler = ({ selected }) => {
     setPageNumber(selected);
@@ -31,6 +31,7 @@ const Packing = () => {
       filter: {},
       type: folder,
       search: search,
+      year: year
     };
     async function fetchBills() {
       setLoading(true);
@@ -92,6 +93,7 @@ const Packing = () => {
       filter: {},
       type: folder,
       shipmentNo: shipmentNo,
+      year: year
     };
     async function fetchBills() {
       setLoading(true);

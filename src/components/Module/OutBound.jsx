@@ -17,7 +17,7 @@ const OutBound = () => {
   const [pageCount, setPageCount] = useState(null);
   const [loading, setLoading] = useState(false);
   const [dataInfo, setDataInfo] = useState({});
-  const { folder, shipmentNo } = router.query;
+  const { folder, shipmentNo, year } = router.query;
 
   const pagginationHandler = ({ selected }) => {
     setPageNumber(selected);
@@ -33,6 +33,7 @@ const OutBound = () => {
       type: folder,
       search: search,
       shipmentNo: shipmentNo,
+      year: year
     };
 
     async function fetchBills() {
@@ -95,6 +96,7 @@ const OutBound = () => {
       filter: {},
       type: folder,
       shipmentNo: shipmentNo,
+      year: year
     };
     async function fetchBills() {
       setLoading(true);

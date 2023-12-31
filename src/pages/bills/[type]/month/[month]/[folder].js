@@ -6,17 +6,22 @@ import { faFolder } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-const ShipmentNoPage = ({ type, month, folder, year }) => {
+const ShipmentNoPage = ({ type, month, folder }) => {
   const [shipmentNos, setShipmentNos] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const router = useRouter()
+  const year = router.query?.year
+
   useEffect(() => {
     async function fetchShipmentNos() {
       setLoading(true);
       await axios
         .get(
-          `/api/shipment-info?year=${2023}&month=${month.toLowerCase()}&shipmentBy=${folder.toLowerCase()}&type=${type}`
+          `/api/shipment-info?year=${year}&month=${month.toLowerCase()}&shipmentBy=${folder.toLowerCase()}&type=${type}`
         )
         .then((res) => {
           const resultArray = removeDuplicatesByProperty(
@@ -31,9 +36,13 @@ const ShipmentNoPage = ({ type, month, folder, year }) => {
         .finally(() => setLoading(false));
     }
     fetchShipmentNos();
-  }, [folder, month, type]);
+  }, [folder, month, type, year]);
 
   const breadcrumbs = [
+    {
+      label: year,
+      href: `/bills/${type}/months`,
+    },
     {
       label: month,
       href: `/bills/${type}/months`,
@@ -57,7 +66,7 @@ const ShipmentNoPage = ({ type, month, folder, year }) => {
                   <Link
                     className="flex flex-col items-center justify-center h-16 bg-gray-200 rounded"
                     key={i}
-                    href={`/bills/${type}/month/${month}/${folder.toLowerCase()}/${item?.shipmentNo.toLowerCase()}`}
+                    href={`/bills/${type}/month/${month}/${folder.toLowerCase()}/${item?.shipmentNo.toLowerCase()}/?year=${year}`}
                   >
                     <FontAwesomeIcon icon={faFolder} className="" size={"xl"} />
                     <p className="mt-2 text-sm">{item?.shipmentNo}</p>

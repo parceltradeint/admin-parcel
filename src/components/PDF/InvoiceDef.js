@@ -429,6 +429,7 @@ export const generatePDF = (info) => {
       },
 
       {
+        // absolutePosition: { x: 0, y: '*'},
         stack: [
           {
             table: {
@@ -574,10 +575,182 @@ export const generatePDF = (info) => {
             },
           },
         ],
+        pageBreak: 'after',
         // margin: [40, -150],
         border: [true, true, true, true],
       },
     ],
+
+    pageBreak: function (currentNode, followingNodesOnPage, nodesOnNextPage, previousNodesOnPage) {
+      const spaceNeededForStackSection = 50; // Adjust this value based on your stack section's height
+  
+      // Calculate the space left on the page
+      const spaceLeftOnPage = currentNode._pdfmakeWrapper.page.maxY - currentNode._pdfmakeWrapper.page.minY;
+  
+      // Check if there's enough space for the stack section
+      const enoughSpaceForStackSection = spaceLeftOnPage >= spaceNeededForStackSection;
+  
+      // If there's not enough space for the stack section, insert a page break
+      return !enoughSpaceForStackSection;
+    },
+
+    pageSize: "A4",
+
+    // footer: function (currentPage, pageCount) {
+    //   if (currentPage == pageCount) {
+    //     return {
+    //       // absolutePosition: { x: 0, y: 800 - 20 * (pageCount - currentPage) }, // Adjust the factor (20) based on your needs
+    //       stack: [
+    //         // {
+    //         //   table: {
+    //         //     widths: ["71.6%", "14.2%", "14.2%"],
+    //         //     body: [
+    //         //       [
+    //         //         {
+    //         //           rowSpan: 3,
+    //         //           text: `TOTAL DUE BILL- ${convertTotalAmount(
+    //         //             Number(netTotalAmount(info?.data)) +
+    //         //               Number(info?.due || 0) -
+    //         //               Number(info?.paid || 0)
+    //         //           )}`,
+    //         //           alignment: "left",
+    //         //           margin: [40, 15, 0, 0],
+    //         //           fontSize: 20,
+    //         //           bold: true,
+    //         //           color: "red",
+    //         //           border: [true, false, false, true],
+    //         //         },
+    //         //         {
+    //         //           text: "DUE",
+    //         //           fillColor: "#555555",
+    //         //           color: "#FFFFFF",
+    //         //           fontSize: 13,
+    //         //           border: [true, false, false, false],
+    //         //         },
+    //         //         {
+    //         //           text: `${convertTotalAmount(Number(info?.due || 0))}`,
+    //         //           alignment: "right",
+    //         //           fontSize: 13,
+    //         //           border: [true, false, true, false],
+    //         //         },
+    //         //       ],
+    //         //       [
+    //         //         "",
+    //         //         {
+    //         //           text: "PAID",
+    //         //           fillColor: "#555555",
+    //         //           color: "#FFFFFF",
+    //         //           fontSize: 13,
+    //         //         },
+    //         //         {
+    //         //           text: `${convertTotalAmount(Number(info?.paid || 0))}`,
+    //         //           alignment: "right",
+    //         //           fontSize: 13,
+    //         //         },
+    //         //       ],
+    //         //       [
+    //         //         "",
+    //         //         {
+    //         //           text: "TOTAL",
+    //         //           fillColor: "#555555",
+    //         //           color: "#FFFFFF",
+    //         //           fontSize: 13,
+    //         //         },
+    //         //         {
+    //         //           text: `${convertTotalAmount(
+    //         //             Number(netTotalAmount(info?.data)) +
+    //         //               Number(info?.due || 0) -
+    //         //               Number(info?.paid || 0)
+    //         //           )}`,
+    //         //           alignment: "right",
+    //         //           bold: true,
+    //         //           fontSize: 13,
+    //         //         },
+    //         //       ],
+    //         //     ],
+    //         //   },
+    //         //   layout: "noBorder",
+    //         // },
+    //         // {
+    //         //   style: "summartTable",
+    //         //   fontSize: 11,
+    //         //   margin: [0, 5, 0, 0],
+    //         //   table: {
+    //         //     widths: ["18%", "82%"],
+    //         //     body: [
+    //         //       [
+    //         //         "TAKA IN WORDS:",
+    //         //         {
+    //         //           text: `${convertNumberToWords(
+    //         //             Number(netTotalAmount(info?.data)) +
+    //         //               Number(info?.due || 0) -
+    //         //               Number(info?.paid || 0)
+    //         //           )} TAKA ONLY.`,
+    //         //           alignment: "left",
+    //         //         },
+    //         //       ],
+    //         //     ],
+    //         //   },
+    //         // },
+    //         {
+    //           // margin: [0, 35, 0, 0],
+    //           // border:[true, true, true, true],
+    //           table: {
+    //             widths: ["50%", "50%"],
+    //             body: [
+    //               [
+    //                 {
+    //                   text: "CUSTOMER SIGNATURE",
+    //                   alignment: "left",
+    //                   bold: true,
+    //                   // border: [true, true, true, false],
+    //                   // decoration: "overline",
+    //                   // margin: [5, 30, 0, 0],
+    //                   border: [true, false, true, false],
+    //                 },
+    //                 {
+    //                   text: "AUTHORISE SIGNATURE",
+    //                   alignment: "right",
+    //                   bold: true,
+    //                   // decoration: "overline",
+    //                   // border: [true, true, true, false],
+    //                   // margin: [0, 30, 10, -2],
+    //                   border: [false, false, true, false],
+    //                 },
+    //               ],
+    //             ],
+    //           },
+    //         },
+    //         {
+    //           // margin: [0, 5],
+    //           table: {
+    //             widths: ["50%", "50%"],
+    //             body: [
+    //               [
+    //                 {
+    //                   text: "https://facebook.com/parceltradeinternational",
+    //                   alignment: "left",
+    //                   link: "https://facebook.com/parceltradeinternational",
+    //                   bold: true,
+    //                   fontSize: 11,
+    //                 },
+    //                 {
+    //                   text: "YOUR GETWAY TO CHINA",
+    //                   bold: true,
+    //                   fontSize: 11,
+    //                   alignment: "right",
+    //                 },
+    //               ],
+    //             ],
+    //           },
+    //         },
+    //       ],
+    //       // margin: [40, -150],
+    //       border: [true, true, true, true],
+    //       // margin: [70, 0],
+    //     };
+    //   }
+    // },
 
     // pageBreakBefore: (currentNode, followingNodes) => {
     //   // Check if currentNode._pdfmakeWrapper.node is defined
@@ -590,16 +763,24 @@ export const generatePDF = (info) => {
     //   }
     //   return false; // Return false if currentNode._pdfmakeWrapper.node is undefined
     // },
-    // pageBreakBefore: function(currentNode, followingNodesOnPage, nodesOnNextPage, previousNodesOnPage) {
-    //   return currentNode.startPosition.top >= 850;
-    //   },
+
+    // pageBreak: function (currentNode, followingNodesOnPage, nodesOnNextPage, previousNodesOnPage) {
+    //   // Adjust this value based on your footer's height
+    //   const spaceNeededForFooter = 50;
+      
+    //   // Adjust based on your page size
+    //   const spaceLeftOnPage = 841.89 - currentNode._pdfmakeWrapper.page.minY;
+  
+    //   // If there's not enough space for the footer, insert a page break
+    //   return spaceLeftOnPage < spaceNeededForFooter;
+    // },
 
     // pageSize: "A4",
-    pageSize: {
-      width: 595.28,
-      height: 'auto'
-    },
-    pageBreak: "before",
+    // pageSize: {
+    //   width: 595.28,
+    //   height: 841.89 + 40,
+    // },
+    // pageBreak: "before",
     defaultStyle: {
       border: [true, true, true, true], // Specify the border for all sides
       columnGap: 15,

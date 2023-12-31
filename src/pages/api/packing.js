@@ -28,7 +28,7 @@ export default async function newShipmentBill(req, res) {
       let response = await collection.findOne({ _id: objectId });
       res.status(200).json(response);
     } else {
-      const { page, limit, type, shipmentNo } = req.query;
+      const { page, limit, type, shipmentNo, year } = req.query;
       const filter = req.query?.filter || {};
       const sort = {
         deliveryDate: -1,
@@ -43,6 +43,9 @@ export default async function newShipmentBill(req, res) {
           },
           {
             shipmentNo: new RegExp(shipmentNo, "i"),
+          },
+          {
+            year: new RegExp(year, "i"),
           },
           {
             $or: [
