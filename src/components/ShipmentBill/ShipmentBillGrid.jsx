@@ -1,9 +1,12 @@
 import { sumBy } from "lodash";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React from "react";
 
 const ShipmentBillGrid = (props) => {
   const { data, type } = props;
+  console.log("data", data);
+  const router = useRouter()
   const calculationDueBill = (item) => {
     if (item.totalDueBill) {
       return Number(item.totalDueBill).toFixed(2)
@@ -44,6 +47,9 @@ const ShipmentBillGrid = (props) => {
                       Shipment By
                     </th>
                     <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                      Total Kg
+                    </th>
+                    <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                       Total Bill
                     </th>
                     <th colSpan={2} className="px-6 py-3 bg-gray-50" />
@@ -70,20 +76,21 @@ const ShipmentBillGrid = (props) => {
                         <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
                           {item?.shipmentBy}
                         </td>
-
+                        <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                          {Number(item?.totalKg).toFixed(2)}
+                        </td>
                         <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
                           {calculationDueBill(item)}
                         </td>
 
                         <td className="px-6 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium">
                           <Link
-                            as={"/bill/edit/" + item?._id + "/?type=" + type}
+                            as={"/bill/edit/" + item?._id + "/?type=" + type + `/?year=${router.query?.year}`}
                             href={{
                               pathname: "/bill/edit/[slug]",
                               query: {
                                 id: item?._id,
-                                type: type
-                              },
+                                type: type                              },
                             }}
                           >
                             <p

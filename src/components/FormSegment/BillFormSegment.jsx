@@ -173,7 +173,7 @@ const BillFormSegment = (props) => {
               .then((res) => {
                 successAlert("Successfully Saved.");
                 router.push(
-                  `/bills/${resP.value}/month/${newData.month}/${newData.shipmentBy}/${newData.shipmentNo}`
+                  `/bills/${resP.value}/month/${newData.month}/${newData.shipmentBy}/${newData.shipmentNo}/?year=${router?.query?.year || newData["year"]}`
                 );
               })
               .catch((err) => {
@@ -204,7 +204,7 @@ const BillFormSegment = (props) => {
             .then((res) => {
               successAlert("Successfully Update");
               router.push(
-                `/bills/${resP.value}/month/${editMode.month}/${editMode.shipmentBy}/${editMode.shipmentNo}`
+                `/bills/${resP.value}/month/${editMode.month}/${editMode.shipmentBy}/${editMode.shipmentNo}/?year=${router?.query?.year || editMode?.year}`
               );
             })
             .catch((err) => {
