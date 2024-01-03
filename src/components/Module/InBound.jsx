@@ -6,6 +6,7 @@ import Layout from "../Layout/Layout";
 import PlaceHolderLoading from "@/common/PlaceHolderLoading";
 import ShipmentBillGrid from "../ShipmentBill/ShipmentBillGrid";
 import { errorAlert } from "@/common/SweetAlert";
+import ShipmentBillsTopSection from "../Shared/ShipmentBillsTopSection";
 
 const InBound = () => {
   const router = useRouter();
@@ -213,17 +214,7 @@ const InBound = () => {
         ) : (
           <>
             <div className="flex flex-col w-full py-5 bg-gray-100">
-              <div className="grid grid-cols-3 gap-4">
-                <p className="text-2xl text-black text-center">
-                  Total Kg-{" "}
-                  {Number(dataInfo?.aggregationResult?.totalKg).toFixed(2)}
-                </p>
-                <p className="text-2xl text-black text-center">
-                  Total CTN- {dataInfo?.aggregationResult?.totalCtn}
-                </p>
-                <p className="text-2xl text-black text-center">{`Total Customers- ${dataInfo?.total}`}</p>
-                <p className="text-2xl text-black text-center">{`Shipment No- ${shipmentNo}`}</p>
-              </div>
+                <ShipmentBillsTopSection dataInfo={dataInfo} shipmentNo={shipmentNo} />
             </div>
             <div className=" py-4 sm:px-0">
               <ShipmentBillGrid data={data} type={"inbound"} />

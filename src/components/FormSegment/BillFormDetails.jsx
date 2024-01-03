@@ -248,8 +248,8 @@ const BillFormDetails = (props) => {
                     onChange={(e) =>
                       handleRMBChange(e.target.value.toUpperCase(), "des")
                     }
-                    value={aditionalInfo?.rmb?.des}
-                    defaultValue={"RMB"}
+                    value={aditionalInfo?.rmb?.des || "REPACKING CHARGE"}
+                    defaultValue={"REPACKING CHARGE"}
                   />
                   <span>Total</span>
                 </div>
@@ -368,8 +368,8 @@ const BillFormDetails = (props) => {
                     /> */}
                   </span>
                   <span className=" border-y-2 mt-4">Total</span>
-                  <span>Due</span>
-                  <span className=" border-y-2">Paid</span>
+                  <span className="text-red-600">Due</span>
+                  <span className=" border-y-2 text-green-600">ADVANCE</span>
                   <span className=" ">Total Bill</span>
                 </div>
               ),
@@ -411,7 +411,7 @@ const BillFormDetails = (props) => {
                           const { formattedValue, value } = values;
                           handleAditionalInfo(value, "due");
                         }}
-                        className="text-right block w-full bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                        className="text-right block w-full bg-white text-red-600 border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                         value={aditionalInfo?.due}
                         inputMode="numeric"
                       />
@@ -433,7 +433,7 @@ const BillFormDetails = (props) => {
                           const { formattedValue, value } = values;
                           handleAditionalInfo(value, "paid");
                         }}
-                        className="text-right block w-full bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                        className="text-right block w-full bg-white text-green-600 border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                         value={aditionalInfo.paid}
                         // inputMode="numeric"
                       />

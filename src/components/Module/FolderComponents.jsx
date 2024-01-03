@@ -31,7 +31,7 @@ const FolderComponents = ({path, selectYear}) => {
   return (
     <div className="flex flex-col w-full py-5 bg-gray-100">
       <div className="grid grid-cols-3 gap-4">
-        {newMonths.map((item, i) => (
+        {newMonths.reverse().map((item, i) => (
           <Link
             className="flex flex-col items-center justify-center h-16 bg-gray-200 rounded"
             key={i}

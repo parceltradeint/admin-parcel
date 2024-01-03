@@ -21,5 +21,6 @@ export const errorAlert = async (data) => {
     confirmButtonColor: "#006EB8",
     confirmButtonText: `Ok`,
     allowOutsideClick: false,
+    showCancelButton: true
   });
 };

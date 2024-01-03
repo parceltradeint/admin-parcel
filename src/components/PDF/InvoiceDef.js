@@ -20,7 +20,7 @@ export const generatePDF = (info) => {
           // color: `${isBrand ? "red" : "black"}`
         },
         {
-          text: `${item?.goodsName || item?.des}`,
+          text: `${item?.goodsName || item?.des || ""}`,
           fontSize: 12,
           alignment: "left",
           color: `${isBrand ? "red" : "black"}`,
@@ -31,19 +31,19 @@ export const generatePDF = (info) => {
           // color: `${isBrand ? "red" : "black"}`,
         },
         {
-          text: `${Number(item?.kg || item?.qty).toFixed(2)}`,
+          text: `${item?.kg || item?.qty ? Number(item?.kg || item?.qty).toFixed(2) : ""}`,
           fontSize: 12,
           // color: `${isBrand ? "red" : "black"}`,
         },
         {
-          text: `${item?.rate}`,
+          text: `${item?.rate || ""}`,
           fontSize: 12,
           // color: `${isBrand ? "red" : "black"}`,
         },
         {
-          text: `${convertBengaliToEnglishNumber(
+          text: `${totalAmount ? convertBengaliToEnglishNumber(
             totalAmount.toLocaleString("bn")
-          )}`,
+          ) : ""}`,
           fontSize: 12,
           alignment: "right",
           // color: `${isBrand ? "red" : "black"}`,
@@ -356,8 +356,8 @@ export const generatePDF = (info) => {
       {
         style: "summartTable",
         table: {
-          headerRows: 1,
-          dontBreakRows: true,
+          // headerRows: 1,
+          // dontBreakRows: true,
           // keepWithHeaderRows: 1,
           widths: ["8%", "35%", "15%", "12%", "15%", "*"],
           body: [
@@ -462,13 +462,14 @@ export const generatePDF = (info) => {
                     text: `${convertTotalAmount(Number(info?.due || 0))}`,
                     alignment: "right",
                     fontSize: 13,
+                    color: `${info?.due ? "red" : "black"}`,
                     border: [true, true, true, false],
                   },
                 ],
                 [
                   "",
                   {
-                    text: "PAID",
+                    text: "ADVANCE",
                     fillColor: "#555555",
                     color: "#FFFFFF",
                     fontSize: 13,
@@ -477,6 +478,7 @@ export const generatePDF = (info) => {
                     text: `${convertTotalAmount(Number(info?.paid || 0))}`,
                     alignment: "right",
                     fontSize: 13,
+                    color: `${info?.paid ? "green" : "black"}`,
                   },
                 ],
                 [

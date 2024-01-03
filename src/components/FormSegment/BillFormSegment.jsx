@@ -36,9 +36,13 @@ const BillFormSegment = (props) => {
   const downloadPDF = () => {
     // var win = window.open("", "_blank");
     const newData = [...data];
-    if (!isEmpty(aditionalInfo?.rmb)) {
+    if (
+      !isEmpty(aditionalInfo?.rmb) &&
+      aditionalInfo?.rmb?.qty &&
+      aditionalInfo?.rmb?.rate
+    ) {
       newData.push({
-        des: aditionalInfo?.rmb?.des || "RMB",
+        des: aditionalInfo?.rmb?.des || "REPACKING CHARGE",
         qty: aditionalInfo?.rmb?.qty,
         rate: aditionalInfo?.rmb?.rate,
         totalAmount:
@@ -171,7 +175,11 @@ const BillFormSegment = (props) => {
               .then((res) => {
                 successAlert("Successfully Saved.");
                 router.push(
-                  `/bills/${resP.value}/month/${newData.month}/${newData.shipmentBy}/${newData.shipmentNo}/?year=${router?.query?.year || newData["year"]}`
+                  `/bills/${resP.value}/month/${newData.month}/${
+                    newData.shipmentBy
+                  }/${newData.shipmentNo}/?year=${
+                    router?.query?.year || newData["year"]
+                  }`
                 );
               })
               .catch((err) => {
@@ -202,7 +210,11 @@ const BillFormSegment = (props) => {
             .then((res) => {
               successAlert("Successfully Update");
               router.push(
-                `/bills/${resP.value}/month/${editMode.month}/${editMode.shipmentBy}/${editMode.shipmentNo}/?year=${router?.query?.year || editMode?.year}`
+                `/bills/${resP.value}/month/${editMode.month}/${
+                  editMode.shipmentBy
+                }/${editMode.shipmentNo}/?year=${
+                  router?.query?.year || editMode?.year
+                }`
               );
             })
             .catch((err) => {
@@ -219,22 +231,28 @@ const BillFormSegment = (props) => {
   };
 
   const deleteData = async () => {
-    setLoading(true);
-    if (editMode) {
-      await axios
-        .delete(`/api/${router?.query?.type}?id=` + editMode?._id)
-        .then((res) => {
-          successAlert("Successfully Deleted");
-          router.push(
-            `/bills/customer/month/${editMode.month}/${editMode.shipmentBy}/${editMode.shipmentNo}`
-          );
-        })
-        .catch((err) => {
-          console.log("err", err);
-          errorAlert("Something went wrong!");
-        })
-        .finally(() => setLoading(false));
-    }
+    errorAlert(`Delete`).then(async (res) => {
+      if (res.isConfirmed) {
+        setLoading(true);
+        if (editMode) {
+          await axios
+            .delete(`/api/${router?.query?.type}?id=` + editMode?._id)
+            .then((res) => {
+              successAlert("Successfully Deleted");
+              router.push(
+                `/bills/customer/month/${editMode.month}/${editMode.shipmentBy}/${editMode.shipmentNo}`
+              );
+            })
+            .catch((err) => {
+              console.log("err", err);
+              errorAlert("Something went wrong!");
+            })
+            .finally(() => setLoading(false));
+        }
+      } else {
+        return;
+      }
+    });
   };
 
   useEffect(() => {
@@ -297,7 +315,7 @@ const BillFormSegment = (props) => {
                       loading ? "Loading document..." : "View Bill"
                     }
                   </PDFDownloadLink> */}
-                {type === "packing" ? "View PDF" : "View Bill"}
+                  {type === "packing" ? "View PDF" : "View Bill"}
                 </button>
                 {type === "customer" && (
                   <button

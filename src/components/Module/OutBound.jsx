@@ -7,6 +7,7 @@ import PlaceHolderLoading from "@/common/PlaceHolderLoading";
 import ShipmentBillGrid from "../ShipmentBill/ShipmentBillGrid";
 import { errorAlert } from "@/common/SweetAlert";
 import FolderComponents from "./FolderComponents";
+import ShipmentBillsTopSection from "../Shared/ShipmentBillsTopSection";
 
 const OutBound = () => {
   const router = useRouter();
@@ -33,7 +34,7 @@ const OutBound = () => {
       type: folder,
       search: search,
       shipmentNo: shipmentNo,
-      year: year
+      year: year,
     };
 
     async function fetchBills() {
@@ -70,7 +71,7 @@ const OutBound = () => {
       }
     }
   };
-  
+
   const handleClear = () => {
     setSearchText("");
     setLoading("clear");
@@ -96,7 +97,7 @@ const OutBound = () => {
       filter: {},
       type: folder,
       shipmentNo: shipmentNo,
-      year: year
+      year: year,
     };
     async function fetchBills() {
       setLoading(true);
@@ -123,7 +124,6 @@ const OutBound = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading == "clear"]);
 
-  
   return (
     <>
       <div className=" bg-white shadow-sm">
@@ -216,19 +216,7 @@ const OutBound = () => {
         ) : (
           <>
             <div className="flex flex-col w-full py-5 bg-gray-100">
-              <div className="grid grid-cols-4 gap-4">
-                <p className="text-2xl text-black text-center">
-                  Total Kg- {Number(dataInfo?.aggregationResult?.totalKg).toFixed(2)}
-                </p>
-                <p className="text-2xl text-black text-center">
-                  Total CTN- {dataInfo?.aggregationResult?.totalCtn}
-                  </p>
-                  <p className="text-2xl text-black text-center">
-                  Total Amount- {Number(dataInfo?.aggregationResult?.totalAmount).toFixed(2)}
-                </p>
-                <p className="text-2xl text-black text-center">{`Total Customers- ${dataInfo?.total}`}</p>
-                <p className="text-2xl text-black text-center">{`Shipment No- ${shipmentNo}`}</p>
-              </div>
+                <ShipmentBillsTopSection dataInfo={dataInfo} shipmentNo={shipmentNo} />
             </div>
             <div className=" py-4 sm:px-0">
               <ShipmentBillGrid data={data} type={"outbound"} />

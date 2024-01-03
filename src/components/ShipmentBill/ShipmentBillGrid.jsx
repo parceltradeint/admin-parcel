@@ -5,7 +5,6 @@ import React from "react";
 
 const ShipmentBillGrid = (props) => {
   const { data, type } = props;
-  console.log("data", data);
   const router = useRouter()
   const calculationDueBill = (item) => {
     if (item.totalDueBill) {
@@ -30,26 +29,26 @@ const ShipmentBillGrid = (props) => {
               <table className="min-w-full divide-y divide-gray-200">
                 <thead>
                   <tr>
-                    <th className="flex cursor-pointer px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="flex cursor-pointer px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider">
                       <span>Invoice Number#</span>
                     </th>
 
-                    <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider">
                       Customer Name
                     </th>
-                    <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider">
                       Delivery Date
                     </th>
-                    <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider">
                       Shipment No
                     </th>
-                    <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider">
                       Shipment By
                     </th>
-                    <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider">
                       Total Kg
                     </th>
-                    <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider">
                       Total Bill
                     </th>
                     <th colSpan={2} className="px-6 py-3 bg-gray-50" />
@@ -62,24 +61,24 @@ const ShipmentBillGrid = (props) => {
                         <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
                           {item?.invoiceNumber}
                         </td>
-                        <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                        <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-black">
                           {item?.customerName}
                         </td>
 
-                        <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                        <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-black">
                           {item?.deliveryDate}
                         </td>
 
-                        <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                        <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-black">
                           {item?.shipmentNo}
                         </td>
-                        <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                        <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-black">
                           {item?.shipmentBy}
                         </td>
-                        <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                        <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-black">
                           {Number(item?.totalKg).toFixed(2)}
                         </td>
-                        <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                        <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-black">
                           {calculationDueBill(item)}
                         </td>
 

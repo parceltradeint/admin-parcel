@@ -62,7 +62,7 @@ const ShipmentNoPage = ({ type, month, folder }) => {
           <>
             {shipmentNos.length > 0 ? (
               <div className="grid grid-cols-3 gap-4">
-                {shipmentNos.map((item, i) => (
+                {shipmentNos.sort((a, b) => Number(a.shipmentNo) - Number(b.shipmentNo)).map((item, i) => (
                   <Link
                     className="flex flex-col items-center justify-center h-16 bg-gray-200 rounded"
                     key={i}
