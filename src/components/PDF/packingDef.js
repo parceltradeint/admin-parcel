@@ -404,36 +404,7 @@ export const generatePackingPDF = (info, type) => {
             return i === 0 || i === node.table.widths.length ? "black" : "gray";
           },
         },
-      },
-      // {
-      //   margin: [0, 20, 0, 0],
-      //   // border: [true, true, true, true],
-      //   table: {
-      //     widths: ["50%", "50%"],
-      //     body: [
-      //       [
-      //         {
-      //           text: "CUSTOMER SIGNATURE",
-      //           alignment: "left",
-      //           bold: true,
-      //           // border: [true, true, true, false],
-      //           decoration: "overline",
-      //           margin: [5, 40, 0, 0],
-      //           border: [true, true, true, true],
-      //         },
-      //         {
-      //           text: "AUTHORISE SIGNATURE",
-      //           alignment: "right",
-      //           bold: true,
-      //           decoration: "overline",
-      //           // border: [true, true, true, false],
-      //           margin: [0, 40, 10, -2],
-      //           border: [false, true, true, true],
-      //         },
-      //       ],
-      //     ],
-      //   }
-      // }
+      }
     ],
 
     footer: function (currentPage, pageCount) {
@@ -469,46 +440,7 @@ export const generatePackingPDF = (info, type) => {
         };
       }
     },
-    // footer: {
-    //   table: {
-    //     widths: ["50%", "50%"],
-    //     headerRows: 1,
-    //     body: [
-    //       [
-    //         {
-    //           text: "CUSTOMER SIGNATURE",
-    //           alignment: "left",
-    //           bold: true,
-    //           // border: [true, true, true, false],
-    //           decoration: "overline",
-    //           margin: [5, 40, 0, 0],
-    //           border: [true, true, true, true],
-    //         },
-    //         {
-    //           text: "AUTHORISE SIGNATURE",
-    //           alignment: "right",
-    //           bold: true,
-    //           decoration: "overline",
-    //           // border: [true, true, true, false],
-    //           margin: [0, 40, 10, 0],
-    //           border: [false, true, true, true],
-    //         },
-    //       ],
-    //     ],
-    //   },
-    //   margin: [40, -20, 40, 10],
-    // },
-    // pageBreakBefore: (currentNode, followingNodes) => {
-    //   // Check if currentNode._pdfmakeWrapper.node is defined
-    //   if (currentNode._pdfmakeWrapper && currentNode._pdfmakeWrapper.node) {
-    //     const footerHeight = 40; // Adjust this value based on your footer's height
-    //     const contentHeight = currentNode._pdfmakeWrapper.node.clientHeight;
-    //     const remainingPageSpace = currentNode._pdfmakeWrapper.page.maxY - contentHeight;
-
-    //     return followingNodes.length === 0 && remainingPageSpace < footerHeight;
-    //   }
-    //   return false; // Return false if currentNode._pdfmakeWrapper.node is undefined
-    // },
+   
     pageSize: "A4",
 
     defaultStyle: {

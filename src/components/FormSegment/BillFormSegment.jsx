@@ -15,8 +15,6 @@ import PackingOverviewForm from "./PackingOverviewForm";
 import { generatePackingPDF } from "../PDF/packingDef";
 import Swal from "sweetalert2";
 import { isEmpty, sumBy } from "lodash";
-import { MyDocument } from "../PDF/makeNewPdf";
-import { PDFDownloadLink } from "@react-pdf/renderer";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const BillFormSegment = (props) => {
