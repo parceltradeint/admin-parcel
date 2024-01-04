@@ -306,11 +306,7 @@ export const generatePackingPDF = (info, type) => {
         fontSize: 10,
         table: {
           widths: [...conditionalPhoneRemarks().widths],
-          body: [
-            [
-              ...conditionalPhoneRemarks().body
-            ],
-          ],
+          body: [[...conditionalPhoneRemarks().body]],
         },
       },
 
@@ -404,43 +400,43 @@ export const generatePackingPDF = (info, type) => {
             return i === 0 || i === node.table.widths.length ? "black" : "gray";
           },
         },
-      }
+      },
     ],
 
-    footer: function (currentPage, pageCount) {
-      if (currentPage == pageCount && type === "Challan") {
-        return {
-          table: {
-            widths: ["50%", "50%"],
-            headerRows: 1,
-            body: [
-              [
-                {
-                  text: "CUSTOMER SIGNATURE",
-                  alignment: "left",
-                  bold: true,
-                  // border: [true, true, true, false],
-                  decoration: "overline",
-                  margin: [5, 30, 0, 0],
-                  border: [true, true, true, true],
-                },
-                {
-                  text: "AUTHORISE SIGNATURE",
-                  alignment: "right",
-                  bold: true,
-                  decoration: "overline",
-                  // border: [true, true, true, false],
-                  margin: [0, 30, 10, 0],
-                  border: [false, true, true, true],
-                },
-              ],
-            ],
-          },
-          margin: [40, -30, 40, 10],
-        };
-      }
-    },
-   
+    // footer: function (currentPage, pageCount) {
+    //   if (currentPage == pageCount && type === "Challan") {
+    //     return {
+    //       table: {
+    //         widths: ["50%", "50%"],
+    //         headerRows: 1,
+    //         body: [
+    //           [
+    //             {
+    //               text: "CUSTOMER SIGNATURE",
+    //               alignment: "left",
+    //               bold: true,
+    //               // border: [true, true, true, false],
+    //               decoration: "overline",
+    //               margin: [5, 30, 0, 0],
+    //               border: [true, true, true, true],
+    //             },
+    //             {
+    //               text: "AUTHORISE SIGNATURE",
+    //               alignment: "right",
+    //               bold: true,
+    //               decoration: "overline",
+    //               // border: [true, true, true, false],
+    //               margin: [0, 30, 10, 0],
+    //               border: [false, true, true, true],
+    //             },
+    //           ],
+    //         ],
+    //       },
+    //       margin: [40, -30, 40, 10],
+    //     };
+    //   }
+    // },
+
     pageSize: "A4",
 
     defaultStyle: {
@@ -478,6 +474,38 @@ export const generatePackingPDF = (info, type) => {
       },
     },
   };
+
+  if (type === "Challan") {
+    docDefinition.content.push({
+      unbreakable: true,
+      table: {
+        widths: ["50%", "50%"],
+        headerRows: 1,
+        body: [
+          [
+            {
+              text: "CUSTOMER SIGNATURE",
+              alignment: "left",
+              bold: true,
+              // border: [true, true, true, false],
+              decoration: "overline",
+              margin: [5, 30, 0, 0],
+              border: [true, true, true, true],
+            },
+            {
+              text: "AUTHORISE SIGNATURE",
+              alignment: "right",
+              bold: true,
+              decoration: "overline",
+              // border: [true, true, true, false],
+              margin: [0, 30, 10, 0],
+              border: [false, true, true, true],
+            },
+          ],
+        ],
+      },
+    });
+  }
 
   // const pdfDocGenerator = pdfMake.createPdf(docDefinition);
   var win = window.open("", "_blank");
