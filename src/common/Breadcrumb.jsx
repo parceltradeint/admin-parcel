@@ -16,11 +16,11 @@ const Breadcrumb = ({ items = [], type }) => {
 
   return (
     <nav
-      className="flex justify-between px-5 py-3  border border-gray-200 rounded-lg bg-gray-50 text-green-600 text-xl"
+      className="flex justify-between px-5 py-3  border border-gray-200 rounded-lg bg-gray-50 text-green-600 text-xl uppercase"
       aria-label="Breadcrumb"
     >
       <ol className=" flex flex-wrap space-x-1 md:space-x-3">
-        <li className="inline-flex items-center gap-2 capitalize">
+        <li className="inline-flex items-center gap-2 uppercase">
           <Link
             href="/dashboard"
             className="inline-flex items-center font-medium hover:text-blue-600"
@@ -33,7 +33,7 @@ const Breadcrumb = ({ items = [], type }) => {
         {items.map((item, index) => {
           return (
             <li key={index}>
-              <div className="flex items-center gap-2 capitalize">
+              <div className="flex items-center gap-2 uppercase">
                 {item.href ? (
                   <Link
                     className="inline-flex items-center font-medium hover:text-blue-600"

@@ -6,9 +6,12 @@ import { useForm } from "react-hook-form";
 import ReactTable from "react-table-v6";
 import { convertBengaliToEnglishNumber } from "../PDF/InvoiceDef";
 import NumberFormat from "react-number-format";
+import useSound from "use-sound";
 
 const BillFormDetails = (props) => {
   const { data, setData, aditionalInfo, setAditionalInfo, type } = props;
+  const [deleteItemsSoundPlay] = useSound("/assets/sounds/delete-item.mp3", {"volume": 0.15});
+  const [addItemsSoundPlay] = useSound("/assets/sounds/save.mp3", {"volume": 0.25});
 
   const handleKeyDown = (event) => {
     if (event.key === "ArrowUp" || event.key === "ArrowDown") {
@@ -115,6 +118,7 @@ const BillFormDetails = (props) => {
   };
 
   const handleDelete = (original, index) => {
+    deleteItemsSoundPlay()
     let newData = [...data];
     if (index !== -1) {
       newData.splice(index, 1);
@@ -130,6 +134,7 @@ const BillFormDetails = (props) => {
   } = useForm({ mode: "all" });
 
   const onSubmit = (val) => {
+    addItemsSoundPlay()
     let newData = [...data];
     const newBill = {
       goodsName: "",

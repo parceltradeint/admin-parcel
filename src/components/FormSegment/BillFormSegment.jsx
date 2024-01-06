@@ -15,6 +15,7 @@ import PackingOverviewForm from "./PackingOverviewForm";
 import { generatePackingPDF } from "../PDF/packingDef";
 import Swal from "sweetalert2";
 import { isEmpty, sumBy } from "lodash";
+import useSound from "use-sound";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const BillFormSegment = (props) => {
@@ -25,6 +26,9 @@ const BillFormSegment = (props) => {
   const [loading, setLoading] = useState(false);
   const [aditionalInfo, setAditionalInfo] = useState({});
   const [suggestionData, setSuggestionData] = useState([]);
+  const [deleteSoundPlay] = useSound("/assets/sounds/deleted.mp3", {"volume": 0.45});
+  const [saveSoundPlay] = useSound("/assets/sounds/save.mp3", {"volume": 0.45});
+
   let type =
     router?.query?.type == "outbound"
       ? "customer"
@@ -84,6 +88,7 @@ const BillFormSegment = (props) => {
   };
 
   const save = async () => {
+    saveSoundPlay()
     const newData = {
       ...customerInfo,
       ...aditionalInfo,
@@ -146,7 +151,7 @@ const BillFormSegment = (props) => {
           });
         });
       },
-      icon: "warning",
+      icon: "success",
       confirmButtonColor: "#006EB8",
       confirmButtonText: `Confirm`,
       allowOutsideClick: false,
@@ -231,6 +236,7 @@ const BillFormSegment = (props) => {
   };
 
   const deleteData = async () => {
+    deleteSoundPlay()
     errorAlert(`Delete`).then(async (res) => {
       if (res.isConfirmed) {
         setLoading(true);

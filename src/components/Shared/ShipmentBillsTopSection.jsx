@@ -2,7 +2,7 @@ import React from "react";
 
 const ShipmentBillsTopSection = ({ dataInfo, shipmentNo }) => {
   return (
-    <div className="grid grid-cols-5 gap-4">
+    <div className="flex flex-wrap justify-around uppercase">
       <p className="text-2xl text-black text-center">{`Shipment No- ${shipmentNo || ""}`}</p>
       <p className="text-2xl text-black text-center">
         Total Kg- {Number(dataInfo?.aggregationResult?.totalKg).toFixed(2) || ""}
