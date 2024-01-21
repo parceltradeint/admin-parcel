@@ -17,7 +17,7 @@ export const generatePackingPDF = (info, type) => {
       ?.filter((item) => conditions(item))
       .map((item, i) => {
         let totalAmount = Number(item?.kg) * Number(item?.rate);
-        const isBrand = item?.goodsName?.match(/copy|brand/i) ? true : false;
+        const isBrand = item?.goodsName?.match(/brand/i) ? true : false;
         return [
           {
             text: `${i + 1}`,
@@ -489,7 +489,7 @@ export const generatePackingPDF = (info, type) => {
               bold: true,
               // border: [true, true, true, false],
               decoration: "overline",
-              margin: [5, 30, 0, 0],
+              margin: [5, 40, 0, 0],
               border: [true, true, true, true],
             },
             {
@@ -498,7 +498,7 @@ export const generatePackingPDF = (info, type) => {
               bold: true,
               decoration: "overline",
               // border: [true, true, true, false],
-              margin: [0, 30, 10, 0],
+              margin: [0, 40, 10, 0],
               border: [false, true, true, true],
             },
           ],

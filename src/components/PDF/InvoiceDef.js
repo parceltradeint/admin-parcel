@@ -10,7 +10,7 @@ export const generatePDF = (info) => {
     let newData = info?.data?.map((item, i) => {
       let totalAmount =
         Number(item?.kg || item?.qty || 0) * Number(item?.rate || 0);
-      const isBrand = item?.goodsName?.match(/copy|brand|mixed/i)
+      const isBrand = item?.goodsName?.match(/brand/i)
         ? true
         : false;
       return [
@@ -538,7 +538,7 @@ export const generatePDF = (info) => {
                     bold: true,
                     // border: [true, true, true, false],
                     // decoration: "overline",
-                    margin: [5, 30, 0, 0],
+                    margin: [5, 40, 0, 0],
                     border: [true, false, true, false],
                   },
                   {
@@ -547,7 +547,7 @@ export const generatePDF = (info) => {
                     bold: true,
                     // decoration: "overline",
                     // border: [true, true, true, false],
-                    margin: [0, 30, 10, -2],
+                    margin: [0, 40, 10, -2],
                     border: [false, false, true, false],
                   },
                 ],

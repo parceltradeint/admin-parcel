@@ -253,6 +253,11 @@ const OverViewForm = (props) => {
                       value: "India",
                       isSelected: customerInfo?.reporting == "India",
                     },
+                    {
+                      name: "Hand Carry",
+                      value: "Hand Carry",
+                      isSelected: customerInfo?.reporting == "Hand Carry"
+                    },
                   ]}
                   handleInputChange={handleInputChange}
                 />

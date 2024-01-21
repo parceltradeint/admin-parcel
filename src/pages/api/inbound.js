@@ -44,7 +44,7 @@ export default async function newShipmentBill(req, res) {
       const searchQuery = {
         $and: [
           {
-            shipmentNo: new RegExp(shipmentNo, "i"),
+            shipmentNo: new RegExp("^" + shipmentNo + "$", "i"),
           },
           {
             shipmentBy: new RegExp(type, "i"),
@@ -53,7 +53,7 @@ export default async function newShipmentBill(req, res) {
             month: new RegExp(month, "i"),
           },
           {
-            year: new RegExp(year, "i"),
+            year: new RegExp("^" + year + "$", "i"),
           },
           {
             $or: [

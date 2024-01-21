@@ -48,13 +48,13 @@ export default async function newShipmentBill(req, res) {
             shipmentBy: new RegExp(type, "i"),
           },
           {
-            shipmentNo: new RegExp(shipmentNo, "i"),
+            shipmentNo: new RegExp("^" + shipmentNo + "$", "i")
           },
           {
             month: new RegExp(month, "i"),
           },
           {
-            year: new RegExp(year, "i"),
+            year: new RegExp("^" + year + "$", "i"),
           },
           {
             $or: [
@@ -83,7 +83,8 @@ export default async function newShipmentBill(req, res) {
             $match: {
               // Your condition here
               shipmentBy: new RegExp(type, "i"),
-              shipmentNo: new RegExp(shipmentNo, "i"),
+              shipmentNo: new RegExp("^" + shipmentNo + "$", "i"),
+              year: new RegExp("^" + year + "$", "i")
             },
           },
           {
