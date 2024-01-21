@@ -9,7 +9,7 @@ const DataField = ({ label, value, className }) => {
       )}
     >
       <div className="flex sm:w-2/5 items-center justify-between bg-primaryBg px-4 py-2 text-sm text-white">
-        <p className="m-0 p-0">{label}</p>
+        <p className="m-0 p-0 uppercase">{label}</p>
         <span className="m-0 p-0">:</span>
       </div>
       <span className="flex flex-1 items-center text-sm text-black">

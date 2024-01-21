@@ -51,7 +51,7 @@ export const generatePackingPDF = (info, type) => {
       widths: [],
       body: [
         {
-          text: "Address :",
+          text: "ADDRESS :",
           alignment: "left",
           fillColor: "#555555",
           color: "#FFFFFF",
@@ -107,7 +107,7 @@ export const generatePackingPDF = (info, type) => {
         columns: [
           {
             alignment: "left",
-            text: `Customer ${type}`,
+            text: `CUSTOMER ${type?.toUpperCase()}`,
           },
           {
             alignment: "right",
@@ -280,7 +280,7 @@ export const generatePackingPDF = (info, type) => {
                 border: [true, false, false, true],
               },
               {
-                text: `${info?.reporting} BY ${info?.shipmentBy}`,
+                text: `${info?.reporting?.toUpperCase()} BY ${info?.shipmentBy?.toUpperCase()}`,
                 border: [true, false, false, true],
               },
               {
@@ -319,7 +319,7 @@ export const generatePackingPDF = (info, type) => {
           body: [
             [
               {
-                text: "Remarks :",
+                text: "REMARKS :",
                 alignment: "left",
                 fillColor: "#555555",
                 color: "#FFFFFF",

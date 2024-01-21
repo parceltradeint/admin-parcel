@@ -94,7 +94,7 @@ export const generatePDF = (info) => {
         columns: [
           {
             alignment: "left",
-            text: `Customer Invoice`,
+            text: `CUSTOMER INVOICE`,
           },
           {
             alignment: "right",
@@ -238,7 +238,7 @@ export const generatePDF = (info) => {
                 color: "#FFFFFF",
                 bold: true,
               },
-              `${info?.customerName || ""}`,
+              `${info?.customerName?.toUpperCase() || ""}`,
               {
                 text: "DATE",
                 alignment: "left",
@@ -268,7 +268,7 @@ export const generatePDF = (info) => {
                 border: [true, false, false, true],
               },
               {
-                text: `BY ${info?.shipmentBy}`,
+                text: `BY ${info?.shipmentBy?.toUpperCase()}`,
                 border: [true, false, false, true],
               },
               {
@@ -280,7 +280,7 @@ export const generatePDF = (info) => {
                 bold: true,
               },
               {
-                text: `${info?.reporting}`,
+                text: `${info?.reporting?.toUpperCase()}`,
                 alignment: "left",
                 border: [true, false, true, true],
               },
@@ -304,7 +304,7 @@ export const generatePDF = (info) => {
                 border: [true, false, false, true],
               },
               {
-                text: `${info?.address || ""}`,
+                text: `${info?.address?.toUpperCase() || ""}`,
                 border: [true, false, false, true],
               },
               {
@@ -343,7 +343,7 @@ export const generatePDF = (info) => {
                 margin: [0, -2, 0, 0],
               },
               {
-                text: `${info?.remarks}`,
+                text: `${info?.remarks?.toUpperCase()}`,
                 color: "red",
                 bold: true,
                 border: [false, false, true, true],

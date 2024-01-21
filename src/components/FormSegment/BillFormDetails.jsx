@@ -253,8 +253,8 @@ const BillFormDetails = (props) => {
                     onChange={(e) =>
                       handleRMBChange(e.target.value.toUpperCase(), "des")
                     }
-                    value={aditionalInfo?.rmb?.des || "REPACKING CHARGE"}
-                    defaultValue={"REPACKING CHARGE"}
+                    // value={aditionalInfo?.rmb?.des || "REPACKING CHARGE"}
+                    defaultValue={aditionalInfo?.rmb?.des || "REPACKING CHARGE"}
                   />
                   <span>Total</span>
                 </div>
