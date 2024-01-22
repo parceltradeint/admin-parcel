@@ -8,6 +8,8 @@ import ShipmentBillGrid from "../ShipmentBill/ShipmentBillGrid";
 import { errorAlert } from "@/common/SweetAlert";
 import FolderComponents from "./FolderComponents";
 import ShipmentBillsTopSection from "../Shared/ShipmentBillsTopSection";
+import TabMenu from "./TabMenu";
+import ShipmentBillCal from "../ShipmentBill/ShipmentBillCal";
 
 const OutBound = () => {
   const router = useRouter();
@@ -124,6 +126,19 @@ const OutBound = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading == "clear"]);
 
+  const tabItems = [
+    {
+      id: 1,
+      label: "Shipements",
+      value: <ShipmentBillGrid data={data} type={"outbound"} />,
+    },
+    {
+      id: 2,
+      label: "Finance",
+      value: <ShipmentBillCal data={data} type={"outbound"} />,
+    },
+  ];
+
   return (
     <>
       <div className=" bg-white shadow-sm">
@@ -215,11 +230,13 @@ const OutBound = () => {
           <PlaceHolderLoading loading={true} />
         ) : (
           <>
-            <div className="flex flex-col w-full py-5 bg-gray-100">
+            <div className="flex flex-col w-full py-5 bg-gray-100 border-2 border-primaryBg">
                 <ShipmentBillsTopSection dataInfo={dataInfo} shipmentNo={shipmentNo} />
-            </div>
-            <div className=" py-4 sm:px-0">
-              <ShipmentBillGrid data={data} type={"outbound"} />
+              </div>
+              
+            <div className=" py-4 sm:px-0 mx-auto">
+                {/* <ShipmentBillGrid data={data} type={"outbound"} /> */}
+                <TabMenu tabItems={tabItems} />
             </div>
           </>
         )}

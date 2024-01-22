@@ -10,7 +10,7 @@ import useSound from "use-sound";
 
 const BillFormDetails = (props) => {
   const { data, setData, aditionalInfo, setAditionalInfo, type } = props;
-  const [deleteItemsSoundPlay] = useSound("/assets/sounds/delete-item.mp3", {"volume": 0.15});
+  const [deleteItemsSoundPlay] = useSound("/assets/sounds/delete-item.mp3", {"volume": 0.25});
   const [addItemsSoundPlay] = useSound("/assets/sounds/save.mp3", {"volume": 0.25});
 
   const handleKeyDown = (event) => {
