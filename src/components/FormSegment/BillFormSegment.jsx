@@ -26,8 +26,10 @@ const BillFormSegment = (props) => {
   const [loading, setLoading] = useState(false);
   const [aditionalInfo, setAditionalInfo] = useState({});
   const [suggestionData, setSuggestionData] = useState([]);
-  const [deleteSoundPlay] = useSound("/assets/sounds/deleted.mp3", {"volume": 0.45});
-  const [saveSoundPlay] = useSound("/assets/sounds/save.mp3", {"volume": 0.45});
+  const [deleteSoundPlay] = useSound("/assets/sounds/deleted.mp3", {
+    volume: 0.45,
+  });
+  const [saveSoundPlay] = useSound("/assets/sounds/save.mp3", { volume: 0.45 });
 
   let type =
     router?.query?.type == "outbound"
@@ -88,7 +90,15 @@ const BillFormSegment = (props) => {
   };
 
   const save = async () => {
-    saveSoundPlay()
+    saveSoundPlay();
+
+    const totalDueBill =
+      sumBy(data, (item) => Number(item.totalAmount || 0)) +
+      Number(aditionalInfo?.rmb?.qty || 0) *
+        Number(aditionalInfo?.rmb?.rate || 0) +
+      Number(aditionalInfo?.due || 0) -
+      Number(aditionalInfo?.paid || 0);
+
     const newData = {
       ...customerInfo,
       ...aditionalInfo,
@@ -99,12 +109,8 @@ const BillFormSegment = (props) => {
         sumBy(data, (item) => Number(item.totalAmount || 0)) +
         Number(aditionalInfo?.rmb?.qty || 0) *
           Number(aditionalInfo?.rmb?.rate || 0),
-      totalDueBill:
-        sumBy(data, (item) => Number(item.totalAmount || 0)) +
-        Number(aditionalInfo?.rmb?.qty || 0) *
-          Number(aditionalInfo?.rmb?.rate || 0) +
-        Number(aditionalInfo?.due || 0) -
-        Number(aditionalInfo?.paid || 0),
+      totalDueBill,
+      balance: totalDueBill,
     };
     const options = ["customer", "cnf", "packing"];
 
@@ -236,7 +242,7 @@ const BillFormSegment = (props) => {
   };
 
   const deleteData = async () => {
-    deleteSoundPlay()
+    deleteSoundPlay();
     errorAlert(`Delete`).then(async (res) => {
       if (res.isConfirmed) {
         setLoading(true);
@@ -272,6 +278,26 @@ const BillFormSegment = (props) => {
       });
     }
   }, [editMode]);
+
+  useEffect(() => {
+    if (customerInfo?.customerId) {
+      async function fetchCustomer() {
+        await axios
+          .get(`/api/customers-bills`, {
+            params: { customerId: customerInfo.customerId },
+          })
+          .then((res) => {
+            setAditionalInfo(res.data.data);
+          })
+          .catch((err) => {
+            console.log("err", err);
+            // errorAlert("Something went wrong!");
+          })
+          .finally(() => setLoading(false));
+      }
+      fetchCustomer();
+    }
+  }, [customerInfo.customerId]);
 
   if (loading) {
     return <PlaceHolderLoading loading={true} />;

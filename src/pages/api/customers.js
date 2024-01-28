@@ -8,9 +8,7 @@ export default async function customersAPI(req, res) {
   if (req.method == "POST") {
     try {
       const lastDocument = await collection.findOne({}, { sort: { customerId: -1 } });
-      let customerId = Number(lastDocument?.customerId) + 1 || 1
-      // await collection.createIndex({ customerId: customerId }, { unique: true });
-      const result = await collection.insertOne({ ...req.body, customerId: customerId});
+      const result = await collection.insertOne({ ...req.body});
       res.status(200).json({ status: 200, data: result });
 
       await client.close();

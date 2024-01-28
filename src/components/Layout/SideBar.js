@@ -147,22 +147,6 @@ const SideBar = () => {
             </Link>
 
             <Link
-              as={"/"}
-              href={{
-                pathname: "/",
-              }}
-              className={`${
-                pathname === "/shipment"
-                  ? "bg-sideBarBg  text-sideBarHoverText "
-                  : "text-sideBarText  "
-              } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
-            >
-              <div>
-                <FontAwesomeIcon icon={faAirFreshener} />
-                <span className="mx-4 font-medium">Shipment</span>
-              </div>
-            </Link>
-            <Link
               as={"/customers"}
               href={{
                 pathname: "/customers",
@@ -179,14 +163,31 @@ const SideBar = () => {
               </div>
             </Link>
 
-            <Link
+            {/* <Link
               as={"/"}
               href={{
                 pathname: "/",
               }}
               className={`${
-                pathname === "/"
+                pathname === "/shipment"
                   ? "bg-sideBarBg  text-sideBarHoverText "
+                  : "text-sideBarText  "
+              } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
+            >
+              <div>
+                <FontAwesomeIcon icon={faAirFreshener} />
+                <span className="mx-4 font-medium">Shipment</span>
+              </div>
+            </Link> */}
+
+            <Link
+              as={"/finance"}
+              href={{
+                pathname: "/finance",
+              }}
+              className={`${
+                pathname === "/finance"
+                  ? "bg-sideBarHoverBg  text-sideBarHoverText "
                   : "text-sideBarText  "
               } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
             >
@@ -196,22 +197,14 @@ const SideBar = () => {
               </div>
             </Link>
 
-            <Link
-              as={"/"}
-              href={{
-                pathname: "/",
-              }}
-              className={`${
-                pathname === "/"
-                  ? "bg-sideBarBg  text-sideBarHoverText "
-                  : "text-sideBarText  "
-              } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
+            <div
+              className={`text-sideBarText  flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
             >
               <div>
                 <FontAwesomeIcon icon={faDatabase} />
                 <span className="mx-4 font-medium">Admin Dashboard</span>
               </div>
-            </Link>
+            </div>
           </nav>
         </div>
       </div>

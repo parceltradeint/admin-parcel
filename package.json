@@ -37,6 +37,7 @@
     "react-select": "^5.7.4",
     "react-table": "^7.8.0",
     "react-table-v6": "^6.8.6",
+    "short-unique-id": "^5.0.3",
     "shortid": "^2.2.16",
     "sweetalert2": "^11.7.12",
     "tailwind-merge": "^1.13.2",

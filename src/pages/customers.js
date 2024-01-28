@@ -81,6 +81,7 @@ const Customers = () => {
     fetchCustomers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading == "clear"]);
+
   return (
     <Layout>
       <div>
@@ -131,7 +132,7 @@ const Customers = () => {
                   <button
                     onClick={handleClear}
                     className={
-                      "inline-flex items-center px-3.5 py-1.5 border border-transparent text-xs leading-4 font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-50 focus:outline-none focus:border-indigo-300 focus:shadow-outline-indigo active:bg-indigo-200 transition ease-in-out duration-150"
+                      "inline-flex items-center px-5 py-3 border border-transparent text-xs leading-4 font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-50 focus:outline-none focus:border-indigo-300 focus:shadow-outline-indigo active:bg-indigo-200 transition ease-in-out duration-150"
                     }
                     type={"button"}
                   >
@@ -171,7 +172,7 @@ const Customers = () => {
               <button
                 onClick={() => setIsOpen(true)}
                 type="button"
-                className="inline-flex items-center px-3 py-2.5 border border-transparent text-sm leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
+                className="inline-flex items-center px-3 py-3 border border-transparent text-sm leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
               >
                 Add New
               </button>
@@ -193,10 +194,10 @@ const Customers = () => {
           onClose={() => setIsOpen(false)}
           className={"max-w-5xl"}
         >
-          <Modal.Title>Add New Customer</Modal.Title>
+          <Modal.Title>{editData ? "Edit Customer" : "Add New Customer"}</Modal.Title>
           <Modal.Content>
             <div>
-              <CustomerForm setIsOpen={setIsOpen} data={data} setData={setData} editMode={editData} />
+              <CustomerForm setIsOpen={setIsOpen} data={data} setData={setData} editMode={editData} setEditData={setEditData}/>
             </div>
           </Modal.Content>
         </Modal>

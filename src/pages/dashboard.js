@@ -9,30 +9,7 @@ import Page from "@/components/Page";
 import { useTheme } from "next-themes";
 const inter = Inter({ subsets: ["latin"] });
 
-export default function Dashboard() {
-  const router = useRouter();
-  const auth = getAuth();
-  const {theme, setTheme, systemTheme} = useTheme()
-  // useEffect(() => {
-  //   const listener = auth.onIdTokenChanged((user) => {
-  //     if (user) {
-  //       user.getIdToken().then((token) => {
-  //         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-  //       });
-  //     } else {
-  //     }
-  //   });
-
-  //   return () => {
-  //     listener();
-  //   };
-  // }, [auth]);
-
-  useEffect(() => {
-    const currentTheme = theme === "system" ? systemTheme : theme;
-    setTheme("light")
-  }, [router, setTheme, systemTheme, theme])
-
+export default function Finance() {
   return (
     <UserProvider>
       <Page>

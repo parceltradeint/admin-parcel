@@ -304,7 +304,7 @@ export const generatePDF = (info) => {
                 border: [true, false, false, true],
               },
               {
-                text: `${info?.address?.toUpperCase() || ""}`,
+                text: `${info?.customerAddress?.toUpperCase() || ""}`,
                 border: [true, false, false, true],
               },
               {

@@ -59,7 +59,7 @@ export const generatePackingPDF = (info, type) => {
           border: [true, false, false, true],
         },
         {
-          text: `${info?.address}`,
+          text: `${info?.customerAddress}`,
           border: [true, false, true, true],
         },
       ],
@@ -78,7 +78,7 @@ export const generatePackingPDF = (info, type) => {
             border: [true, false, false, true],
           },
           {
-            text: `${info?.phone}`,
+            text: `${info?.customerPhone}`,
             alignment: "left",
             border: [true, false, true, true],
           },

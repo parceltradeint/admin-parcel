@@ -3,6 +3,7 @@ import { formartDate } from "@/common/formartDate";
 import axios from "axios";
 import Link from "next/link";
 import React, { useState } from "react";
+import ReactTable from "react-table-v6";
 
 const CustomerGrid = (props) => {
   const { data, setData, setIsOpen, setEditData } = props;
@@ -24,9 +25,10 @@ const CustomerGrid = (props) => {
       })
       .finally(() => setLoading(false));
   };
+
   return (
     <div>
-      <div className="flex flex-col">
+      {/* <div className="flex flex-col">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
             <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
@@ -120,7 +122,75 @@ const CustomerGrid = (props) => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
+      <ReactTable
+        data={data}
+        columns={[
+          {
+            Header: "ID",
+            accessor: "customerId",
+          },
+          {
+            Header: "Name",
+            accessor: "customerName",
+          },
+          {
+            Header: "Phone",
+            accessor: "customerPhone",
+          },
+          {
+            Header: "Address",
+            accessor: "customerAddress",
+          },
+          {
+            Header: "ShipmentBy",
+            accessor: "shipmentBy",
+          },
+          {
+            Header: "WeChat Id",
+            accessor: "weChatId",
+          },
+          {
+            Header: "Created",
+            accessor: "created",
+            Cell: ({ row }) => <p>{formartDate(row?.created)}</p>,
+          },
+          {
+            Header: "Action",
+            accessor: "##",
+            Cell: ({ row }) => (
+              <div className={"text-center flex space-x-2"}>
+                <button
+                  onClick={() => {
+                    setIsOpen(true);
+                    setEditData({ ...row?._original });
+                  }}
+                  type="button"
+                  className=" bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded"
+                  // onClick={() => setIsOpen(false)}
+                >
+                  View
+                </button>
+                <button
+                  type="button"
+                  className=" bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                  onClick={() => handleDelete(index, item._id)}
+                >
+                  Delete
+                </button>
+              </div>
+            ),
+          },
+        ]}
+        className="-striped -highlight text-center"
+        defaultPageSize={200}
+        minRows={12}
+        showPageJump={false}
+        pageSizeOptions={[200, 250, 300]}
+        showPagination={true}
+        // showPagination={false}
+        sortable={true}
+      />
     </div>
   );
 };
