@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { isNumber, sumBy } from "lodash";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactTable from "react-table-v6";
 import { convertBengaliToEnglishNumber } from "../PDF/InvoiceDef";
 import useSound from "use-sound";
@@ -12,14 +12,34 @@ import Swal from "sweetalert2";
 import PlaceHolderLoading, { SpingSvgIcon } from "@/common/PlaceHolderLoading";
 import axios from "axios";
 import { errorAlert, successAlert } from "@/common/SweetAlert";
+import Modal from "../Module/Modal";
 const CustomersBillCal = (props) => {
   const { type } = props;
-  const [data, setData] = useState([...props.data]);
+  const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [data, setData] = useState([]);
   const router = useRouter();
   const [addItemsSoundPlay] = useSound("/assets/sounds/save.mp3", {
     volume: 0.25,
   });
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    async function fetchCustomers() {
+      setLoading(true);
+      await axios
+        .get(`/api/customers-bills`)
+        .then((res) => {
+          setData(res.data.data);
+        })
+        .catch((err) => {
+          errorAlert("Something went wrong!");
+        })
+        .finally(() => setLoading(false));
+    }
+    fetchCustomers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const calculationDueBill = (item) => {
     if (item.totalDueBill) {
@@ -101,7 +121,6 @@ const CustomersBillCal = (props) => {
     addItemsSoundPlay();
     const newData = {
       ...val,
-      //   totalDueBill: 98036,
     };
 
     Swal.fire({
@@ -117,7 +136,7 @@ const CustomersBillCal = (props) => {
       showCancelButton: true,
     }).then(async (resP) => {
       if (resP.isConfirmed) {
-        setLoading(val._id);
+        setLoading(true);
         delete newData?._id;
         await axios
           .patch(`/api/${type}`, {
@@ -138,156 +157,211 @@ const CustomersBillCal = (props) => {
     });
   };
 
-  //   if (loading) {
-  //     return <PlaceHolderLoading loading={true} />;
-  //   }
-console.log("data", data);
-  return (
-    <ReactTable
-      data={data}
-      columns={[
-        {
-          Header: "User ID",
-          accessor: "customerId",
-          Cell: renderText,
-          Footer: () => <p className="text-center">Total-</p>,
-        },
-        {
-          Header: "Shiping Mark",
-          accessor: "customerName",
-          Cell: renderText,
-        },
-        {
-          Header: "Shipment By",
-          accessor: "shipmentBy",
-          Cell: renderText,
-        },
-        {
-          Header: "Total Kg",
-          accessor: "totalKg",
-          Cell: renderText,
-          Footer: () => (
-            <p className="text-center">
-              {sumBy(data, (item) => Number(item.totalKg)).toFixed(2)}
-            </p>
-          ),
-        },
-        {
-          Header: "Shipment No",
-          accessor: "shipmentNo",
-          Cell: renderText,
-        },
-        // {
-        //   Header: "Total Bill",
-        //   accessor: "totalBill",
-        //   Cell: ({ row }) => <p>{calculationDueBill(row?._original)}</p>,
-        // },
-        {
-          Header: "Debit",
-          accessor: "debit",
-          //   Cell: renderEditable,
-          Cell: ({ row }) => (
-            <p className="text-center">
-              {convertTotalAmount(Number(calculationDueBill(row?._original)))}
-            </p>
-          ),
-          Footer: ({ row }) => (
-            <p className="text-center">
-              {convertTotalAmount(
-                sumBy(data, (item) => Number(calculationDueBill(item)))
-              )}
-            </p>
-          ),
-        },
-        {
-          Header: "Credit",
-          accessor: "credit",
-          Cell: renderEditable,
-          Footer: ({ row }) => (
-            <p className="text-center">
-              {convertTotalAmount(
-                sumBy(data, (item) => Number(item.credit || 0))
-              )}
-            </p>
-          ),
-        },
-        {
-          Header: "Discount",
-          accessor: "discount",
-          Cell: renderEditable,
-          Footer: ({ row }) => (
-            <p className="text-center">
-              {convertTotalAmount(
-                sumBy(data, (item) => Number(item?.discount || 0))
-              )}
-            </p>
-          ),
-        },
-        {
-          Header: "Balance",
-          accessor: "balance",
-          Cell: renderText,
-          Footer: ({ row }) => (
-            <p className="text-center">
-              {convertTotalAmount(
-                sumBy(data, (item) =>
-                  Number(item.balance || calculationDueBill(item))
-                )
-              )}
-            </p>
-          ),
-        },
-        {
-          Header: "Action",
-          accessor: "##",
-          Cell: ({ row }) => (
-            <div className={"text-center flex flex-col space-y-2"}>
-              <button
-                onClick={(e) => handleOnSubmit(row._original)}
-                className=" inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
-                disabled={loading}
-              >
-                {loading === row._original?._id ? (
-                  <>
-                    <SpingSvgIcon />
-                    Updating
-                  </>
-                ) : (
-                  "Update"
-                )}
-              </button>
-            </div>
-          ),
-        },
-        // {
-        //   //   id: "headerId",
-        //   Header: "Action",
-        //   accessor: "#",
-        //   Cell: (row) => (
-        //     <div className={"text-center flex flex-col space-y-2"}>
-        //       <button
-        //         type="submit"
-        //         className="inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
-        //       >
-        //         Update
-        //       </button>
-        //     </div>
-        //   ),
+  if (loading) {
+    return <PlaceHolderLoading loading={true} />;
+  }
 
-        //   className: "sticky-r",
-        //   headerClassName: "sticky-r",
-        //   width: 100,
-        // },
-      ]}
-      className="-striped -highlight"
-      defaultPageSize={200}
-      minRows={12}
-      showPageJump={false}
-      pageSizeOptions={[200, 250, 300]}
-      showPagination={true}
-      // showPagination={false}
-      sortable={true}
-    />
+  return (
+    <>
+      <ReactTable
+        data={data}
+        columns={[
+          {
+            Header: "User ID",
+            accessor: "customerId",
+            Cell: renderText,
+            Footer: () => <p className="text-center">Total-</p>,
+          },
+          {
+            Header: "Shiping Mark",
+            accessor: "customerName",
+            Cell: renderText,
+          },
+          {
+            Header: "Shipment By",
+            accessor: "shipmentBy",
+            Cell: renderText,
+          },
+          {
+            Header: "Total Kg",
+            accessor: "totalKg",
+            Cell: renderText,
+            Footer: () => (
+              <p className="text-center">
+                {sumBy(data, (item) => Number(item.totalKg)).toFixed(2)}
+              </p>
+            ),
+          },
+          {
+            Header: "Shipment No",
+            accessor: "shipmentNo",
+            Cell: renderText,
+          },
+          // {
+          //   Header: "Total Bill",
+          //   accessor: "totalBill",
+          //   Cell: ({ row }) => <p>{calculationDueBill(row?._original)}</p>,
+          // },
+          {
+            Header: "Debit",
+            accessor: "debit",
+            //   Cell: renderEditable,
+            Cell: ({ row }) => (
+              <p className="text-center">
+                {convertTotalAmount(Number(calculationDueBill(row?._original)))}
+              </p>
+            ),
+            Footer: ({ row }) => (
+              <p className="text-center">
+                {convertTotalAmount(
+                  sumBy(data, (item) => Number(calculationDueBill(item)))
+                )}
+              </p>
+            ),
+          },
+          {
+            Header: "Credit",
+            accessor: "credit",
+            Cell: renderEditable,
+            Footer: ({ row }) => (
+              <p className="text-center">
+                {convertTotalAmount(
+                  sumBy(data, (item) => Number(item.credit || 0))
+                )}
+              </p>
+            ),
+          },
+          {
+            Header: "Discount",
+            accessor: "discount",
+            Cell: renderEditable,
+            Footer: ({ row }) => (
+              <p className="text-center">
+                {convertTotalAmount(
+                  sumBy(data, (item) => Number(item?.discount || 0))
+                )}
+              </p>
+            ),
+          },
+          {
+            Header: "Balance",
+            accessor: "balance",
+            Cell: renderText,
+            Footer: ({ row }) => (
+              <p className="text-center">
+                {convertTotalAmount(
+                  sumBy(data, (item) =>
+                    Number(item.balance || calculationDueBill(item))
+                  )
+                )}
+              </p>
+            ),
+          },
+          {
+            Header: "Action",
+            accessor: "##",
+            Cell: ({ row }) => (
+              <div className={"text-center flex space-x-1"}>
+                <button
+                  onClick={(e) => handleOnSubmit(row._original)}
+                  className=" inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
+                  disabled={loading}
+                >
+                  {loading === row._original?._id ? (
+                    <>
+                      <SpingSvgIcon />
+                      Updating..
+                    </>
+                  ) : (
+                    "Update"
+                  )}
+                </button>
+                <button
+                  onClick={(e) => setShowModal(row._original)}
+                  className=" inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
+                  disabled={loading}
+                >
+                  {loading === row._original?._id ? (
+                    <>
+                      <SpingSvgIcon />
+                      Viewing..
+                    </>
+                  ) : (
+                    "View"
+                  )}
+                </button>
+              </div>
+            ),
+          },
+          // {
+          //   //   id: "headerId",
+          //   Header: "Action",
+          //   accessor: "#",
+          //   Cell: (row) => (
+          //     <div className={"text-center flex flex-col space-y-2"}>
+          //       <button
+          //         type="submit"
+          //         className="inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
+          //       >
+          //         Update
+          //       </button>
+          //     </div>
+          //   ),
+
+          //   className: "sticky-r",
+          //   headerClassName: "sticky-r",
+          //   width: 100,
+          // },
+        ]}
+        className="-striped -highlight"
+        defaultPageSize={200}
+        minRows={12}
+        showPageJump={false}
+        pageSizeOptions={[200, 250, 300]}
+        showPagination={true}
+        // showPagination={false}
+        sortable={true}
+      />
+      <Modal
+        isOpen={showModal ? true : false}
+        showXButton
+        onClose={() => setShowModal(false)}
+        className={"max-w-5xl"}
+      >
+        <Modal.Title>{"View All Due Details"}</Modal.Title>
+        <Modal.Content>
+          <div>
+            <div className="flex flex-wrap space-x-2 font-semibold">
+              <p className="border border-primaryBg p-2">
+                Customer Id: {showModal?.oldAditionalInfo?.customerId}
+              </p>
+              <p className="border border-primaryBg p-2">
+                Shipment By: {showModal?.oldAditionalInfo?.shipmentBy}
+              </p>
+              <p className="border border-primaryBg p-2">
+                Shipment No: {showModal?.oldAditionalInfo?.shipmentNo}
+              </p>
+              <p className="border border-primaryBg p-2">
+                Year: {showModal?.oldAditionalInfo?.year}
+              </p>
+              <p className="border border-primaryBg p-2">
+                Old Due: {showModal?.oldAditionalInfo?.balance}
+              </p>
+            </div>
+
+            <button
+              type="button"
+              className=" bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2 mx-auto flex justify-center"
+              onClick={() => {
+                setShowModal(false);
+              }}
+            >
+              Close
+            </button>
+          </div>
+        </Modal.Content>
+      </Modal>
+    </>
   );
 };
 

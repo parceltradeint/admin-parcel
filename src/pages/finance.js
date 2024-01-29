@@ -70,28 +70,13 @@ const Finance = () => {
     // setPageNumber(0)
   };
 
-  useEffect(() => {
-    async function fetchCustomers() {
-      setLoading(true);
-      await axios
-        .get(`/api/customers-bills`)
-        .then((res) => {
-          setData(res.data.data);
-        })
-        .catch((err) => {
-          errorAlert("Something went wrong!");
-        })
-        .finally(() => setLoading(false));
-    }
-    fetchCustomers();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading == "clear"]);
+
 
   const tabItems = [
     {
       id: 1,
       label: "Customers DUE",
-      value: <CustomersBillCal data={data} type={"outbound"} />,
+      value: <CustomersBillCal type={"outbound"} />,
     },
     {
       id: 2,

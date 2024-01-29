@@ -47,17 +47,11 @@ export default async function newShipmentBill(req, res) {
 
       const searchQuery = {
         $and: [
-          //   {
-          //     shipmentBy: new RegExp(type, "i"),
-          //   },
-          //   {
-          //     shipmentNo: new RegExp("^" + shipmentNo + "$", "i")
-          //   },
-          //   {
-          //     month: new RegExp(month, "i"),
-          //   },
           {
-            balance: { $exists: true },
+            balance: { $exists: true, $ne: 0 },
+          },
+          {
+            customerId: { $exists: true },
           },
           {
             $or: [
@@ -66,7 +60,7 @@ export default async function newShipmentBill(req, res) {
               { shipmentNo: regexPattern },
               { deliveryDate: regexPattern },
               { customerName: regexPattern },
-              { phoneNumber: regexPattern },
+              { customerPhone: regexPattern },
             ],
           },
         ],
@@ -80,27 +74,27 @@ export default async function newShipmentBill(req, res) {
 
       const totalDocuments = await collection.countDocuments(searchQuery);
       const documents = await collection.find(searchQuery, options).toArray();
-      const aggregationResult = await collection
-        .aggregate([
-          {
-            $match: {
-              // Your condition here
-              //   shipmentBy: new RegExp(type, "i"),
-              //   shipmentNo: new RegExp("^" + shipmentNo + "$", "i"),
-              //   year: new RegExp("^" + year + "$", "i"),
-              due: { $exists: true },
-            },
-          },
-          //   {
-          //     $group: {
-          //       _id: null,
-          //       totalKg: { $sum: { $toDouble: "$totalKg" } },
-          //       totalCtn: { $sum: { $toDouble: "$totalCtn" } },
-          //       totalAmount: { $sum: { $toDouble: "$totalAmount" } },
-          //     },
-          //   },
-        ])
-        .toArray();
+      // const aggregationResult = await collection
+      //   .aggregate([
+      //     {
+      //       $match: {
+      //         // Your condition here
+      //         //   shipmentBy: new RegExp(type, "i"),
+      //         //   shipmentNo: new RegExp("^" + shipmentNo + "$", "i"),
+      //         //   year: new RegExp("^" + year + "$", "i"),
+      //         due: { $exists: true },
+      //       },
+      //     },
+      //     //   {
+      //     //     $group: {
+      //     //       _id: null,
+      //     //       totalKg: { $sum: { $toDouble: "$totalKg" } },
+      //     //       totalCtn: { $sum: { $toDouble: "$totalCtn" } },
+      //     //       totalAmount: { $sum: { $toDouble: "$totalAmount" } },
+      //     //     },
+      //     //   },
+      //   ])
+      //   .toArray();
 
       //     const updatedDocuments = documents.map((document) => {
       //       return {
@@ -124,7 +118,7 @@ export default async function newShipmentBill(req, res) {
         currentPage: page,
         limit: limit,
         totalPages: Math.ceil(totalDocuments / limit),
-        aggregationResult: aggregationResult[0],
+        // aggregationResult: aggregationResult[0],
       };
       res.status(200).json(response);
     }
