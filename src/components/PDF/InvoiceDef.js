@@ -4,8 +4,7 @@ import { formartDate } from "@/common/formartDate";
 // title: `${customerName}- ${type}- ${new Date().toLocaleString()}`,
 
 export const generatePDF = (info) => {
-  let 
-  renderData = [];
+  let renderData = [];
   if (info?.data) {
     let newData = info?.data?.map((item, i) => {
       let totalAmount =

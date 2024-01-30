@@ -25,6 +25,7 @@ const BillFormSegment = (props) => {
   const [data, setData] = useState([]);
   const [customerInfo, setCustomerInfo] = useState(editMode ? editMode : null);
   const [loading, setLoading] = useState(false);
+  const [loadingUserDetails, setLoadingUserDetails] = useState(false);
   const [aditionalInfo, setAditionalInfo] = useState({});
   const [oldAditionalInfo, setOldAditionalInfo] = useState(null);
   const [suggestionData, setSuggestionData] = useState([]);
@@ -114,21 +115,26 @@ const BillFormSegment = (props) => {
       totalDueBill,
       balance: totalDueBill,
     };
-
-    if (
-      oldAditionalInfo?.customerId &&
-      oldAditionalInfo?.balance &&
-      type == "customer"
-    ) {
-      newData["oldAditionalInfo"] = {
-        balance: oldAditionalInfo.balance,
-        shipmentBy: oldAditionalInfo.shipmentBy,
-        shipmentNo: oldAditionalInfo.shipmentNo,
-        year: oldAditionalInfo.year,
-        month: oldAditionalInfo.month,
-        customerId: oldAditionalInfo.customerId,
-      };
-    }
+    // console.log("new", newData);
+    // if (
+    //   oldAditionalInfo?.customerId &&
+    //   oldAditionalInfo?.balance &&
+    //   type == "customer"
+    // ) {
+    //   const newOldAditionalData = {
+    //     balance: oldAditionalInfo.balance,
+    //     shipmentBy: oldAditionalInfo.shipmentBy,
+    //     shipmentNo: oldAditionalInfo.shipmentNo,
+    //     year: oldAditionalInfo.year,
+    //     month: oldAditionalInfo.month,
+    //     customerId: oldAditionalInfo.customerId,
+    //   }
+    //   if (oldAditionalInfo?.oldAditionalInfo) {
+    //     newData["oldAditionalInfo"] = [...oldAditionalInfo?.oldAditionalInfo, {...newOldAditionalData}];
+    //   } else {
+    //     newData["oldAditionalInfo"] = [{...newOldAditionalData}];
+    //   }
+    // }
 
     const options = ["customer", "cnf", "packing"];
 
@@ -207,33 +213,34 @@ const BillFormSegment = (props) => {
                 errorAlert("Something went wrong!");
               })
               .finally(async () => {
-                if (
-                  oldAditionalInfo?.customerId &&
-                  oldAditionalInfo?.balance &&
-                  resP.value == "customer"
-                ) {
-                  const updateData = {
-                    ...oldAditionalInfo,
-                    balance: 0,
-                    ref: {
-                      balance: newData.balance,
-                      shipmentBy: newData.shipmentBy,
-                      shipmentNo: newData.shipmentNo,
-                      year: newData.year,
-                      month: newData.month,
-                      customerId: newData.customerId,
-                      oldBalance: oldAditionalInfo.balance,
-                    },
-                  }
-                  delete updateData?._id;
-                  await axios
-                    .patch(`/api/${selectedType}`, {
-                      id: oldAditionalInfo?._id,
-                      data: {...updateData},
-                    })
-                    .then((res) => res)
-                    .catch((err) => console.log("error", err));
-                }
+                // if (
+                //   oldAditionalInfo?.customerId &&
+                //   oldAditionalInfo?.balance &&
+                //   resP.value == "customer"
+                // ) {
+                //   const updateData = {
+                //     ...oldAditionalInfo,
+                //     currentDue: oldAditionalInfo.balance,
+                //     balance: 0,
+                //     ref: {
+                //       balance: newData.balance,
+                //       shipmentBy: newData.shipmentBy,
+                //       shipmentNo: newData.shipmentNo,
+                //       year: newData.year,
+                //       month: newData.month,
+                //       customerId: newData.customerId,
+                //       oldBalance: oldAditionalInfo.balance,
+                //     },
+                //   }
+                //   delete updateData?._id;
+                //   await axios
+                //     .patch(`/api/${selectedType}`, {
+                //       id: oldAditionalInfo?._id,
+                //       data: {...updateData},
+                //     })
+                //     .then((res) => res)
+                //     .catch((err) => console.log("error", err));
+                // }
                 setLoading(false);
                 successAlert("Successfully Saved.");
                 router.push(
@@ -315,13 +322,15 @@ const BillFormSegment = (props) => {
   useEffect(() => {
     if (customerInfo?.customerId && router.pathname?.includes("new")) {
       async function fetchCustomer() {
+        setLoadingUserDetails(true);
         await axios
           .get(`/api/customers-bills`, {
             params: { customerId: customerInfo.customerId },
           })
           .then((res) => {
-            setOldAditionalInfo({ ...res.data });
-            let balance = res.data.balance || 0;
+            console.log("res", res);
+            // setOldAditionalInfo({ ...res.data.res });
+            let balance = res.data.totalBalance || 0;
             if (balance >= 0) {
               setAditionalInfo({ due: balance });
             } else {
@@ -334,7 +343,7 @@ const BillFormSegment = (props) => {
             console.log("err", err);
             // errorAlert("Something went wrong!");
           })
-          .finally(() => setLoading(false));
+          .finally(() => setLoadingUserDetails(false));
       }
       fetchCustomer();
     }
@@ -360,7 +369,8 @@ const BillFormSegment = (props) => {
         />
       )}
 
-      {customerInfo &&
+      {!loadingUserDetails &&
+        customerInfo &&
         customerInfo?.customerName &&
         customerInfo?.shipmentBy &&
         customerInfo?.shipmentNo && (
@@ -420,6 +430,7 @@ const BillFormSegment = (props) => {
             </Section>
           </>
         )}
+      {loadingUserDetails && <PlaceHolderLoading loading={true} />}
     </Section>
   );
 };

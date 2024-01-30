@@ -1,28 +1,18 @@
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { isNumber, sumBy } from "lodash";
+import { sumBy } from "lodash";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import ReactTable from "react-table-v6";
 import { convertBengaliToEnglishNumber } from "../PDF/InvoiceDef";
-import useSound from "use-sound";
-import { useForm } from "react-hook-form";
-import Swal from "sweetalert2";
 import PlaceHolderLoading, { SpingSvgIcon } from "@/common/PlaceHolderLoading";
 import axios from "axios";
-import { errorAlert, successAlert } from "@/common/SweetAlert";
-import Modal from "../Module/Modal";
+import { errorAlert } from "@/common/SweetAlert";
+
+import CustomerAllDueBills from "./CustomerAllDueBills";
 const CustomersBillCal = (props) => {
   const { type } = props;
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [data, setData] = useState([]);
-  const router = useRouter();
-  const [addItemsSoundPlay] = useSound("/assets/sounds/save.mp3", {
-    volume: 0.25,
-  });
-  // const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function fetchCustomers() {
@@ -41,74 +31,6 @@ const CustomersBillCal = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const calculationDueBill = (item) => {
-    if (item.totalDueBill) {
-      return Number(item.totalDueBill).toFixed(2);
-    } else {
-      let total =
-        sumBy(item.data, (v) => Number(v.totalAmount || 0)) +
-        Number(item?.rmb?.qty || 0) * Number(item?.rmb?.rate || 0) +
-        Number(item?.due || 0) -
-        Number(item?.paid || 0);
-      return total.toFixed(2);
-    }
-  };
-  const renderText = (cellInfo) => {
-    const cellValue = data[cellInfo.index][cellInfo.column.id];
-
-    return (
-      <p className="px-6 py-2 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900 text-center">
-        {isNumber(cellValue)
-          ? Number(cellValue).toFixed(2)
-          : cellValue ||
-            (!cellValue &&
-              cellInfo.column.id === "balance" &&
-              convertTotalAmount(
-                Number(calculationDueBill(data[cellInfo.index]))
-              ))}
-      </p>
-    );
-  };
-
-  const renderEditable = (cellInfo, fixed) => {
-    const cellValue = data[cellInfo.index][cellInfo.column.id];
-
-    return (
-      <>
-        <input
-          className={`uppercase text-center block w-full px-4 py-1  text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 `}
-          name="input"
-          step={"any"}
-          onKeyDown={handleKeyDown}
-          onChange={(e) => handleCellRenderChange(cellInfo, e.target.value)}
-          value={cellValue}
-          //   value={convertTotalAmount(Number(cellValue), 0)}
-          type="number"
-          //   defaultValue={
-          //     cellInfo.column.id === "debit"
-          //       ? Number(calculationDueBill(data[cellInfo.index]))
-          //       : cellInfo || 0
-          //   }
-        />
-      </>
-    );
-  };
-
-  const handleCellRenderChange = (cellInfo, val) => {
-    const newData = [...data];
-    newData[cellInfo.index][cellInfo.column.id] = val;
-    let debit = Number(calculationDueBill(newData[cellInfo.index]));
-    let credit = Number(newData[cellInfo.index]["credit"]);
-    newData[cellInfo.index]["balance"] = debit - credit;
-    setData(newData);
-  };
-
-  const handleKeyDown = (event) => {
-    if (event.key === "ArrowUp" || event.key === "ArrowDown") {
-      event.preventDefault();
-    }
-  };
-
   const convertTotalAmount = (val, toFixed) => {
     return convertBengaliToEnglishNumber(
       val.toLocaleString("bn", {
@@ -117,45 +39,57 @@ const CustomersBillCal = (props) => {
     );
   };
 
-  const handleOnSubmit = (val) => {
-    addItemsSoundPlay();
-    const newData = {
-      ...val,
-    };
+  const groupedByCustomerId = data.reduce((acc, item) => {
+    const {
+      customerId,
+      due,
+      totalKg,
+      shipmentNo,
+      totalAmount,
+      balance,
+      customerName,
+      shipmentBy,
+      credit,
+      paid,
+      discount = 0,
+    } = item;
 
-    Swal.fire({
-      title: `ARE YOU SURE FOR UPDATE`,
+    // Check if there's already an entry for this customerId
+    if (!acc[customerId]) {
+      // If not, create a new entry with additional keys
+      acc[customerId] = {
+        items: [item],
+        totalDue: due,
+        totalKg,
+        shipmentNo: [shipmentNo],
+        totalAmount,
+        balance,
+        credit: Number(credit) || 0,
+        customerName,
+        shipmentBy: [shipmentBy],
+        paid,
+        discount,
+      };
+    } else {
+      // If yes, append to the existing entry and update the additional keys
+      acc[customerId].items.push(item);
+      acc[customerId].totalDue += Number(due); // Update the additional key
+      acc[customerId].totalKg += Number(totalKg); // Update the additional key
+      acc[customerId].totalAmount += Number(totalAmount); // Update the additional key
+      acc[customerId].credit += Number(credit) || 0; // Update the additional key
+      acc[customerId].paid += Number(paid) || 0; // Update the additional key
+      acc[customerId].discount += Number(discount) || 0; // Update the additional key
+      acc[customerId].balance += Number(balance); // Update the additional key
+      acc[customerId].customerName = customerName; // Update the additional key
+      acc[customerId].shipmentBy.push(shipmentBy); // Update the additional key
+      acc[customerId].shipmentNo.push(shipmentNo); // Update the additional key
+    }
 
-      icon: "question",
-      confirmButtonColor: "#006EB8",
-      confirmButtonText: `Confirm`,
-      allowOutsideClick: false,
-      // cancelButtonText: "No",
-      showCloseButton: true,
-      showConfirmButton: true,
-      showCancelButton: true,
-    }).then(async (resP) => {
-      if (resP.isConfirmed) {
-        setLoading(true);
-        delete newData?._id;
-        await axios
-          .patch(`/api/${type}`, {
-            id: val?._id,
-            data: { ...newData },
-          })
-          .then((res) => {
-            successAlert("Successfully Update");
-          })
-          .catch((err) => {
-            console.log("err", err);
-            errorAlert("Something went wrong!");
-          })
-          .finally(() => setLoading(false));
-      } else {
-        return;
-      }
-    });
-  };
+    return acc;
+  }, {});
+
+  // Convert the object back to an array
+  const groupedArray = Object.values(groupedByCustomerId);
 
   if (loading) {
     return <PlaceHolderLoading loading={true} />;
@@ -164,38 +98,33 @@ const CustomersBillCal = (props) => {
   return (
     <>
       <ReactTable
-        data={data}
+        data={groupedArray}
         columns={[
-          {
-            Header: "User ID",
-            accessor: "customerId",
-            Cell: renderText,
-            Footer: () => <p className="text-center">Total-</p>,
-          },
           {
             Header: "Shiping Mark",
             accessor: "customerName",
-            Cell: renderText,
+            // Cell: renderText,
+            Footer: () => <p className="text-center">Total-</p>,
           },
           {
             Header: "Shipment By",
             accessor: "shipmentBy",
-            Cell: renderText,
+            // Cell: renderText,
           },
           {
             Header: "Total Kg",
             accessor: "totalKg",
-            Cell: renderText,
+            // Cell: renderText,
             Footer: () => (
               <p className="text-center">
-                {sumBy(data, (item) => Number(item.totalKg)).toFixed(2)}
+                {sumBy(groupedArray, (item) => Number(item.totalKg)).toFixed(2)}
               </p>
             ),
           },
           {
             Header: "Shipment No",
             accessor: "shipmentNo",
-            Cell: renderText,
+            // Cell: renderText,
           },
           // {
           //   Header: "Total Bill",
@@ -208,13 +137,13 @@ const CustomersBillCal = (props) => {
             //   Cell: renderEditable,
             Cell: ({ row }) => (
               <p className="text-center">
-                {convertTotalAmount(Number(calculationDueBill(row?._original)))}
+                {convertTotalAmount(Number(row?._original?.totalAmount))}
               </p>
             ),
             Footer: ({ row }) => (
               <p className="text-center">
                 {convertTotalAmount(
-                  sumBy(data, (item) => Number(calculationDueBill(item)))
+                  sumBy(groupedArray, (item) => Number(item.totalAmount))
                 )}
               </p>
             ),
@@ -222,11 +151,11 @@ const CustomersBillCal = (props) => {
           {
             Header: "Credit",
             accessor: "credit",
-            Cell: renderEditable,
+            // Cell: renderEditable,
             Footer: ({ row }) => (
               <p className="text-center">
                 {convertTotalAmount(
-                  sumBy(data, (item) => Number(item.credit || 0))
+                  sumBy(groupedArray, (item) => Number(item.credit || 0))
                 )}
               </p>
             ),
@@ -234,11 +163,12 @@ const CustomersBillCal = (props) => {
           {
             Header: "Discount",
             accessor: "discount",
-            Cell: renderEditable,
+            // Cell: renderEditable,
             Footer: ({ row }) => (
               <p className="text-center">
                 {convertTotalAmount(
-                  sumBy(data, (item) => Number(item?.discount || 0))
+                  sumBy(groupedArray, (item) => Number(item?.discount || 0)) ||
+                    0
                 )}
               </p>
             ),
@@ -246,13 +176,11 @@ const CustomersBillCal = (props) => {
           {
             Header: "Balance",
             accessor: "balance",
-            Cell: renderText,
+            // Cell: renderText,
             Footer: ({ row }) => (
               <p className="text-center">
                 {convertTotalAmount(
-                  sumBy(data, (item) =>
-                    Number(item.balance || calculationDueBill(item))
-                  )
+                  sumBy(groupedArray, (item) => Number(item.balance))
                 )}
               </p>
             ),
@@ -262,7 +190,7 @@ const CustomersBillCal = (props) => {
             accessor: "##",
             Cell: ({ row }) => (
               <div className={"text-center flex space-x-1"}>
-                <button
+                {/* <button
                   onClick={(e) => handleOnSubmit(row._original)}
                   className=" inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
                   disabled={loading}
@@ -275,9 +203,9 @@ const CustomersBillCal = (props) => {
                   ) : (
                     "Update"
                   )}
-                </button>
+                </button> */}
                 <button
-                  onClick={(e) => setShowModal(row._original)}
+                  onClick={(e) => setShowModal(row._original?.items)}
                   className=" inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
                   disabled={loading}
                 >
@@ -313,7 +241,7 @@ const CustomersBillCal = (props) => {
           //   width: 100,
           // },
         ]}
-        className="-striped -highlight"
+        className="-striped -highlight text-center"
         defaultPageSize={200}
         minRows={12}
         showPageJump={false}
@@ -322,45 +250,9 @@ const CustomersBillCal = (props) => {
         // showPagination={false}
         sortable={true}
       />
-      <Modal
-        isOpen={showModal ? true : false}
-        showXButton
-        onClose={() => setShowModal(false)}
-        className={"max-w-5xl"}
-      >
-        <Modal.Title>{"View All Due Details"}</Modal.Title>
-        <Modal.Content>
-          <div>
-            <div className="flex flex-wrap space-x-2 font-semibold">
-              <p className="border border-primaryBg p-2">
-                Customer Id: {showModal?.oldAditionalInfo?.customerId}
-              </p>
-              <p className="border border-primaryBg p-2">
-                Shipment By: {showModal?.oldAditionalInfo?.shipmentBy}
-              </p>
-              <p className="border border-primaryBg p-2">
-                Shipment No: {showModal?.oldAditionalInfo?.shipmentNo}
-              </p>
-              <p className="border border-primaryBg p-2">
-                Year: {showModal?.oldAditionalInfo?.year}
-              </p>
-              <p className="border border-primaryBg p-2">
-                Old Due: {showModal?.oldAditionalInfo?.balance}
-              </p>
-            </div>
-
-            <button
-              type="button"
-              className=" bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2 mx-auto flex justify-center"
-              onClick={() => {
-                setShowModal(false);
-              }}
-            >
-              Close
-            </button>
-          </div>
-        </Modal.Content>
-      </Modal>
+      {showModal && (
+        <CustomerAllDueBills items={showModal} setShowModal={setShowModal} type={type} />
+      )}
     </>
   );
 };

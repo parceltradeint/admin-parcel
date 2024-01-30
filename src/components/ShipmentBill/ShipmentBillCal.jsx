@@ -172,18 +172,25 @@ const ShipmentBillCal = (props) => {
           accessor: "shipmentNo",
           Cell: renderText,
         },
-        // {
-        //   Header: "Total Bill",
-        //   accessor: "totalBill",
-        //   Cell: ({ row }) => <p>{calculationDueBill(row?._original)}</p>,
-        // },
+        {
+          Header: "Total Amount",
+          accessor: "totalAmount",
+          Cell: ({ row }) => <p>{convertTotalAmount(Number(row?._original?.totalAmount))}</p>,
+          Footer: ({ row }) => (
+            <p className="text-center">
+              {convertTotalAmount(
+                sumBy(data, (item) => Number(item.totalAmount))
+              )}
+            </p>
+          ),
+        },
         {
           Header: "Debit",
           accessor: "debit",
           //   Cell: renderEditable,
           Cell: ({ row }) => (
             <p className="text-center">
-              {convertTotalAmount(Number(calculationDueBill(row?._original)))}
+              {convertTotalAmount(calculationDueBill(row?._original))}
             </p>
           ),
           Footer: ({ row }) => (
@@ -202,6 +209,18 @@ const ShipmentBillCal = (props) => {
             <p className="text-center">
               {convertTotalAmount(
                 sumBy(data, (item) => Number(item.credit || 0))
+              )}
+            </p>
+          ),
+        },
+        {
+          Header: "Discount",
+          accessor: "discount",
+          Cell: renderEditable,
+          Footer: ({ row }) => (
+            <p className="text-center">
+              {convertTotalAmount(
+                sumBy(data, (item) => Number(item?.discount || 0))
               )}
             </p>
           ),

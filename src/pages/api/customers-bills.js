@@ -33,9 +33,32 @@ export default async function newShipmentBill(req, res) {
       // const objectId = new ObjectId(req?.query?.id);
       let response = await collection.findOne({
         customerId: req?.query?.customerId,
-        balance: { $exists: true },
+        balance: { $exists: true, $ne: 0 },
       });
-      res.status(200).json(response);
+
+      const aggregationResult = await collection
+        .aggregate([
+          {
+            $match: {
+              // Your condition here
+              customerId: req?.query?.customerId,
+              // shipmentNo: new RegExp("^" + shipmentNo + "$", "i"),
+              // year: new RegExp("^" + year + "$", "i")
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              totalKg: { $sum: { $toDouble: "$totalKg" } },
+              totalCtn: { $sum: { $toDouble: "$totalCtn" } },
+              totalAmount: { $sum: { $toDouble: "$totalAmount" } },
+              totalBalance: { $sum: { $toDouble: "$balance" } },
+            },
+          },
+        ])
+        .toArray();
+
+      res.status(200).json({ res: {...response}, ...aggregationResult[0] });
     } else {
       const { page, limit, type, shipmentNo, month, year } = req.query;
       const filter = req.query?.filter || {};

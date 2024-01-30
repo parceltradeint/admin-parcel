@@ -419,6 +419,7 @@ const BillFormDetails = (props) => {
                         className="text-right block w-full bg-white text-red-600 border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                         value={aditionalInfo?.due}
                         inputMode="numeric"
+                        disabled
                       />
                       {/* <input
                         className="text-right block w-full bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
@@ -440,6 +441,7 @@ const BillFormDetails = (props) => {
                         }}
                         className="text-right block w-full bg-white text-green-600 border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                         value={aditionalInfo.paid}
+                        disabled
                         // inputMode="numeric"
                       />
                       {/* <input
