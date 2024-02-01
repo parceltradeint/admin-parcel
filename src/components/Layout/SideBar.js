@@ -62,13 +62,13 @@ const SideBar = () => {
         <div className="">
           <nav className="">
             <Link
-              as={"/"}
+              as={"/my-profile"}
               href={{
-                pathname: "/dashboard",
+                pathname: "/my-profile",
               }}
               className={`${
-                pathname === "/user/[slug]"
-                  ? "bg-sideBarBg  text-sideBarHoverText "
+                pathname === "/my-profile"
+                  ? "bg-sideBarHoverBg  text-sideBarHoverText "
                   : "text-sideBarText  "
               } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
             >
@@ -159,7 +159,7 @@ const SideBar = () => {
             >
               <div>
                 <FontAwesomeIcon icon={faUsers} />
-                <span className="mx-4 font-medium">Customer</span>
+                <span className="mx-4 font-medium">Customers List</span>
               </div>
             </Link>
 

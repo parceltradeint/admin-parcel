@@ -101,19 +101,19 @@ const BillFormSegment = (props) => {
         Number(aditionalInfo?.rmb?.rate || 0) +
       Number(aditionalInfo?.due || 0) -
       Number(aditionalInfo?.paid || 0);
-
+    const totalAmount =
+      sumBy(data, (item) => Number(item.totalAmount || 0)) +
+      Number(aditionalInfo?.rmb?.qty || 0) *
+        Number(aditionalInfo?.rmb?.rate || 0);
     const newData = {
       ...customerInfo,
       ...aditionalInfo,
       data: data,
       totalKg: sumBy(data, (item) => Number(item.kg || 0)),
       totalCtn: data?.filter((item) => item?.ctn?.length > 1)?.length,
-      totalAmount:
-        sumBy(data, (item) => Number(item.totalAmount || 0)) +
-        Number(aditionalInfo?.rmb?.qty || 0) *
-          Number(aditionalInfo?.rmb?.rate || 0),
+      totalAmount: totalAmount,
       totalDueBill,
-      balance: totalDueBill,
+      balance: totalAmount,
     };
     // console.log("new", newData);
     // if (

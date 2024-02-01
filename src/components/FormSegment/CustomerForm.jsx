@@ -1,18 +1,22 @@
 /* eslint-disable jsx-a11y/alt-text */
+import { UserContext } from "@/AuthenticApp/Context/userContext";
 import PlaceHolderLoading from "@/common/PlaceHolderLoading";
 import Section from "@/common/Section";
 import { errorAlert, successAlert } from "@/common/SweetAlert";
 import { formartDate } from "@/common/formartDate";
 import axios from "axios";
 import Image from "next/image";
-import React, { useEffect, useId, useState } from "react";
+import React, { useContext, useEffect, useId, useState } from "react";
 import { useForm } from "react-hook-form";
 import ShortUniqueId from "short-unique-id";
+import useSound from "use-sound";
 
 const CustomerForm = (props) => {
   const { editMode, setIsOpen, data, setData, setEditData } = props;
   const [loading, setLoading] = useState(false);
-  const { randomUUID } = new ShortUniqueId({ length: 10 });
+  const [saveSoundPlay] = useSound("/assets/sounds/save.mp3", { volume: 0.45 });
+const {user} = useContext(UserContext)
+  const { randomUUID } = new ShortUniqueId({ length: 4 });
   const {
     handleSubmit,
     register,
@@ -28,10 +32,12 @@ const CustomerForm = (props) => {
   });
 
   const onSubmit = async (value) => {
+    saveSoundPlay()
     setLoading(true);
     const newData = {
-      customerId: value?.customerId || randomUUID(),
+      customerId: value?.customerId || `PARCEL-${randomUUID()}`,
       created: new Date(),
+      createdBy: value?.createdBy || user?.displayName || "",
       ...value,
     };
     if (!editMode) {

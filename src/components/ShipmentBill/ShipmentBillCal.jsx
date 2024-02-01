@@ -12,6 +12,11 @@ import Swal from "sweetalert2";
 import PlaceHolderLoading, { SpingSvgIcon } from "@/common/PlaceHolderLoading";
 import axios from "axios";
 import { errorAlert, successAlert } from "@/common/SweetAlert";
+import { generateExportBills } from "../PDF/generateExportBills";
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
+
 const ShipmentBillCal = (props) => {
   const { type } = props;
   const [data, setData] = useState([...props.data]);
@@ -97,8 +102,8 @@ const ShipmentBillCal = (props) => {
     );
   };
 
-    const handleOnSubmit = (val) => {
-        addItemsSoundPlay()
+  const handleOnSubmit = (val) => {
+    addItemsSoundPlay();
     const newData = {
       ...val,
       //   totalDueBill: 98036,
@@ -142,154 +147,171 @@ const ShipmentBillCal = (props) => {
   //     return <PlaceHolderLoading loading={true} />;
   //   }
 
-  return (
-    <ReactTable
-      data={data}
-      columns={[
-        {
-          Header: "Shiping Mark",
-          accessor: "customerName",
-          Cell: renderText,
-          Footer: () => <p className="text-center">Total-</p>,
-        },
-        {
-          Header: "Shipment By",
-          accessor: "shipmentBy",
-          Cell: renderText,
-        },
-        {
-          Header: "Total Kg",
-          accessor: "totalKg",
-          Cell: renderText,
-          Footer: () => (
-            <p className="text-center">
-              {sumBy(data, (item) => Number(item.totalKg)).toFixed(2)}
-            </p>
-          ),
-        },
-        {
-          Header: "Shipment No",
-          accessor: "shipmentNo",
-          Cell: renderText,
-        },
-        {
-          Header: "Total Amount",
-          accessor: "totalAmount",
-          Cell: ({ row }) => <p>{convertTotalAmount(Number(row?._original?.totalAmount))}</p>,
-          Footer: ({ row }) => (
-            <p className="text-center">
-              {convertTotalAmount(
-                sumBy(data, (item) => Number(item.totalAmount))
-              )}
-            </p>
-          ),
-        },
-        {
-          Header: "Debit",
-          accessor: "debit",
-          //   Cell: renderEditable,
-          Cell: ({ row }) => (
-            <p className="text-center">
-              {convertTotalAmount(calculationDueBill(row?._original))}
-            </p>
-          ),
-          Footer: ({ row }) => (
-            <p className="text-center">
-              {convertTotalAmount(
-                sumBy(data, (item) => Number(calculationDueBill(item)))
-              )}
-            </p>
-          ),
-        },
-        {
-          Header: "Credit",
-          accessor: "credit",
-          Cell: renderEditable,
-          Footer: ({ row }) => (
-            <p className="text-center">
-              {convertTotalAmount(
-                sumBy(data, (item) => Number(item.credit || 0))
-              )}
-            </p>
-          ),
-        },
-        {
-          Header: "Discount",
-          accessor: "discount",
-          Cell: renderEditable,
-          Footer: ({ row }) => (
-            <p className="text-center">
-              {convertTotalAmount(
-                sumBy(data, (item) => Number(item?.discount || 0))
-              )}
-            </p>
-          ),
-        },
-        {
-          Header: "Balance",
-          accessor: "balance",
-          Cell: renderText,
-          Footer: ({ row }) => (
-            <p className="text-center">
-              {convertTotalAmount(
-                sumBy(data, (item) =>
-                  Number(item.balance || calculationDueBill(item))
-                )
-              )}
-            </p>
-          ),
-        },
-        {
-          Header: "Action",
-          accessor: "##",
-          Cell: ({ row }) => (
-            <div className={"text-center flex flex-col space-y-2"}>
-              <button
-                onClick={(e) => handleOnSubmit(row._original)}
-                className=" inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
-                disabled={loading}
-              >
-                {loading === row._original?._id ? (
-                  <>
-                    <SpingSvgIcon />
-                    Updating
-                  </>
-                ) : (
-                  "Update"
-                )}
-              </button>
-            </div>
-          ),
-        },
-        // {
-        //   //   id: "headerId",
-        //   Header: "Action",
-        //   accessor: "#",
-        //   Cell: (row) => (
-        //     <div className={"text-center flex flex-col space-y-2"}>
-        //       <button
-        //         type="submit"
-        //         className="inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
-        //       >
-        //         Update
-        //       </button>
-        //     </div>
-        //   ),
+  const handleExportBills = () => {
+    if (window.confirm("Are you sure you want to export bills?")) {
+      generateExportBills(data);
+    }
+  };
 
-        //   className: "sticky-r",
-        //   headerClassName: "sticky-r",
-        //   width: 100,
-        // },
-      ]}
-      className="-striped -highlight"
-      defaultPageSize={200}
-      minRows={12}
-      showPageJump={false}
-      pageSizeOptions={[200, 250, 300]}
-      showPagination={true}
-      // showPagination={false}
-      sortable={true}
-    />
+  return (
+    <>
+      <button
+        type="button"
+        className=" bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mb-2 mx-auto flex justify-center uppercase"
+        onClick={handleExportBills}
+      >
+        Export Bills
+      </button>
+      <ReactTable
+        data={data}
+        columns={[
+          {
+            Header: "Shiping Mark",
+            accessor: "customerName",
+            Cell: renderText,
+            Footer: () => <p className="text-center">Total-</p>,
+          },
+          {
+            Header: "Shipment By",
+            accessor: "shipmentBy",
+            Cell: renderText,
+          },
+          {
+            Header: "Total Kg",
+            accessor: "totalKg",
+            Cell: renderText,
+            Footer: () => (
+              <p className="text-center">
+                {sumBy(data, (item) => Number(item.totalKg)).toFixed(2)}
+              </p>
+            ),
+          },
+          {
+            Header: "Shipment No",
+            accessor: "shipmentNo",
+            Cell: renderText,
+          },
+          {
+            Header: "Total Amount",
+            accessor: "totalAmount",
+            Cell: ({ row }) => (
+              <p>{convertTotalAmount(Number(row?._original?.totalAmount))}</p>
+            ),
+            Footer: ({ row }) => (
+              <p className="text-center">
+                {convertTotalAmount(
+                  sumBy(data, (item) => Number(item.totalAmount))
+                )}
+              </p>
+            ),
+          },
+          {
+            Header: "Debit",
+            accessor: "debit",
+            //   Cell: renderEditable,
+            Cell: ({ row }) => (
+              <p className="text-center">
+                {convertTotalAmount(Number(calculationDueBill(row?._original)))}
+              </p>
+            ),
+            Footer: ({ row }) => (
+              <p className="text-center">
+                {convertTotalAmount(
+                  sumBy(data, (item) => Number(calculationDueBill(item)))
+                )}
+              </p>
+            ),
+          },
+          {
+            Header: "Credit",
+            accessor: "credit",
+            Cell: renderEditable,
+            Footer: ({ row }) => (
+              <p className="text-center">
+                {convertTotalAmount(
+                  sumBy(data, (item) => Number(item.credit || 0))
+                )}
+              </p>
+            ),
+          },
+          {
+            Header: "Discount",
+            accessor: "discount",
+            Cell: renderEditable,
+            Footer: ({ row }) => (
+              <p className="text-center">
+                {convertTotalAmount(
+                  sumBy(data, (item) => Number(item?.discount || 0))
+                )}
+              </p>
+            ),
+          },
+          {
+            Header: "Balance",
+            accessor: "balance",
+            Cell: renderText,
+            Footer: ({ row }) => (
+              <p className="text-center">
+                {convertTotalAmount(
+                  sumBy(data, (item) =>
+                    Number(item.balance || calculationDueBill(item))
+                  )
+                )}
+              </p>
+            ),
+          },
+          {
+            Header: "Action",
+            accessor: "##",
+            Cell: ({ row }) => (
+              <div className={"text-center flex flex-col space-y-2"}>
+                <button
+                  onClick={(e) => handleOnSubmit(row._original)}
+                  className=" inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
+                  disabled={loading}
+                >
+                  {loading === row._original?._id ? (
+                    <>
+                      <SpingSvgIcon />
+                      Updating
+                    </>
+                  ) : (
+                    "Update"
+                  )}
+                </button>
+              </div>
+            ),
+          },
+          // {
+          //   //   id: "headerId",
+          //   Header: "Action",
+          //   accessor: "#",
+          //   Cell: (row) => (
+          //     <div className={"text-center flex flex-col space-y-2"}>
+          //       <button
+          //         type="submit"
+          //         className="inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
+          //       >
+          //         Update
+          //       </button>
+          //     </div>
+          //   ),
+
+          //   className: "sticky-r",
+          //   headerClassName: "sticky-r",
+          //   width: 100,
+          // },
+        ]}
+        className="-striped -highlight"
+        defaultPageSize={200}
+        minRows={12}
+        showPageJump={false}
+        pageSizeOptions={[200, 250, 300]}
+        showPagination={true}
+        // showPagination={false}
+        sortable={true}
+      />
+    </>
   );
 };
 
