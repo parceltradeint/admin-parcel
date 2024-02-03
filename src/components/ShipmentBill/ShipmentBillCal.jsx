@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import ReactTable from "react-table-v6";
-import { convertBengaliToEnglishNumber } from "../PDF/InvoiceDef";
+import { convertBengaliToEnglishNumber, generatePDF } from "../PDF/InvoiceDef";
 import useSound from "use-sound";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
@@ -153,6 +153,17 @@ const ShipmentBillCal = (props) => {
     }
   };
 
+  const handleOnViewPDF = (value) => {
+    const newInfo = {
+      ...value,
+      // due: value.balance || 0,
+      paid: value.credit || 0,
+      watermark: Number(value.balance) <= 0
+    };
+    generatePDF(newInfo)
+    // generateExportBills(data);
+  };
+
   return (
     <>
       <button
@@ -264,10 +275,10 @@ const ShipmentBillCal = (props) => {
             Header: "Action",
             accessor: "##",
             Cell: ({ row }) => (
-              <div className={"text-center flex flex-col space-y-2"}>
+              <div className={"text-center flex space-x-2"}>
                 <button
                   onClick={(e) => handleOnSubmit(row._original)}
-                  className=" inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
+                  className="uppercase inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
                   disabled={loading}
                 >
                   {loading === row._original?._id ? (
@@ -279,8 +290,16 @@ const ShipmentBillCal = (props) => {
                     "Update"
                   )}
                 </button>
+                <button
+                  onClick={(e) => handleOnViewPDF(row._original)}
+                  className="uppercase inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded transition ease-in-out duration-150 bg-red-600 hover:bg-red-700 text-white"
+                  disabled={loading}
+                >
+                  View Pdf
+                </button>
               </div>
             ),
+            width: 200,
           },
           // {
           //   //   id: "headerId",
@@ -302,7 +321,7 @@ const ShipmentBillCal = (props) => {
           //   width: 100,
           // },
         ]}
-        className="-striped -highlight"
+        className="-striped -highlight px-3 overflow-auto"
         defaultPageSize={200}
         minRows={12}
         showPageJump={false}

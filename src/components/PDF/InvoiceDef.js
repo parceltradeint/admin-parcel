@@ -9,9 +9,7 @@ export const generatePDF = (info) => {
     let newData = info?.data?.map((item, i) => {
       let totalAmount =
         Number(item?.kg || item?.qty || 0) * Number(item?.rate || 0);
-      const isBrand = item?.goodsName?.match(/brand/i)
-        ? true
-        : false;
+      const isBrand = item?.goodsName?.match(/brand/i) ? true : false;
       return [
         {
           text: `${i + 1}`,
@@ -30,7 +28,11 @@ export const generatePDF = (info) => {
           // color: `${isBrand ? "red" : "black"}`,
         },
         {
-          text: `${item?.kg || item?.qty ? Number(item?.kg || item?.qty).toFixed(2) : ""}`,
+          text: `${
+            item?.kg || item?.qty
+              ? Number(item?.kg || item?.qty).toFixed(2)
+              : ""
+          }`,
           fontSize: 12,
           // color: `${isBrand ? "red" : "black"}`,
         },
@@ -40,9 +42,11 @@ export const generatePDF = (info) => {
           // color: `${isBrand ? "red" : "black"}`,
         },
         {
-          text: `${totalAmount ? convertBengaliToEnglishNumber(
-            totalAmount.toLocaleString("bn")
-          ) : ""}`,
+          text: `${
+            totalAmount
+              ? convertBengaliToEnglishNumber(totalAmount.toLocaleString("bn"))
+              : ""
+          }`,
           fontSize: 12,
           alignment: "right",
           // color: `${isBrand ? "red" : "black"}`,
@@ -75,7 +79,6 @@ export const generatePDF = (info) => {
     );
   };
 
-
   let docDefinition = {
     info: {
       title: `${info?.customerName}- ${info?.shipmentBy}- ${formartDate(
@@ -85,6 +88,15 @@ export const generatePDF = (info) => {
       subject: "Shipment Bill",
     },
 
+    watermark: {
+      text: `${info?.watermark ? "PAID BILL" : ""}`,
+      color: "red",
+      opacity: 0.5,
+      bold: true,
+      italics: false,
+      fontSize: 50,
+      border: [true, true, true, true],
+    },
 
     content: [
       {
@@ -468,7 +480,7 @@ export const generatePDF = (info) => {
                 [
                   "",
                   {
-                    text: "ADVANCE",
+                    text: "PAID",
                     fillColor: "#555555",
                     color: "#FFFFFF",
                     fontSize: 13,
@@ -483,13 +495,13 @@ export const generatePDF = (info) => {
                 [
                   "",
                   {
-                    text: "TOTAL",
+                    text: info?.watermark ? "" : "TOTAL",
                     fillColor: "#555555",
                     color: "#FFFFFF",
                     fontSize: 13,
                   },
                   {
-                    text: `${convertTotalAmount(
+                    text: info?.watermark ? "":`${convertTotalAmount(
                       Number(netTotalAmount(info?.data)) +
                         Number(info?.due || 0) -
                         Number(info?.paid || 0)
