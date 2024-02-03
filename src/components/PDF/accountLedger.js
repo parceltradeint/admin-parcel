@@ -2,103 +2,51 @@ import { sumBy } from "lodash";
 import { contact27, parcelLogo, wechat, whatsApp } from "./image";
 import { formartDate } from "@/common/formartDate";
 // title: `${customerName}- ${type}- ${new Date().toLocaleString()}`,
-
-export const generatePackingPDF = (info, type) => {
+import {cre} from "pdfmake"
+export const generateLedgerPDF = (info) => {
   let renderData = [];
   if (info?.data) {
-    const conditions = (val) => {
-      if (type === "Challan") {
-        return val.mark === true;
-      } else {
-        return val?.kg && val?.goodsName;
-      }
-    };
+
     let newData = info?.data
-      ?.filter((item) => conditions(item))
       .map((item, i) => {
-        let totalAmount = Number(item?.kg) * Number(item?.rate);
-        const isBrand = item?.goodsName?.match(/brand/i) ? true : false;
         return [
           {
-            text: `${i + 1}`,
-            fontSize: 12,
+            text: `${item.deliveryDate}`,
+            fontSize: 10,
             // color: `${isBrand ? "red" : "black"}`,
           },
           {
-            text: `${item?.goodsName || ""}`,
-            fontSize: 12,
+            text: `${ "DUE LISTS"}`,
+            fontSize: 10,
             alignment: "left",
-            color: `${isBrand ? "red" : "black"}`,
           },
           {
-            text: `${item?.ctn || ""}`,
-            fontSize: 12,
+            text: `${item?.totalAmount || ""}`,
+            fontSize: 10,
             alignment: "left",
-            // color: `${isBrand ? "red" : "black"}`,
           },
           {
-            text: `${Number(item?.kg || "").toFixed(2)}`,
-            fontSize: 12,
-            // color: `${isBrand ? "red" : "black"}`,
+            text: `${item?.credit || ""}`,
+            fontSize: 10,
+            alignment: "left",
+          },
+          {
+            text: `${Number(item?.balance || "").toFixed(2)}`,
+            fontSize: 10,
           },
         ];
       });
 
     renderData = [...newData];
   }
-  const conditionalPhoneRemarks = () => {
-    let newData = {
-      widths: [],
-      body: [
-        {
-          text: "ADDRESS :",
-          alignment: "left",
-          fillColor: "#555555",
-          color: "#FFFFFF",
-          bold: true,
-          border: [true, false, false, true],
-        },
-        {
-          text: `${info?.customerAddress}`,
-          border: [true, false, true, true],
-        },
-      ],
-    };
-    if (type === "Challan") {
-      newData = {
-        widths: ["15%", "50%", "15%", "20%"],
-        body: [
-          ...newData.body,
-          {
-            text: "PHONE :",
-            alignment: "left",
-            fillColor: "#555555",
-            color: "#FFFFFF",
-            bold: true,
-            border: [true, false, false, true],
-          },
-          {
-            text: `${info?.customerPhone}`,
-            alignment: "left",
-            border: [true, false, true, true],
-          },
-        ],
-      };
-    } else {
-      newData = {
-        widths: ["14.5%", "85.5%"],
-        body: [...newData.body],
-      };
-    }
-    return newData;
-  };
+
   let docDefinition = {
     info: {
-      title: `${info?.customerName}- ${info?.shipmentBy}- ${formartDate(
+      title: `${info?.customerName}- ${formartDate(
         new Date()
       )}`,
       author: "Parcel",
-      subject: type,
+      subject: "CUSTOMER LEDGER BILLS",
     },
     content: [
       {
@@ -107,7 +55,7 @@ export const generatePackingPDF = (info, type) => {
         columns: [
           {
             alignment: "left",
-            text: `CUSTOMER ${type?.toUpperCase()}`,
+            text: `CUSTOMER LEDGER BILLS`,
           },
           {
             alignment: "right",
@@ -217,125 +165,61 @@ export const generatePackingPDF = (info, type) => {
         },
         layout: "borders",
       },
+      // {
+      //   style: "section",
+      //   margin: [0, 0, 0, 0],
+      //   table: {
+      //     widths: ["*"],
+      //     body: [
+      //       [
+      //         {
+      //           text: [{ text: `${"CUSTOMER LEDGER BILLS"}\n`, fontSize: 20 }],
+      //           fillColor: "#1586D5",
+      //           color: "#FFFFFF",
+      //           alignment: "center",
+      //           bold: true,
+      //         },
+      //       ],
+      //     ],
+      //   },
+      //   layout: "noBorders",
+      // },
+
       {
-        style: "section",
-        margin: [0, 0, 0, 0],
         table: {
           widths: ["*"],
+          margin: [0, 0, 0, 10],
           body: [
             [
               {
-                text: [{ text: `${type?.toUpperCase()}\n`, fontSize: 20 }],
-                fillColor: "#1586D5",
-                color: "#FFFFFF",
+                stack: [
+                  {
+                    text: "ACCOUNT LEDGER\n",
+                    fontSize: 20,
+                    bold: true,
+                    border: [false, true, false, true],
+                  },
+                  {
+                    text: `FROM: ${info.shipmentNo}\n`,
+                    fontSize: 15,
+                    margin: [0, 5, 0, 0],
+                  },
+                  {
+                    text: `ACCOUNT NAME: (${info?.customerId}) ${info?.customerName}\n`,
+                    fontSize: 15,
+                    margin: [0, 5, 0, 0],
+                  },
+                ],
+                // fillColor: "#555555",
+                // color: "#FFFFFF",
+                bold: true,
                 alignment: "center",
-                bold: true,
+                margin: [0, 10, 0, 0],
               },
             ],
           ],
         },
-        layout: "noBorders",
-      },
-
-      {
-        margin: [0, 5, 0, 0],
-        fontSize: 10,
-        table: {
-          widths: ["15%", "50%", "15%", "20%"],
-          body: [
-            [
-              {
-                text: "NAME :",
-                alignment: "left",
-                fillColor: "#555555",
-                color: "#FFFFFF",
-                bold: true,
-              },
-              `${info?.customerName || ""}`,
-              {
-                text: "DATE :",
-                alignment: "left",
-                fillColor: "#555555",
-                color: "#FFFFFF",
-                bold: true,
-              },
-              { text: `${formartDate(new Date())}`, alignment: "left" },
-            ],
-          ],
-        },
-      },
-      {
-        margin: [0, 0, 0, 0],
-        fontSize: 10,
-        table: {
-          widths: ["15%", "50%", "15%", "20%"],
-          body: [
-            [
-              {
-                text: "SHIPMENT :",
-                alignment: "left",
-                fillColor: "#555555",
-                color: "#FFFFFF",
-                bold: true,
-                border: [true, false, false, true],
-              },
-              {
-                text: `${info?.reporting?.toUpperCase()} BY ${info?.shipmentBy?.toUpperCase()}`,
-                border: [true, false, false, true],
-              },
-              {
-                text: "SHIPMENT NO :",
-                alignment: "left",
-                fillColor: "#555555",
-                color: "#FFFFFF",
-                bold: true,
-                border: [true, false, false, true],
-              },
-              {
-                text: `${info?.shipmentNo}`,
-                alignment: "left",
-                border: [true, false, true, true],
-              },
-            ],
-          ],
-        },
-      },
-
-      {
-        margin: [0, 0, 0, 0],
-        fontSize: 10,
-        table: {
-          widths: [...conditionalPhoneRemarks().widths],
-          body: [[...conditionalPhoneRemarks().body]],
-        },
-      },
-
-      {
-        fontSize: 11,
-        margin: [0, 0, 0, 0],
-        // border:[false, false, false, false],
-        table: {
-          widths: ["14.5%", "85.5%"],
-          body: [
-            [
-              {
-                text: "REMARKS :",
-                alignment: "left",
-                fillColor: "#555555",
-                color: "#FFFFFF",
-                bold: true,
-                border: [true, false, true, false],
-                margin: [0, -2, 0, 0],
-              },
-              {
-                text: `${info?.remarks}`,
-                color: "red",
-                bold: true,
-                border: [false, false, true, false],
-              },
-            ],
-          ],
-        },
+        layout: "borders",
       },
 
       {
@@ -344,23 +228,27 @@ export const generatePackingPDF = (info, type) => {
           headerRows: 1,
           dontBreakRows: true,
           // keepWithHeaderRows: 1,
-          widths: ["8%", "52%", "20%", "20%"],
+          widths: ["16%", "30%", "18%", "18%", "18%"],
           body: [
             [
               {
-                text: "SL",
+                text: "DATE",
                 style: "tableHeader",
               },
               {
-                text: "GOODS NAME",
+                text: "DESCREIPTIONS",
                 style: "tableHeader",
               },
               {
-                text: "CTN NO.",
+                text: "DEBIT",
                 style: "tableHeader",
               },
               {
-                text: "KG",
+                text: "CREDIT",
+                style: "tableHeader",
+              },
+              {
+                text: "BALANCE",
                 style: "tableHeader",
               },
             ],
@@ -370,17 +258,15 @@ export const generatePackingPDF = (info, type) => {
               { text: "TOTAL", style: "tableFooter" },
               { text: "", style: "tableFooter" },
               {
-                text: `${renderData.length > 0 ? info?.data?.length : 0}`,
+                text: `${sumBy(info?.data, (val) => Number(val?.totalAmount || 0))}`,
                 style: "tableFooter",
               },
               {
-                text: `${
-                  renderData.length > 0
-                    ? Number(
-                        sumBy(info?.data, (val) => Number(val?.kg || 0))
-                      ).toFixed(2)
-                    : 0
-                }`,
+                text: `${sumBy(info?.data, (val) => Number(val?.credit || 0))}`,
+                style: "tableFooter",
+              },
+              {
+                text: `${sumBy(info?.data, (val) => Number(val?.balance || 0))}`,
                 style: "tableFooter",
               },
             ],
@@ -403,40 +289,6 @@ export const generatePackingPDF = (info, type) => {
       },
     ],
 
-    // footer: function (currentPage, pageCount) {
-    //   if (currentPage == pageCount && type === "Challan") {
-    //     return {
-    //       table: {
-    //         widths: ["50%", "50%"],
-    //         headerRows: 1,
-    //         body: [
-    //           [
-    //             {
-    //               text: "CUSTOMER SIGNATURE",
-    //               alignment: "left",
-    //               bold: true,
-    //               // border: [true, true, true, false],
-    //               decoration: "overline",
-    //               margin: [5, 30, 0, 0],
-    //               border: [true, true, true, true],
-    //             },
-    //             {
-    //               text: "AUTHORISE SIGNATURE",
-    //               alignment: "right",
-    //               bold: true,
-    //               decoration: "overline",
-    //               // border: [true, true, true, false],
-    //               margin: [0, 30, 10, 0],
-    //               border: [false, true, true, true],
-    //             },
-    //           ],
-    //         ],
-    //       },
-    //       margin: [40, -30, 40, 10],
-    //     };
-    //   }
-    // },
-
     pageSize: "A4",
 
     defaultStyle: {
@@ -451,20 +303,20 @@ export const generatePackingPDF = (info, type) => {
         fontSize: 8,
       },
       summartTable: {
-        // margin: [0, 10, 0, 0],
-        fontSize: 10,
+        margin: [0, 10, 0, 0],
+        fontSize: 8,
         alignment: "center",
       },
       tableHeader: {
         bold: true,
-        fontSize: 13,
+        fontSize: 10,
         color: "#FFFFFF",
         fillColor: "#555555",
         alignment: "center",
       },
       tableFooter: {
         bold: true,
-        fontSize: 12,
+        fontSize: 10,
         color: "#FFFFFF",
         fillColor: "#555555",
         alignment: "center",
@@ -475,37 +327,6 @@ export const generatePackingPDF = (info, type) => {
     },
   };
 
-  if (type === "Challan") {
-    docDefinition.content.push({
-      unbreakable: true,
-      table: {
-        widths: ["50%", "50%"],
-        headerRows: 1,
-        body: [
-          [
-            {
-              text: "CUSTOMER SIGNATURE",
-              alignment: "left",
-              bold: true,
-              // border: [true, true, true, false],
-              decoration: "overline",
-              margin: [5, 40, 0, 0],
-              border: [true, true, true, true],
-            },
-            {
-              text: "AUTHORISE SIGNATURE",
-              alignment: "right",
-              bold: true,
-              decoration: "overline",
-              // border: [true, true, true, false],
-              margin: [0, 40, 10, 0],
-              border: [false, true, true, true],
-            },
-          ],
-        ],
-      },
-    });
-  }
 
   // const pdfDocGenerator = pdfMake.createPdf(docDefinition);
   var win = window.open("", "_blank");
@@ -518,13 +339,7 @@ export const generatePackingPDF = (info, type) => {
     },
     win
   );
-  // pdfDocGenerator.getBase64((data) => {
-  //   const downloadLink = document.createElement("a");
-  //   downloadLink.href = `data:application/pdf;base64,${data}`;
-  //   downloadLink.download = "document.pdf";
-  //   downloadLink.innerHTML = "Download PDF";
-  //   downloadLink.click();
-  // });
+
 };
 
 function convertNumberToWords(number) {

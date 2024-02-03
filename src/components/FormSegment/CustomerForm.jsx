@@ -1,31 +1,43 @@
 /* eslint-disable jsx-a11y/alt-text */
+import { UserContext } from "@/AuthenticApp/Context/userContext";
 import PlaceHolderLoading from "@/common/PlaceHolderLoading";
 import Section from "@/common/Section";
 import { errorAlert, successAlert } from "@/common/SweetAlert";
 import { formartDate } from "@/common/formartDate";
 import axios from "axios";
 import Image from "next/image";
-import React, { useEffect, useId, useState } from "react";
+import React, { useContext, useEffect, useId, useState } from "react";
 import { useForm } from "react-hook-form";
-import shortid from "shortid";
-shortid.seed(1000);
+import ShortUniqueId from "short-unique-id";
+import useSound from "use-sound";
 
 const CustomerForm = (props) => {
-  const { editMode, setIsOpen, data, setData } = props;
+  const { editMode, setIsOpen, data, setData, setEditData } = props;
   const [loading, setLoading] = useState(false);
+  const [saveSoundPlay] = useSound("/assets/sounds/save.mp3", { volume: 0.45 });
+const {user} = useContext(UserContext)
+  const { randomUUID } = new ShortUniqueId({ length: 4 });
   const {
     handleSubmit,
     register,
     watch,
     getValues,
     formState: { errors, isValid },
-  } = useForm({ mode: "all", defaultValues: { ...editMode } });
+  } = useForm({
+    mode: "all",
+    defaultValues: {
+      ...editMode,
+      ...props.newCustomer,
+    },
+  });
 
   const onSubmit = async (value) => {
+    saveSoundPlay()
     setLoading(true);
     const newData = {
-      customerId: shortid.generate(),
+      customerId: value?.customerId || `PARCEL-${randomUUID()}`,
       created: new Date(),
+      createdBy: value?.createdBy || user?.displayName || "",
       ...value,
     };
     if (!editMode) {
@@ -33,7 +45,11 @@ const CustomerForm = (props) => {
         .post(`/api/customers`, { ...newData })
         .then((res) => {
           successAlert("Successfully Save");
-          setData([...data, { ...newData }]);
+          if (props.setNewCustomer) {
+            props.setNewCustomer(newData);
+          } else {
+            setData([...data, { ...newData }]);
+          }
         })
         .catch((err) => {
           errorAlert("Something went wrong!");
@@ -51,7 +67,12 @@ const CustomerForm = (props) => {
         })
         .then((res) => {
           successAlert("Successfully Updated");
-          setData([...data, { ...newData }]);
+          let index = data.findIndex((obj) => obj._id === editMode?._id);
+          // Updating the array with the new object
+          if (index !== -1) {
+            data[index] = { ...newData };
+          }
+          setData([...data]);
         })
         .catch((err) => {
           console.log("err", err);
@@ -60,9 +81,13 @@ const CustomerForm = (props) => {
         .finally(() => {
           setIsOpen(false);
           setLoading(false);
+          if (!props.setNewCustomer) {
+            setEditData(false);
+          }
         });
     }
   };
+
   if (loading) {
     return <PlaceHolderLoading loading={true} />;
   }
@@ -72,7 +97,7 @@ const CustomerForm = (props) => {
         Customer Details:{" "}
       </p>
 
-      <div className="md:w-full mx-auto">
+      <div className="md:w-full mx-auto uppercase">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-3">
             <div>
@@ -151,13 +176,13 @@ const CustomerForm = (props) => {
               </label>
               <select
                 id="shipmentBy"
-                defaultValue={"Air"}
+                defaultValue={editMode?.shipmentBy || "AIR"}
                 {...register("shipmentBy", { required: false })}
-                className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                className="block w-full uppercase px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
               >
                 <option value="">Choose a Shipment</option>
-                <option value="Air">Air</option>
-                <option value="Sea">Sea</option>
+                <option value="AIR">AIR</option>
+                <option value="SEA">SEA</option>
               </select>
             </div>
 
@@ -166,14 +191,13 @@ const CustomerForm = (props) => {
                 Listed Customer
               </label>
               <select
-                id="listed"
+                defaultValue={watch("listed")}
                 {...register("listed", { required: false })}
                 className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-                placeholder="Choose a type"
               >
                 <option value="">Choose a Type</option>
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
+                <option value="true">YES</option>
+                <option value="false">NO</option>
               </select>
             </div>
             <div className="">
@@ -193,7 +217,12 @@ const CustomerForm = (props) => {
             <button
               type="button"
               className=" bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-3"
-              onClick={() => setIsOpen(false)}
+              onClick={() => {
+                setIsOpen(false);
+                if (!props.setNewCustomer) {
+                  setEditData(false);
+                }
+              }}
             >
               Cancel
             </button>
@@ -205,161 +234,6 @@ const CustomerForm = (props) => {
             </button>
           </div>
         </form>
-
-        {/* <form onSubmit={handleSubmit(onSubmit)} c>
-          <div className="grid grid-cols-1 mt-4 sm:grid-cols-3 border-t border-slate-950 text-lg">
-            <div className="flex gap-1 px-2 col-span-2 md:border-r border-b md:border-b-0 border-slate-950">
-              <label
-                htmlFor="customerName"
-                className=" flex items-center text-base text-gray-800 border-r border-slate-950 md:w-[25%] w-[30%]"
-              >
-                Customer Name:
-              </label>
-              <input
-                {...register("customerName", {
-                  required: true,
-                })}
-                name="customerName"
-                placeholder="Enter your customer name"
-                onChange={(e) =>
-                  handleInputChange("customerName", e.target.value)
-                }
-                className="block w-full px-4 py-2 text-gray-700 bg-white  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-              />
-            </div>
-            <div className="flex gap-1 px-2">
-              <label className="flex items-center text-base text-gray-800 border-r border-slate-950 md:w-[55%] w-[30%]">
-                Delivery Date:
-              </label>
-              <input
-                className="block w-full px-4 py-2 text-gray-700 bg-white  focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-                defaultValue={
-                  editMode
-                    ? formartDate(editMode?.date)
-                    : formartDate(new Date())
-                }
-                {...register("deliveryDate", {
-                  required: true,
-                })}
-                readOnly
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 border-t border-slate-950 text-lg">
-            <div className="flex gap-1 px-2  md:border-r border-b md:border-b-0 border-slate-950">
-              <label
-                htmlFor="shipmentNo"
-                className=" flex items-center text-base text-gray-800 border-r border-slate-950 md:w-[71.5%] w-[30%]"
-              >
-                Shipment No:
-              </label>
-              <input
-                {...register("shipmentNo", {
-                  required: true,
-                })}
-                name="shipmentNo"
-                placeholder="Enter ShipmentNo"
-                onChange={(e) =>
-                  handleInputChange("shipmentNo", e.target.value)
-                }
-                className="block w-full px-4 py-2 text-gray-700 bg-white  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-              />
-            </div>
-            <div className="flex gap-1 px-2 md:border-r border-b md:border-b-0 border-slate-950">
-              <label
-                htmlFor="shipmentBy"
-                className=" flex items-center text-base text-gray-800 border-r border-slate-950 md:w-[25%] w-[30%]"
-              >
-                Shipment By:
-              </label>
-              <select
-                defaultValue={customerInfo?.shipmentBy}
-                name="shipmentBy"
-                onChange={(e) =>
-                  handleInputChange("shipmentBy", e.target.value)
-                }
-                // {...register("shipmentBy", { required: true })}
-                className="block w-full px-4 py-2 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-              >
-                <option value="">Choose a Shipment</option>
-                <option value="By Air">By Air</option>
-                <option value="By Sea">By Sea</option>
-              </select>
-            </div>
-            <div className="flex gap-1 px-2 ">
-              <label className="flex items-center text-base text-gray-800 border-r border-slate-950 md:w-[55%] w-[30%]">
-                Reporting:
-              </label>
-              <select
-                id="reporting"
-                defaultValue={"china"}
-                onChange={(e) => handleInputChange("reporting", e.target.value)}
-                // {...register("reporting", { required: true })}
-                className="block w-full px-4 py-2 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-              >
-                <option value="">Choose a Reporting</option>
-                <option value="china">China</option>
-                <option value="hongkong">Hongkong</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 border-t border-slate-950 text-lg">
-            <div className="flex gap-1 px-2 col-span-2 md:border-r border-b md:border-b-0 border-slate-950">
-              <label
-                htmlFor="address"
-                className=" flex items-center text-base text-gray-800 border-r border-slate-950 md:w-[25%] w-[30%]"
-              >
-                Address:
-              </label>
-              <input
-                {...register("address", {
-                  required: true,
-                })}
-                onChange={(e) => handleInputChange("address", e.target.value)}
-                name="address"
-                placeholder="Enter address"
-                className="block w-full px-4 py-2 text-gray-700 bg-white  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-              />
-            </div>
-            <div className="flex gap-1 px-2 ">
-              <label className="flex items-center text-base text-gray-800 border-r border-slate-950 md:w-[55%] w-[30%]">
-                Status:
-              </label>
-              <input
-                {...register("status", {
-                  required: true,
-                })}
-                name="status"
-                onChange={(e) => handleInputChange("status", e.target.value)}
-                defaultValue={"Dhaka Office"}
-                placeholder="Enter your customer name"
-                className="block w-full px-4 py-2 text-gray-700 bg-white focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 border-t border-slate-950 text-lg">
-            <div className="flex gap-1 px-2 col-span-2 border-slate-950">
-              <label
-                htmlFor="remarks"
-                className=" flex items-center text-base text-gray-800 border-r border-slate-950 md:w-[15.2%] w-[30%]"
-              >
-                Remarks:
-              </label>
-              <input
-                {...register("remarks", {
-                  required: true,
-                })}
-                name="remarks"
-                onChange={(e) => handleInputChange("remarks", e.target.value)}
-                placeholder="Enter remarks"
-                className="block w-full px-4 py-2 text-gray-700 bg-white focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-              />
-            </div>
-          </div>
-        </form> */}
       </div>
     </div>
   );

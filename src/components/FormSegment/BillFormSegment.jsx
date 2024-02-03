@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import OverViewForm from "./OverViewForm";
 import BillFormDetails from "./BillFormDetails";
@@ -24,10 +25,14 @@ const BillFormSegment = (props) => {
   const [data, setData] = useState([]);
   const [customerInfo, setCustomerInfo] = useState(editMode ? editMode : null);
   const [loading, setLoading] = useState(false);
+  const [loadingUserDetails, setLoadingUserDetails] = useState(false);
   const [aditionalInfo, setAditionalInfo] = useState({});
+  const [oldAditionalInfo, setOldAditionalInfo] = useState(null);
   const [suggestionData, setSuggestionData] = useState([]);
-  const [deleteSoundPlay] = useSound("/assets/sounds/deleted.mp3", {"volume": 0.45});
-  const [saveSoundPlay] = useSound("/assets/sounds/save.mp3", {"volume": 0.45});
+  const [deleteSoundPlay] = useSound("/assets/sounds/deleted.mp3", {
+    volume: 0.45,
+  });
+  const [saveSoundPlay] = useSound("/assets/sounds/save.mp3", { volume: 0.45 });
 
   let type =
     router?.query?.type == "outbound"
@@ -88,24 +93,49 @@ const BillFormSegment = (props) => {
   };
 
   const save = async () => {
-    saveSoundPlay()
+    saveSoundPlay();
+
+    const totalDueBill =
+      sumBy(data, (item) => Number(item.totalAmount || 0)) +
+      Number(aditionalInfo?.rmb?.qty || 0) *
+        Number(aditionalInfo?.rmb?.rate || 0) +
+      Number(aditionalInfo?.due || 0) -
+      Number(aditionalInfo?.paid || 0);
+    const totalAmount =
+      sumBy(data, (item) => Number(item.totalAmount || 0)) +
+      Number(aditionalInfo?.rmb?.qty || 0) *
+        Number(aditionalInfo?.rmb?.rate || 0);
     const newData = {
       ...customerInfo,
       ...aditionalInfo,
       data: data,
       totalKg: sumBy(data, (item) => Number(item.kg || 0)),
       totalCtn: data?.filter((item) => item?.ctn?.length > 1)?.length,
-      totalAmount:
-        sumBy(data, (item) => Number(item.totalAmount || 0)) +
-        Number(aditionalInfo?.rmb?.qty || 0) *
-          Number(aditionalInfo?.rmb?.rate || 0),
-      totalDueBill:
-        sumBy(data, (item) => Number(item.totalAmount || 0)) +
-        Number(aditionalInfo?.rmb?.qty || 0) *
-          Number(aditionalInfo?.rmb?.rate || 0) +
-        Number(aditionalInfo?.due || 0) -
-        Number(aditionalInfo?.paid || 0),
+      totalAmount: totalAmount,
+      totalDueBill,
+      balance: totalAmount,
     };
+    // console.log("new", newData);
+    // if (
+    //   oldAditionalInfo?.customerId &&
+    //   oldAditionalInfo?.balance &&
+    //   type == "customer"
+    // ) {
+    //   const newOldAditionalData = {
+    //     balance: oldAditionalInfo.balance,
+    //     shipmentBy: oldAditionalInfo.shipmentBy,
+    //     shipmentNo: oldAditionalInfo.shipmentNo,
+    //     year: oldAditionalInfo.year,
+    //     month: oldAditionalInfo.month,
+    //     customerId: oldAditionalInfo.customerId,
+    //   }
+    //   if (oldAditionalInfo?.oldAditionalInfo) {
+    //     newData["oldAditionalInfo"] = [...oldAditionalInfo?.oldAditionalInfo, {...newOldAditionalData}];
+    //   } else {
+    //     newData["oldAditionalInfo"] = [{...newOldAditionalData}];
+    //   }
+    // }
+
     const options = ["customer", "cnf", "packing"];
 
     Swal.fire({
@@ -177,7 +207,41 @@ const BillFormSegment = (props) => {
             (newData["type"] = resP.value),
             await axios
               .post(`/api/${selectedType}`, { ...newData })
-              .then((res) => {
+              .then((res) => res)
+              .catch((err) => {
+                console.log("err", err);
+                errorAlert("Something went wrong!");
+              })
+              .finally(async () => {
+                // if (
+                //   oldAditionalInfo?.customerId &&
+                //   oldAditionalInfo?.balance &&
+                //   resP.value == "customer"
+                // ) {
+                //   const updateData = {
+                //     ...oldAditionalInfo,
+                //     currentDue: oldAditionalInfo.balance,
+                //     balance: 0,
+                //     ref: {
+                //       balance: newData.balance,
+                //       shipmentBy: newData.shipmentBy,
+                //       shipmentNo: newData.shipmentNo,
+                //       year: newData.year,
+                //       month: newData.month,
+                //       customerId: newData.customerId,
+                //       oldBalance: oldAditionalInfo.balance,
+                //     },
+                //   }
+                //   delete updateData?._id;
+                //   await axios
+                //     .patch(`/api/${selectedType}`, {
+                //       id: oldAditionalInfo?._id,
+                //       data: {...updateData},
+                //     })
+                //     .then((res) => res)
+                //     .catch((err) => console.log("error", err));
+                // }
+                setLoading(false);
                 successAlert("Successfully Saved.");
                 router.push(
                   `/bills/${resP.value}/month/${newData.month}/${
@@ -186,24 +250,6 @@ const BillFormSegment = (props) => {
                     router?.query?.year || newData["year"]
                   }`
                 );
-              })
-              .catch((err) => {
-                console.log("err", err);
-                errorAlert("Something went wrong!");
-              })
-              .finally(async () => {
-                if (newData?.isNew) {
-                  const newCustomer = {
-                    customerName: newData?.customerName,
-                    customerPhone: newData?.phone,
-                    shipmentBy: newData?.shipmentBy,
-                    customerAddress: newData?.address,
-                    remarks: newData?.remarks,
-                    listed: "true",
-                  };
-                  await axios.post(`/api/customers`, { ...newCustomer });
-                }
-                setLoading(false);
               });
         } else {
           delete newData?._id;
@@ -236,7 +282,7 @@ const BillFormSegment = (props) => {
   };
 
   const deleteData = async () => {
-    deleteSoundPlay()
+    deleteSoundPlay();
     errorAlert(`Delete`).then(async (res) => {
       if (res.isConfirmed) {
         setLoading(true);
@@ -273,6 +319,36 @@ const BillFormSegment = (props) => {
     }
   }, [editMode]);
 
+  useEffect(() => {
+    if (customerInfo?.customerId && router.pathname?.includes("new")) {
+      async function fetchCustomer() {
+        setLoadingUserDetails(true);
+        await axios
+          .get(`/api/customers-bills`, {
+            params: { customerId: customerInfo.customerId },
+          })
+          .then((res) => {
+            console.log("res", res);
+            // setOldAditionalInfo({ ...res.data.res });
+            let balance = res.data.totalBalance || 0;
+            if (balance >= 0) {
+              setAditionalInfo({ due: balance });
+            } else {
+              setAditionalInfo({
+                paid: Math.abs(balance),
+              });
+            }
+          })
+          .catch((err) => {
+            console.log("err", err);
+            // errorAlert("Something went wrong!");
+          })
+          .finally(() => setLoadingUserDetails(false));
+      }
+      fetchCustomer();
+    }
+  }, [customerInfo?.customerId]);
+
   if (loading) {
     return <PlaceHolderLoading loading={true} />;
   }
@@ -293,7 +369,8 @@ const BillFormSegment = (props) => {
         />
       )}
 
-      {customerInfo &&
+      {!loadingUserDetails &&
+        customerInfo &&
         customerInfo?.customerName &&
         customerInfo?.shipmentBy &&
         customerInfo?.shipmentNo && (
@@ -353,6 +430,7 @@ const BillFormSegment = (props) => {
             </Section>
           </>
         )}
+      {loadingUserDetails && <PlaceHolderLoading loading={true} />}
     </Section>
   );
 };

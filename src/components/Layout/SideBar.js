@@ -62,13 +62,13 @@ const SideBar = () => {
         <div className="">
           <nav className="">
             <Link
-              as={"/"}
+              as={"/my-profile"}
               href={{
-                pathname: "/dashboard",
+                pathname: "/my-profile",
               }}
               className={`${
-                pathname === "/user/[slug]"
-                  ? "bg-sideBarBg  text-sideBarHoverText "
+                pathname === "/my-profile"
+                  ? "bg-sideBarHoverBg  text-sideBarHoverText "
                   : "text-sideBarText  "
               } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
             >
@@ -147,6 +147,23 @@ const SideBar = () => {
             </Link>
 
             <Link
+              as={"/customers"}
+              href={{
+                pathname: "/customers",
+              }}
+              className={`${
+                pathname === "/customers"
+                  ? "bg-sideBarHoverBg  text-sideBarHoverText "
+                  : "text-sideBarText  "
+              } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
+            >
+              <div>
+                <FontAwesomeIcon icon={faUsers} />
+                <span className="mx-4 font-medium">Customers List</span>
+              </div>
+            </Link>
+
+            {/* <Link
               as={"/"}
               href={{
                 pathname: "/",
@@ -161,32 +178,16 @@ const SideBar = () => {
                 <FontAwesomeIcon icon={faAirFreshener} />
                 <span className="mx-4 font-medium">Shipment</span>
               </div>
-            </Link>
-            <Link
-              as={"/customers"}
-              href={{
-                pathname: "/customers",
-              }}
-              className={`${
-                pathname === "/customers"
-                  ? "bg-sideBarHoverBg  text-sideBarHoverText "
-                  : "text-sideBarText  "
-              } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
-            >
-              <div>
-                <FontAwesomeIcon icon={faUsers} />
-                <span className="mx-4 font-medium">Customer</span>
-              </div>
-            </Link>
+            </Link> */}
 
             <Link
-              as={"/"}
+              as={"/finance"}
               href={{
-                pathname: "/",
+                pathname: "/finance",
               }}
               className={`${
-                pathname === "/"
-                  ? "bg-sideBarBg  text-sideBarHoverText "
+                pathname === "/finance"
+                  ? "bg-sideBarHoverBg  text-sideBarHoverText "
                   : "text-sideBarText  "
               } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
             >
@@ -196,22 +197,14 @@ const SideBar = () => {
               </div>
             </Link>
 
-            <Link
-              as={"/"}
-              href={{
-                pathname: "/",
-              }}
-              className={`${
-                pathname === "/"
-                  ? "bg-sideBarBg  text-sideBarHoverText "
-                  : "text-sideBarText  "
-              } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
+            <div
+              className={`text-sideBarText  flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
             >
               <div>
                 <FontAwesomeIcon icon={faDatabase} />
                 <span className="mx-4 font-medium">Admin Dashboard</span>
               </div>
-            </Link>
+            </div>
           </nav>
         </div>
       </div>

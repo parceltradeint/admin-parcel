@@ -11,6 +11,8 @@ import SelectField from "../Shared/SelectField";
 import AsyncSelect from "react-select/async";
 import AsyncCreatableSelect from "react-select/async-creatable";
 import axios from "axios";
+import Modal from "../Module/Modal";
+import CustomerForm from "./CustomerForm";
 const OverViewForm = (props) => {
   const { editMode, setCustomerInfo, customerInfo } = props;
   const [newCustomer, setNewCustomer] = useState({});
@@ -20,7 +22,12 @@ const OverViewForm = (props) => {
     watch,
     getValues,
     formState: { errors, isValid },
-  } = useForm({ mode: "all", defaultValues: { ...customerInfo } });
+  } = useForm({
+    mode: "all",
+    defaultValues: { ...customerInfo, ...newCustomer },
+  });
+
+  const [isOpen, setIsOpen] = useState(false);
 
   const onSubmit = (data) => {
     // setCustomerInfo(data);
@@ -29,7 +36,6 @@ const OverViewForm = (props) => {
   // useEffect(() => {
   //   setCustomerInfo({ ...getValues(), ...watch() });
   // }, [getValues, setCustomerInfo, watch]);
-
   const handleInputChange = (name, value) => {
     setCustomerInfo({ ...watch(), ...customerInfo, [name]: value });
   };
@@ -37,6 +43,7 @@ const OverViewForm = (props) => {
   const getCustomers = async (inputText, callback) => {
     const response = await axios.get(`/api/customers?search=${inputText}`);
     if (response.data?.data.length > 0) {
+      console.log("response.data", response.data);
       callback(
         response.data?.data.map((item) => ({
           label: item.customerName,
@@ -53,30 +60,40 @@ const OverViewForm = (props) => {
         ...watch(),
         ...customerInfo,
         customerName: newValue?.value?.toUpperCase(),
-        isNew: true,
       });
     } else {
       // Existing option(s) selected
+      console.log("new", newValue);
       const { value } = newValue;
       setCustomerInfo({
         ...watch(),
         ...customerInfo,
         customerName: value?.customerName?.toUpperCase(),
-        phone: value?.customerPhone,
+        customerPhone: value?.customerPhone,
         shipmentBy: value?.shipmentBy,
-        address: value?.customerAddress,
+        customerAddress: value?.customerAddress,
         remarks: value?.remarks,
+        customerId: value?.customerId,
       });
     }
   };
   const customCreateLabel = (inputValue) => (
-    // <p className=" bg-primaryBg text-white cursor-pointer">
-    //   Add New Customer: {inputValue}
-    // </p>
-    <p className="inline-flex items-center cursor-pointer px-1 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150">
+    <p
+      onClick={() => {
+        setIsOpen(true);
+        setNewCustomer({ ...newCustomer, customerName: inputValue });
+      }}
+      className="inline-flex items-center cursor-pointer px-1 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
+    >
       Add New Customer
     </p>
   );
+
+  useEffect(() => {
+    if (newCustomer) {
+      setCustomerInfo({ ...newCustomer });
+    }
+  }, [newCustomer, setCustomerInfo, isOpen]);
 
   return (
     <div>
@@ -136,7 +153,12 @@ const OverViewForm = (props) => {
                   onChange={handleSelectChange}
                   formatCreateLabel={customCreateLabel}
                   placeholder={"Enter customer name"}
-                  defaultValue={customerInfo && {label: customerInfo?.customerName, value: customerInfo?.customerName}}
+                  defaultValue={
+                    customerInfo && {
+                      label: customerInfo?.customerName,
+                      value: customerInfo?.customerName,
+                    }
+                  }
                 />
                 // <InputField
                 //   register={register}
@@ -154,9 +176,9 @@ const OverViewForm = (props) => {
                   register={register}
                   required={true}
                   handleInputChange={handleInputChange}
-                  name={"phone"}
+                  name={"customerPhone"}
                   placeholder={"Enter Phone Number"}
-                  defaultValue={customerInfo?.phone}
+                  defaultValue={customerInfo?.customerPhone}
                 />
               }
             />
@@ -202,17 +224,20 @@ const OverViewForm = (props) => {
                     {
                       name: "Air",
                       value: "Air",
-                      isSelected: customerInfo?.shipmentBy?.toLowerCase() == "air",
+                      isSelected:
+                        customerInfo?.shipmentBy?.toLowerCase() == "air",
                     },
                     {
                       name: "Sea",
                       value: "Sea",
-                      isSelected: customerInfo?.shipmentBy?.toLowerCase() == "sea",
+                      isSelected:
+                        customerInfo?.shipmentBy?.toLowerCase() == "sea",
                     },
                     {
                       name: "Road",
                       value: "Road",
-                      isSelected: customerInfo?.shipmentBy?.toLowerCase() == "road",
+                      isSelected:
+                        customerInfo?.shipmentBy?.toLowerCase() == "road",
                     },
                   ]}
                   handleInputChange={handleInputChange}
@@ -231,22 +256,26 @@ const OverViewForm = (props) => {
                     {
                       name: "CHINA",
                       value: "CHINA",
-                      isSelected: customerInfo?.reporting?.toLowerCase() == "china",
+                      isSelected:
+                        customerInfo?.reporting?.toLowerCase() == "china",
                     },
                     {
                       name: "Hongkong",
                       value: "Hongkong",
-                      isSelected: customerInfo?.reporting?.toLowerCase() == "hongkong",
+                      isSelected:
+                        customerInfo?.reporting?.toLowerCase() == "hongkong",
                     },
                     {
                       name: "Chongqing",
                       value: "Chongqing",
-                      isSelected: customerInfo?.reporting?.toLowerCase() == "chongqing",
+                      isSelected:
+                        customerInfo?.reporting?.toLowerCase() == "chongqing",
                     },
                     {
                       name: "South Korea",
                       value: "South Korea",
-                      isSelected: customerInfo?.reporting?.toLowerCase() == "south korea",
+                      isSelected:
+                        customerInfo?.reporting?.toLowerCase() == "south korea",
                     },
                     {
                       name: "India",
@@ -256,7 +285,7 @@ const OverViewForm = (props) => {
                     {
                       name: "Hand Carry",
                       value: "Hand Carry",
-                      isSelected: customerInfo?.reporting == "Hand Carry"
+                      isSelected: customerInfo?.reporting == "Hand Carry",
                     },
                   ]}
                   handleInputChange={handleInputChange}
@@ -270,9 +299,9 @@ const OverViewForm = (props) => {
                   register={register}
                   required={true}
                   handleInputChange={handleInputChange}
-                  name={"address"}
+                  name={"customerAddress"}
                   placeholder={"Enter address"}
-                  defaultValue={customerInfo?.address}
+                  defaultValue={customerInfo?.customerAddress}
                 />
               }
               // className={"col-span-2"}
@@ -306,6 +335,24 @@ const OverViewForm = (props) => {
           </div>
         </form>
       </div>
+
+      <Modal
+        isOpen={isOpen}
+        showXButton
+        onClose={() => setIsOpen(false)}
+        className={"max-w-5xl"}
+      >
+        <Modal.Title>{"Add New Customer"}</Modal.Title>
+        <Modal.Content>
+          <div>
+            <CustomerForm
+              setIsOpen={setIsOpen}
+              setNewCustomer={setNewCustomer}
+              newCustomer={newCustomer}
+            />
+          </div>
+        </Modal.Content>
+      </Modal>
     </div>
   );
 };

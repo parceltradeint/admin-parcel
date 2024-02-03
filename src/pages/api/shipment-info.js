@@ -4,7 +4,7 @@ import { ObjectId } from "mongodb";
 export default async function shipmentInfo(req, res) {
   const { client, db } = await dbClient();
   const { year, month, shipmentBy, type } = req.query;
-  const shipmentCollection = db.collection(`${type==="customer"? "outbound_bill" : type === "cnf" ? "inbound_bill" : type=== "packing" ? "packingLists" : ""}`);
+  const shipmentCollection = db.collection(`${type==="customer"? "customer_bill" : type === "cnf" ? "inbound_bill" : type=== "packing" ? "packingLists" : ""}`);
 
   const sort = {
     deliveryDate: -1,

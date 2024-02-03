@@ -18,7 +18,7 @@ const TabMenu = (props) => {
               key={i}
               className={({ selected }) =>
                 twMerge(
-                  "cursor-pointer py-3 outline-none w-full rounded-lg text-sm font-medium leading-5 text-white",
+                  "cursor-pointer py-3 outline-none w-full rounded-lg text-sm font-medium leading-5 text-white uppercase",
                   selected ? "bg-green-600" : "text-primary-900 bg-green-200"
                 )
               }

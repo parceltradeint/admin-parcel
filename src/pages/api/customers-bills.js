@@ -29,10 +29,36 @@ export default async function newShipmentBill(req, res) {
       res.status(500).json({ status: false, data: {} });
     }
   } else if (req.method == "GET") {
-    if (req?.query?.id) {
-      const objectId = new ObjectId(req?.query?.id);
-      let response = await collection.findOne({ _id: objectId });
-      res.status(200).json(response);
+    if (req?.query?.customerId) {
+      // const objectId = new ObjectId(req?.query?.id);
+      let response = await collection.findOne({
+        customerId: req?.query?.customerId,
+        balance: { $exists: true, $ne: 0 },
+      });
+
+      const aggregationResult = await collection
+        .aggregate([
+          {
+            $match: {
+              // Your condition here
+              customerId: req?.query?.customerId,
+              // shipmentNo: new RegExp("^" + shipmentNo + "$", "i"),
+              // year: new RegExp("^" + year + "$", "i")
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              totalKg: { $sum: { $toDouble: "$totalKg" } },
+              totalCtn: { $sum: { $toDouble: "$totalCtn" } },
+              totalAmount: { $sum: { $toDouble: "$totalAmount" } },
+              totalBalance: { $sum: { $toDouble: "$balance" } },
+            },
+          },
+        ])
+        .toArray();
+
+      res.status(200).json({ res: {...response}, ...aggregationResult[0] });
     } else {
       const { page, limit, type, shipmentNo, month, year } = req.query;
       const filter = req.query?.filter || {};
@@ -45,16 +71,10 @@ export default async function newShipmentBill(req, res) {
       const searchQuery = {
         $and: [
           {
-            shipmentBy: new RegExp(type, "i"),
+            balance: { $exists: true, $ne: 0 },
           },
           {
-            shipmentNo: new RegExp("^" + shipmentNo + "$", "i")
-          },
-          {
-            month: new RegExp(month, "i"),
-          },
-          {
-            year: new RegExp("^" + year + "$", "i"),
+            customerId: { $exists: true },
           },
           {
             $or: [
@@ -63,7 +83,7 @@ export default async function newShipmentBill(req, res) {
               { shipmentNo: regexPattern },
               { deliveryDate: regexPattern },
               { customerName: regexPattern },
-              { phoneNumber: regexPattern },
+              { customerPhone: regexPattern },
             ],
           },
         ],
@@ -77,83 +97,54 @@ export default async function newShipmentBill(req, res) {
 
       const totalDocuments = await collection.countDocuments(searchQuery);
       const documents = await collection.find(searchQuery, options).toArray();
-      const aggregationResult = await collection
-        .aggregate([
-          {
-            $match: {
-              // Your condition here
-              shipmentBy: new RegExp(type, "i"),
-              shipmentNo: new RegExp("^" + shipmentNo + "$", "i"),
-              year: new RegExp("^" + year + "$", "i")
-            },
-          },
-          {
-            $group: {
-              _id: null,
-              totalKg: { $sum: { $toDouble: "$totalKg" } },
-              totalCtn: { $sum: { $toDouble: "$totalCtn" } },
-              totalAmount: { $sum: { $toDouble: "$totalAmount" } }
-            },
-          },
-        ])
-        .toArray();
+      // const aggregationResult = await collection
+      //   .aggregate([
+      //     {
+      //       $match: {
+      //         // Your condition here
+      //         //   shipmentBy: new RegExp(type, "i"),
+      //         //   shipmentNo: new RegExp("^" + shipmentNo + "$", "i"),
+      //         //   year: new RegExp("^" + year + "$", "i"),
+      //         due: { $exists: true },
+      //       },
+      //     },
+      //     //   {
+      //     //     $group: {
+      //     //       _id: null,
+      //     //       totalKg: { $sum: { $toDouble: "$totalKg" } },
+      //     //       totalCtn: { $sum: { $toDouble: "$totalCtn" } },
+      //     //       totalAmount: { $sum: { $toDouble: "$totalAmount" } },
+      //     //     },
+      //     //   },
+      //   ])
+      //   .toArray();
 
-    //     const updatedDocuments = documents.map((document) => {
-    //       return {
-    //         ...document,
-    //         totalAmount: sumBy(document.data, (item) => Number(item.totalAmount)),
-    //       };
-    //     });
-  
-    //     const bulkOperations = updatedDocuments.map(document => ({
-    //       updateOne: {
-    //         filter: { _id: document._id },
-    //         update: { $set: document }
-    //       }
-    //     }));
-    // console.log("bulkOperations", bulkOperations);
-        // // Perform the bulk update
-        // const updateResults = await collection.bulkWrite(bulkOperations);
+      //     const updatedDocuments = documents.map((document) => {
+      //       return {
+      //         ...document,
+      //         totalAmount: sumBy(document.data, (item) => Number(item.totalAmount)),
+      //       };
+      //     });
+
+      //     const bulkOperations = updatedDocuments.map(document => ({
+      //       updateOne: {
+      //         filter: { _id: document._id },
+      //         update: { $set: document }
+      //       }
+      //     }));
+      // console.log("bulkOperations", bulkOperations);
+      // // Perform the bulk update
+      // const updateResults = await collection.bulkWrite(bulkOperations);
       const response = {
         data: documents,
         total: totalDocuments,
         currentPage: page,
         limit: limit,
         totalPages: Math.ceil(totalDocuments / limit),
-        aggregationResult: aggregationResult[0],
+        // aggregationResult: aggregationResult[0],
       };
       res.status(200).json(response);
     }
-
-    // try {
-    //   let data;
-    //   if (req?.query?.id) {
-    //     const objectId = new ObjectId(req?.query?.id);
-    //     data = await collection.findOne({ _id: objectId });
-    //   } else if (req?.query?.search) {
-    //     const regexQuery = { $regex: req?.query?.search, $options: "i" };
-    //     const regexPattern = new RegExp(req?.query?.search, "i"); // Case-insensitive search pattern
-    //     const query = {
-    //       $or: [
-    //         { invoiceNumber: regexPattern },
-    //         { shipmentBy: regexPattern },
-    //         { shipmentNo: regexPattern },
-    //         { deliveryDate: regexPattern },
-    //         { customerName: regexPattern },
-    //         { phoneNumber: regexPattern },
-    //       ],
-    //     };
-    //     data = await collection.find(query).toArray();
-    //   } else {
-    //     data = await collection.find({}).limit(50).toArray();
-    //   }
-    //   // console.log("res Data", data);
-    //   await client.close();
-    //   res.status(200).json(data);
-    // } catch (error) {
-    //   console.log("err", error);
-    //   res.status(500).json({ status: false, data: {} });
-    // }
   } else if (req.method == "PATCH") {
     try {
       let data;
