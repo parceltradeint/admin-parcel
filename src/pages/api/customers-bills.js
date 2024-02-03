@@ -4,7 +4,7 @@ import { ObjectId } from "mongodb";
 
 export default async function newShipmentBill(req, res) {
   const { client, db } = await dbClient();
-  const collection = db.collection("outbound_bill");
+  const collection = db.collection("customer_bill");
   const shipmentCollection = db.collection("shipments_info");
   const shipmentInfo = {
     year: `${new Date().getFullYear()}`,
