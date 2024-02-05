@@ -303,8 +303,8 @@ const CustomerAllDueBills = (props) => {
                   <div className={"text-center flex space-x-1"}>
                     <button
                       onClick={(e) => handleOnSubmit(row._original)}
-                      className=" inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
-                      disabled={loading || !row._original?.balance}
+                      className=" uppercase inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
+                      disabled={loading}
                     >
                       {loading === row._original?._id ? (
                         <>
@@ -351,14 +351,14 @@ const CustomerAllDueBills = (props) => {
           <div className="flex justify-center space-x-3 mt-4">
             <button
               type="button"
-              className=" text-white bg-indigo-600 hover:bg-indigo-500 font-bold py-2 px-4 rounded"
+              className=" text-white bg-indigo-600 hover:bg-indigo-500 font-bold py-2 px-4 rounded uppercase"
                 onClick={downloadPDF}
             >
               Print Bills
             </button>
             <button
               type="button"
-              className=" bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+              className=" bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded uppercase"
               onClick={() => {
                 setShowModal(false);
               }}

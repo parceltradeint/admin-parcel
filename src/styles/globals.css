@@ -57,6 +57,7 @@
 body {
   color: black;
   background: white;
+  text-transform: uppercase !important;
 }
 
 html::-webkit-scrollbar, .scrollbar::-webkit-scrollbar {
@@ -90,8 +91,4 @@ input::-webkit-inner-spin-button {
 }
 .css-13cymwt-control {
   border: none !important;
-}
-
-body {
-text-transform: uppercase !important;
 }
