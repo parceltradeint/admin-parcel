@@ -96,7 +96,7 @@ const ShipmentBillCal = (props) => {
   const handleCellRenderChange = (cellInfo, val) => {
     const newData = [...data];
     newData[cellInfo.index][cellInfo.column.id] = val;
-    let debit = Number(calculationDueBill(newData[cellInfo.index]));
+    let debit = Number(newData[cellInfo.index]["totalAmount"]);
     let credit = Number(newData[cellInfo.index]["credit"]);
     newData[cellInfo.index]["balance"] = debit - credit;
     setData(newData);
@@ -278,13 +278,13 @@ const ShipmentBillCal = (props) => {
           {
             Header: "Balance",
             accessor: "balance",
-            Cell: renderText,
+            Cell: ({ row }) => (
+              <p>{convertTotalAmount(Number(row?._original?.balance))}</p>
+            ),
             Footer: ({ row }) => (
               <p className="text-center">
                 {convertTotalAmount(
-                  sumBy(data, (item) =>
-                    Number(item.balance || calculationDueBill(item))
-                  )
+                  sumBy(data, (item) => Number(item.balance))
                 )}
               </p>
             ),

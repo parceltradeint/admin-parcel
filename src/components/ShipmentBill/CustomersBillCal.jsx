@@ -117,10 +117,16 @@ const CustomersBillCal = (props) => {
         data={groupedArray}
         columns={[
           {
+            Header: "SL",
+            accessor: "customerName",
+            Cell: (row ) => <p>{ row?.viewIndex + 1}</p>,
+            // Footer: () => <p className="text-center">Total-</p>,
+          },
+          {
             Header: "Shiping Mark",
             accessor: "customerName",
             // Cell: renderText,
-            Footer: () => <p className="text-center">Total-</p>,
+            // Footer: () => <p className="text-center">Total-</p>,
           },
           {
             Header: "Shipment By",
@@ -209,6 +215,7 @@ const CustomersBillCal = (props) => {
             Header: "Credit",
             accessor: "credit",
             // Cell: renderEditable,
+            Cell:({row}) => <p>{convertTotalAmount(Number(row?._original?.credit))}</p>,
             Footer: ({ row }) => (
               <p className="text-center">
                 {convertTotalAmount(
@@ -220,6 +227,7 @@ const CustomersBillCal = (props) => {
           {
             Header: "Discount",
             accessor: "discount",
+            Cell:({row}) => <p>{convertTotalAmount(Number(row?._original?.discount))}</p>,
             // Cell: renderEditable,
             Footer: ({ row }) => (
               <p className="text-center">
@@ -233,6 +241,7 @@ const CustomersBillCal = (props) => {
           {
             Header: "Balance",
             accessor: "balance",
+            Cell:({row}) => <p>{convertTotalAmount(Number(row?._original?.balance))}</p>,
             // Cell: renderText,
             Footer: ({ row }) => (
               <p className="text-center">

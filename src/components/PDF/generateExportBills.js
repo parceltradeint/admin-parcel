@@ -33,32 +33,37 @@ export const generateExportBills = (data) => {
     let newData = [...data].map((item, i) => {
       return [
         {
-          text: `${item?.customerName}`,
+          text: `${i + 1}`,
           fontSize: 9,
           // color: `${isBrand ? "red" : "black"}`,
         },
         {
-          text: `${item?.shipmentBy || ""}`,
+          text: `${item?.customerName}`,
           fontSize: 9,
-          alignment: "left",
+          // color: `${isBrand ? "red" : "black"}`,
         },
-        {
-          text: `${Number(item?.totalKg).toFixed(2) || ""}`,
-          fontSize: 9,
-          alignment: "left",
-        },
-        {
-          text: `${item?.shipmentNo || ""}`,
-          fontSize: 9,
-        },
+        // {
+        //   text: `${item?.shipmentBy || ""}`,
+        //   fontSize: 9,
+        //   alignment: "left",
+        // },
+        // {
+        //   text: `${Number(item?.totalKg).toFixed(2) || ""}`,
+        //   fontSize: 9,
+        //   alignment: "left",
+        // },
+        // {
+        //   text: `${item?.shipmentNo || ""}`,
+        //   fontSize: 9,
+        // },
         {
           text: `${convertTotalAmount(item?.totalAmount, 2) || ""}`,
           fontSize: 9,
         },
-        {
-          text: `${convertTotalAmount(Number(calculationDueBill(item))) || ""}`,
-          fontSize: 9,
-        },
+        // {
+        //   text: `${convertTotalAmount(Number(calculationDueBill(item))) || ""}`,
+        //   fontSize: 9,
+        // },
         {
           text: `${
             item?.credit ? convertTotalAmount(Number(item?.credit || 0)) : ""
@@ -170,29 +175,21 @@ export const generateExportBills = (data) => {
           headerRows: 1,
           dontBreakRows: true,
           // keepWithHeaderRows: 1,
-          widths: ["12%", "5%", "9%", "9%", "13%", "13%", "13%", "13%", "13%"],
+          widths: ["8%", "24%", "17%", "17%", "17%", "17%"],
           body: [
             [
+              {
+                text: "SL",
+                style: "tableHeader",
+              },
               {
                 text: "MARK",
                 style: "tableHeader",
               },
-              {
-                text: "BY",
-                style: "tableHeader",
-              },
-              {
-                text: "KG",
-                style: "tableHeader",
-              },
-              {
-                text: "SHIP NO",
-                style: "tableHeader",
-              },
-              {
-                text: "AMOUNT",
-                style: "tableHeader",
-              },
+              // {
+              //   text: "SHIP NO",
+              //   style: "tableHeader",
+              // },
               {
                 text: "DEBIT",
                 style: "tableHeader",
@@ -214,24 +211,11 @@ export const generateExportBills = (data) => {
             ...renderData,
             [
               { text: "TOTAL", style: "tableFooter" },
+              // { text: "", style: "tableFooter" },
               { text: "", style: "tableFooter" },
-              {
-                text: `${sumBy(data, (val) => Number(val?.totalKg || 0)).toFixed(2)}`,
-                style: "tableFooter",
-              },
-              {
-                text: ``,
-                style: "tableFooter",
-              },
               {
                 text: `${convertTotalAmount(
                   sumBy(data, (val) => Number(val?.totalAmount || 0))
-                )}`,
-                style: "tableFooter",
-              },
-              {
-                text: `${convertTotalAmount(
-                  sumBy(data, (val) => Number(val?.totalDueBill || 0))
                 )}`,
                 style: "tableFooter",
               },
