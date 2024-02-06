@@ -63,7 +63,6 @@ const OverViewForm = (props) => {
       });
     } else {
       // Existing option(s) selected
-      console.log("new", newValue);
       const { value } = newValue;
       setCustomerInfo({
         ...watch(),
@@ -223,19 +222,19 @@ const OverViewForm = (props) => {
                     { name: "Choose a Shipment", value: "" },
                     {
                       name: "Air",
-                      value: "Air",
+                      value: "AIR",
                       isSelected:
                         customerInfo?.shipmentBy?.toLowerCase() == "air",
                     },
                     {
                       name: "Sea",
-                      value: "Sea",
+                      value: "SEA",
                       isSelected:
                         customerInfo?.shipmentBy?.toLowerCase() == "sea",
                     },
                     {
                       name: "Road",
-                      value: "Road",
+                      value: "ROAD",
                       isSelected:
                         customerInfo?.shipmentBy?.toLowerCase() == "road",
                     },

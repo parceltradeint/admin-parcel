@@ -92,7 +92,7 @@ const Delivery = () => {
         <div className=" mx-auto py-4 px-4 sm:px-6 lg:px-8  flex flex-col md:flex-row space-y-2 md:space-y-0 justify-between items-center">
           <div className={"ml-4 "}>
             <h1 className="text-lg leading-6 font-semibold text-gray-900">
-              All Customers Shipment Bill
+              All Customer Shipment Bill
             </h1>
           </div>
           <div className={"ml-4  flex-shrink-0"}>

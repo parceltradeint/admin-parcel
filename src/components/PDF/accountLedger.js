@@ -2,49 +2,47 @@ import { sumBy } from "lodash";
 import { contact27, parcelLogo, wechat, whatsApp } from "./image";
 import { formartDate } from "@/common/formartDate";
 // title: `${customerName}- ${type}- ${new Date().toLocaleString()}`,
-import {cre} from "pdfmake"
+import { cre } from "pdfmake";
+import HeaderOfPDF from "./InvoiceHeader";
+import { convertTotalAmount, stylesVals } from "./InvoiceDef";
 export const generateLedgerPDF = (info) => {
   let renderData = [];
   if (info?.data) {
-
-    let newData = info?.data
-      .map((item, i) => {
-        return [
-          {
-            text: `${item.deliveryDate}`,
-            fontSize: 10,
-            // color: `${isBrand ? "red" : "black"}`,
-          },
-          {
-            text: `${ "DUE LISTS"}`,
-            fontSize: 10,
-            alignment: "left",
-          },
-          {
-            text: `${item?.totalAmount || ""}`,
-            fontSize: 10,
-            alignment: "left",
-          },
-          {
-            text: `${item?.credit || ""}`,
-            fontSize: 10,
-            alignment: "left",
-          },
-          {
-            text: `${Number(item?.balance || "").toFixed(2)}`,
-            fontSize: 10,
-          },
-        ];
-      });
+    let newData = info?.data.map((item, i) => {
+      return [
+        {
+          text: `${item.deliveryDate}`,
+          fontSize: 9,
+          // color: `${isBrand ? "red" : "black"}`,
+        },
+        {
+          text: `SHIPMENT NO. ${item?.shipmentNo}`,
+          fontSize: 9,
+          alignment: "left",
+        },
+        {
+          text: `${convertTotalAmount(Number(item?.totalAmount || ""))}`,
+          fontSize: 9,
+          alignment: "center",
+        },
+        {
+          text: `${convertTotalAmount(Number(item?.credit || ""))}`,
+          fontSize: 9,
+          alignment: "center",
+        },
+        {
+          text: `${convertTotalAmount(Number(item?.balance))}`,
+          fontSize: 9,
+        },
+      ];
+    });
 
     renderData = [...newData];
   }
 
   let docDefinition = {
     info: {
-      title: `${info?.customerName}- ${formartDate(
-        new Date()
-      )}`,
+      title: `${info?.customerName}- ${formartDate(new Date())}`,
       author: "Parcel",
       subject: "CUSTOMER LEDGER BILLS",
     },
@@ -63,128 +61,7 @@ export const generateLedgerPDF = (info) => {
           },
         ],
       },
-      {
-        margin: [0, 0, 0, 0],
-        table: {
-          widths: ["*"],
-          body: [
-            [
-              {
-                border: [true, true, true, true],
-                columns: [
-                  {
-                    alignment: "left",
-                    width: 60,
-                    image: parcelLogo,
-                  },
-                  {
-                    alignment: "left",
-                    text: [
-                      "P",
-                      { text: "arce", color: "red" },
-                      "l ",
-                      "Trade International",
-                    ],
-                    fontSize: 30,
-                    bold: true,
-                    margin: [0, 10, 0, 0],
-                  },
-                  {
-                    alignment: "right",
-                    width: 60,
-                    image: contact27,
-                  },
-                ],
-              },
-            ],
-          ],
-        },
-        layout: {
-          defaultBorder: false,
-        },
-      },
-      {
-        table: {
-          widths: ["13%", "73%", "14%"],
-          body: [
-            [
-              {
-                stack: [
-                  {
-                    image: wechat,
-                    width: 50,
-                    margin: [10, 0, 0, 0],
-                  },
-                  {
-                    text: "WeChat",
-                    color: "#333",
-                    alignment: "center",
-                    fontSize: 9,
-                    margin: [4, 4, 0, 0],
-                  },
-                ],
-              },
-              {
-                stack: [
-                  {
-                    text: "H-2553, Sayednagor, Vatara, Gulshan-2, Dhaka-1212.\n",
-                    fontSize: 15,
-                    border: [false, true, false, true],
-                  },
-                  {
-                    text: "Cell: 01879314050, 01521584929\n",
-                    fontSize: 15,
-                    margin: [0, 5, 0, 0],
-                  },
-                ],
-                fillColor: "#555555",
-                color: "#FFFFFF",
-                bold: true,
-                alignment: "center",
-                margin: [0, 10, 0, 0],
-              },
-
-              {
-                stack: [
-                  {
-                    image: whatsApp,
-                    width: 53,
-                    margin: [10, 0, 0, 0],
-                  },
-                  {
-                    text: "WhatsApp",
-                    color: "#333",
-                    alignment: "center",
-                    fontSize: 9,
-                    margin: [4, 0, 0, 0],
-                  },
-                ],
-              },
-            ],
-          ],
-        },
-        layout: "borders",
-      },
-      // {
-      //   style: "section",
-      //   margin: [0, 0, 0, 0],
-      //   table: {
-      //     widths: ["*"],
-      //     body: [
-      //       [
-      //         {
-      //           text: [{ text: `${"CUSTOMER LEDGER BILLS"}\n`, fontSize: 20 }],
-      //           fillColor: "#1586D5",
-      //           color: "#FFFFFF",
-      //           alignment: "center",
-      //           bold: true,
-      //         },
-      //       ],
-      //     ],
-      //   },
-      //   layout: "noBorders",
-      // },
-
+      HeaderOfPDF(),
       {
         table: {
           widths: ["*"],
@@ -258,7 +135,9 @@ export const generateLedgerPDF = (info) => {
               { text: "TOTAL", style: "tableFooter" },
               { text: "", style: "tableFooter" },
               {
-                text: `${sumBy(info?.data, (val) => Number(val?.totalAmount || 0))}`,
+                text: `${sumBy(info?.data, (val) =>
+                  Number(val?.totalAmount || 0)
+                )}`,
                 style: "tableFooter",
               },
               {
@@ -266,7 +145,9 @@ export const generateLedgerPDF = (info) => {
                 style: "tableFooter",
               },
               {
-                text: `${sumBy(info?.data, (val) => Number(val?.balance || 0))}`,
+                text: `${sumBy(info?.data, (val) =>
+                  Number(val?.balance || 0)
+                )}`,
                 style: "tableFooter",
               },
             ],
@@ -288,7 +169,20 @@ export const generateLedgerPDF = (info) => {
         },
       },
     ],
-
+    background: function (currentPage, pageSize) {
+      return [
+        {
+          image: parcelLogo,
+          width: 350,
+          // height: 100,
+          absolutePosition: {
+            x: (pageSize.width - 350) / 2,
+            y: (pageSize.height - 300) / 2,
+          },
+          opacity: 0.08,
+        },
+      ];
+    },
     pageSize: "A4",
 
     defaultStyle: {
@@ -299,34 +193,15 @@ export const generateLedgerPDF = (info) => {
       defaultBorder: true, // Apply the default border to all content elements
     },
     styles: {
-      headerStrip: {
-        fontSize: 8,
-      },
-      summartTable: {
-        margin: [0, 10, 0, 0],
-        fontSize: 8,
-        alignment: "center",
-      },
-      tableHeader: {
-        bold: true,
-        fontSize: 10,
-        color: "#FFFFFF",
-        fillColor: "#555555",
-        alignment: "center",
-      },
-      tableFooter: {
-        bold: true,
-        fontSize: 10,
-        color: "#FFFFFF",
-        fillColor: "#555555",
-        alignment: "center",
-      },
+      headerStrip: stylesVals.headerStrip,
+      summartTable: stylesVals.summartTable,
+      tableHeader: stylesVals.tableHeader,
+      tableFooter: stylesVals.tableFooter,
       nameStyle: {
         color: "red",
       },
     },
   };
-
 
   // const pdfDocGenerator = pdfMake.createPdf(docDefinition);
   var win = window.open("", "_blank");
@@ -339,7 +214,6 @@ export const generateLedgerPDF = (info) => {
     },
     win
   );
-
 };
 
 function convertNumberToWords(number) {

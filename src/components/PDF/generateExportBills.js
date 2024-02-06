@@ -3,6 +3,8 @@ import { contact27, parcelLogo, wechat, whatsApp } from "./image";
 import { formartDate } from "@/common/formartDate";
 // title: `${customerName}- ${type}- ${new Date().toLocaleString()}`,
 import { cre } from "pdfmake";
+import HeaderOfPDF from "./InvoiceHeader";
+import { stylesVals } from "./InvoiceDef";
 export const generateExportBills = (data) => {
   let renderData = [];
 
@@ -58,15 +60,23 @@ export const generateExportBills = (data) => {
           fontSize: 9,
         },
         {
-          text: `${item?.credit ? convertTotalAmount(Number(item?.credit || 0)) : ""}`,
+          text: `${
+            item?.credit ? convertTotalAmount(Number(item?.credit || 0)) : ""
+          }`,
           fontSize: 9,
         },
         {
-          text: `${item?.discount ? convertTotalAmount(Number(item?.discount || 0)) : ""}`,
+          text: `${
+            item?.discount
+              ? convertTotalAmount(Number(item?.discount || 0))
+              : ""
+          }`,
           fontSize: 9,
         },
         {
-          text: `${item?.balance ? convertTotalAmount(Number(item?.balance || 0)) : ""}`,
+          text: `${
+            item?.balance ? convertTotalAmount(Number(item?.balance || 0)) : ""
+          }`,
           fontSize: 9,
         },
       ];
@@ -77,7 +87,7 @@ export const generateExportBills = (data) => {
 
   let docDefinition = {
     info: {
-      title: `CUSTOMERS LISTS- ${formartDate(new Date())}`,
+      title: `CUSTOMER LIST- ${formartDate(new Date())}`,
       author: "Parcel",
       subject: "",
     },
@@ -88,7 +98,7 @@ export const generateExportBills = (data) => {
         columns: [
           {
             alignment: "left",
-            text: `CUSTOMERS LIST`,
+            text: `CUSTOMER LIST`,
           },
           {
             alignment: "right",
@@ -96,108 +106,7 @@ export const generateExportBills = (data) => {
           },
         ],
       },
-      {
-        margin: [0, 0, 0, 0],
-        table: {
-          widths: ["*"],
-          body: [
-            [
-              {
-                border: [true, true, true, true],
-                columns: [
-                  {
-                    alignment: "left",
-                    width: 60,
-                    image: parcelLogo,
-                  },
-                  {
-                    alignment: "left",
-                    text: [
-                      "P",
-                      { text: "arce", color: "red" },
-                      "l ",
-                      "Trade International",
-                    ],
-                    fontSize: 30,
-                    bold: true,
-                    margin: [0, 10, 0, 0],
-                  },
-                  {
-                    alignment: "right",
-                    width: 60,
-                    image: contact27,
-                  },
-                ],
-              },
-            ],
-          ],
-        },
-        layout: {
-          defaultBorder: false,
-        },
-      },
-      // {
-      //   table: {
-      //     widths: ["13%", "73%", "14%"],
-      //     body: [
-      //       [
-      //         {
-      //           stack: [
-      //             {
-      //               image: wechat,
-      //               width: 50,
-      //               margin: [10, 0, 0, 0],
-      //             },
-      //             {
-      //               text: "WeChat",
-      //               color: "#333",
-      //               alignment: "center",
-      //               fontSize: 9,
-      //               margin: [4, 4, 0, 0],
-      //             },
-      //           ],
-      //         },
-      //         {
-      //           stack: [
-      //             {
-      //               text: "H-2553, Sayednagor, Vatara, Gulshan-2, Dhaka-1212.\n",
-      //               fontSize: 15,
-      //               border: [false, true, false, true],
-      //             },
-      //             {
-      //               text: "Cell: 01879314050, 01521584929\n",
-      //               fontSize: 15,
-      //               margin: [0, 5, 0, 0],
-      //             },
-      //           ],
-      //           fillColor: "#555555",
-      //           color: "#FFFFFF",
-      //           bold: true,
-      //           alignment: "center",
-      //           margin: [0, 10, 0, 0],
-      //         },
-
-      //         {
-      //           stack: [
-      //             {
-      //               image: whatsApp,
-      //               width: 53,
-      //               margin: [10, 0, 0, 0],
-      //             },
-      //             {
-      //               text: "WhatsApp",
-      //               color: "#333",
-      //               alignment: "center",
-      //               fontSize: 9,
-      //               margin: [4, 0, 0, 0],
-      //             },
-      //           ],
-      //         },
-      //       ],
-      //     ],
-      //   },
-      //   layout: "borders",
-      // },
+      HeaderOfPDF(),
       {
         style: "section",
         margin: [0, 0, 0, 0],
@@ -261,17 +170,7 @@ export const generateExportBills = (data) => {
           headerRows: 1,
           dontBreakRows: true,
           // keepWithHeaderRows: 1,
-          widths: [
-            "12%",
-            "5%",
-            "9%",
-            "9%",
-            "13%",
-            "13%",
-            "13%",
-            "13%",
-            "13%",
-          ],
+          widths: ["12%", "5%", "9%", "9%", "13%", "13%", "13%", "13%", "13%"],
           body: [
             [
               {
@@ -291,7 +190,7 @@ export const generateExportBills = (data) => {
                 style: "tableHeader",
               },
               {
-                text: "TOTAL AMOUNT",
+                text: "AMOUNT",
                 style: "tableHeader",
               },
               {
@@ -373,7 +272,20 @@ export const generateExportBills = (data) => {
         },
       },
     ],
-
+    background: function (currentPage, pageSize) {
+      return [
+        {
+          image: parcelLogo,
+          width: 350,
+          // height: 100,
+          absolutePosition: {
+            x: (pageSize.width - 350) / 2,
+            y: (pageSize.height - 300) / 2,
+          },
+          opacity: 0.08,
+        },
+      ];
+    },
     pageSize: "A4",
 
     defaultStyle: {
@@ -384,28 +296,10 @@ export const generateExportBills = (data) => {
       defaultBorder: true, // Apply the default border to all content elements
     },
     styles: {
-      headerStrip: {
-        fontSize: 8,
-      },
-      summartTable: {
-        margin: [0, 10, 0, 0],
-        fontSize: 8,
-        alignment: "center",
-      },
-      tableHeader: {
-        bold: true,
-        fontSize: 10,
-        color: "#FFFFFF",
-        fillColor: "#555555",
-        alignment: "center",
-      },
-      tableFooter: {
-        bold: true,
-        fontSize: 10,
-        color: "#FFFFFF",
-        fillColor: "#555555",
-        alignment: "center",
-      },
+      headerStrip:  stylesVals.tableFooter,
+      summartTable:  stylesVals.summartTable,
+      tableHeader:  stylesVals.tableHeader,
+      tableFooter: stylesVals.tableFooter,
       nameStyle: {
         color: "red",
       },

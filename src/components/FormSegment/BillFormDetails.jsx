@@ -482,7 +482,7 @@ const BillFormDetails = (props) => {
                 </span>
               ),
               width: 90,
-              show: type === "customer" ? true : false,
+              show: type === "customer" || type === "outbound" ? true : false,
             },
             {
               Header: (row) => renderEditMark(row, "all"),

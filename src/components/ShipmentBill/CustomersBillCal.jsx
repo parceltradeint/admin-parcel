@@ -8,6 +8,9 @@ import axios from "axios";
 import { errorAlert } from "@/common/SweetAlert";
 
 import CustomerAllDueBills from "./CustomerAllDueBills";
+import ToolTip from "@/common/ToolTip";
+import { Button, Tooltip, Typography } from "@material-tailwind/react";
+import { generateExportBills } from "../PDF/generateExportBills";
 const CustomersBillCal = (props) => {
   const { type } = props;
   const [loading, setLoading] = useState(false);
@@ -91,12 +94,25 @@ const CustomersBillCal = (props) => {
   // Convert the object back to an array
   const groupedArray = Object.values(groupedByCustomerId);
 
+  const handleExportBills = () => {
+    if (window.confirm("Are you sure you want to export bills?")) {
+      generateExportBills(groupedArray);
+    }
+  };
+
   if (loading) {
     return <PlaceHolderLoading loading={true} />;
   }
 
   return (
     <>
+      <button
+        type="button"
+        className=" bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mb-2 mx-auto flex justify-center uppercase"
+        onClick={handleExportBills}
+      >
+        Export Due Bills
+      </button>
       <ReactTable
         data={groupedArray}
         columns={[
@@ -109,12 +125,33 @@ const CustomersBillCal = (props) => {
           {
             Header: "Shipment By",
             accessor: "shipmentBy",
-            // Cell: renderText,
+            Cell: ({ row }) => (
+              <div className=" relative">
+                <Tooltip
+                  content={
+                    <div className="absolute bg-black px-4 rounded-md py-1 z-50 w-auto">
+                      <p>{row._original?.shipmentBy.join(", ")}</p>
+                    </div>
+                  }
+                  placement="right"
+                  animate={{
+                    mount: { scale: 1, y: 0 },
+                    unmount: { scale: 0, y: 25 },
+                  }}
+                >
+                  <span className=" cursor-pointer px-2 py-1 rounded bg-gray-500 ">
+                    View
+                  </span>
+                </Tooltip>
+              </div>
+            ),
           },
           {
             Header: "Total Kg",
             accessor: "totalKg",
-            // Cell: renderText,
+            Cell: ({ row }) => (
+              <p>{Number(row._original.totalKg).toFixed(2)}</p>
+            ),
             Footer: () => (
               <p className="text-center">
                 {sumBy(groupedArray, (item) => Number(item.totalKg)).toFixed(2)}
@@ -124,6 +161,26 @@ const CustomersBillCal = (props) => {
           {
             Header: "Shipment No",
             accessor: "shipmentNo",
+            Cell: ({ row }) => (
+              <div className=" relative">
+                <Tooltip
+                  content={
+                    <div className="absolute bg-black px-4 rounded-md py-1 z-50 w-24">
+                      <p>{row._original?.shipmentNo.join(", ")}</p>
+                    </div>
+                  }
+                  placement="right"
+                  animate={{
+                    mount: { scale: 1, y: 0 },
+                    unmount: { scale: 0, y: 25 },
+                  }}
+                >
+                  <span className=" cursor-pointer px-2 py-1 rounded bg-gray-500 ">
+                    View
+                  </span>
+                </Tooltip>
+              </div>
+            ),
             // Cell: renderText,
           },
           // {
@@ -241,7 +298,7 @@ const CustomersBillCal = (props) => {
           //   width: 100,
           // },
         ]}
-        className="-striped -highlight text-center"
+        className="-striped -highlight text-center relative"
         defaultPageSize={200}
         minRows={12}
         showPageJump={false}
@@ -251,7 +308,11 @@ const CustomersBillCal = (props) => {
         sortable={true}
       />
       {showModal && (
-        <CustomerAllDueBills items={showModal} setShowModal={setShowModal} type={type} />
+        <CustomerAllDueBills
+          items={showModal}
+          setShowModal={setShowModal}
+          type={type}
+        />
       )}
     </>
   );

@@ -20,7 +20,7 @@ const SelectField = ({
       className={`uppercase block w-full px-4 py-2 text-gray-700 bg-white focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 ${className}`}
     >
       {options.map((item, i) => (
-        <option value={item.value} key={i} selected={item.isSelected || false}>
+        <option value={item.value} key={i} selected={item?.isSelected || false}>
           {item.name}
         </option>
       ))}

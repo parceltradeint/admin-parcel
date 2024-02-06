@@ -34,12 +34,10 @@ const BillFormSegment = (props) => {
   });
   const [saveSoundPlay] = useSound("/assets/sounds/save.mp3", { volume: 0.45 });
 
-  let type =
-    router?.query?.type == "outbound"
-      ? "customer"
-      : router?.query?.type == "inbound"
+  let type = router?.query?.type.includes("outbound") ? "customer"
+      : router?.query?.type.includes("inbound")
       ? "cnf"
-      : router?.query?.type == "packing"
+      : router?.query?.type.includes("packing")
       ? "packing"
       : "";
   const downloadPDF = () => {
@@ -64,7 +62,7 @@ const BillFormSegment = (props) => {
       ...aditionalInfo,
       data: newData,
     };
-    if (router.query.type === "packing") {
+    if (type === "packing") {
       generatePackingPDF(newInfo, "Packing List");
     } else {
       generatePDF(newInfo);
@@ -288,7 +286,7 @@ const BillFormSegment = (props) => {
         setLoading(true);
         if (editMode) {
           await axios
-            .delete(`/api/${router?.query?.type}?id=` + editMode?._id)
+            .delete(`/api/${type === "customer" ? "outbound" : type === "cnf" ? "inbound" : type}?id=` + editMode?._id)
             .then((res) => {
               successAlert("Successfully Deleted");
               router.push(
@@ -355,7 +353,7 @@ const BillFormSegment = (props) => {
 
   return (
     <Section>
-      {router?.query?.type === "packing" ? (
+      {type === "packing" ? (
         <PackingOverviewForm
           editMode={editMode}
           setCustomerInfo={setCustomerInfo}

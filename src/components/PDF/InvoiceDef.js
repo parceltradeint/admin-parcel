@@ -1,6 +1,10 @@
 import { sumBy } from "lodash";
-import { contact27, parcelLogo, wechat, whatsApp } from "./image";
+import { contact27, paidLogo, parcelLogo, wechat, whatsApp } from "./image";
 import { formartDate } from "@/common/formartDate";
+import HeaderOfPDF from "./InvoiceHeader";
+import headerBanner from "./InvoiceBanner";
+import invoiceCustomerInfo from "./InvoiceCustomerInfo";
+import InvoiceFooterAuthor from "./InvoiceFooterAuthor";
 // title: `${customerName}- ${type}- ${new Date().toLocaleString()}`,
 
 export const generatePDF = (info) => {
@@ -13,18 +17,18 @@ export const generatePDF = (info) => {
       return [
         {
           text: `${i + 1}`,
-          fontSize: 12,
+          fontSize: 9,
           // color: `${isBrand ? "red" : "black"}`
         },
         {
           text: `${item?.goodsName || item?.des || ""}`,
-          fontSize: 12,
+          fontSize: 9,
           alignment: "left",
           color: `${isBrand ? "red" : "black"}`,
         },
         {
           text: `${item?.ctn || ""}`,
-          fontSize: 12,
+          fontSize: 9,
           // color: `${isBrand ? "red" : "black"}`,
         },
         {
@@ -33,12 +37,12 @@ export const generatePDF = (info) => {
               ? Number(item?.kg || item?.qty).toFixed(2)
               : ""
           }`,
-          fontSize: 12,
+          fontSize: 9,
           // color: `${isBrand ? "red" : "black"}`,
         },
         {
           text: `${item?.rate || ""}`,
-          fontSize: 12,
+          fontSize: 9,
           // color: `${isBrand ? "red" : "black"}`,
         },
         {
@@ -47,21 +51,21 @@ export const generatePDF = (info) => {
               ? convertBengaliToEnglishNumber(totalAmount.toLocaleString("bn"))
               : ""
           }`,
-          fontSize: 12,
+          fontSize: 9,
           alignment: "right",
           // color: `${isBrand ? "red" : "black"}`,
         },
       ];
     });
 
-    for (let i = 0; i < 13 - info?.data.length; i++) {
+    for (let i = 0; i < 25 - info?.data.length; i++) {
       newData.push([
-        { text: `${info?.data.length + i + 1}`, fontSize: 12 },
+        { text: `${info?.data.length + i + 1}`, fontSize: 9 },
         "",
         "",
         "",
         "",
-        { text: ``, fontSize: 12, alignment: "right" },
+        { text: ``, fontSize: 9, alignment: "right" },
       ]);
     }
     renderData = [...newData];
@@ -71,13 +75,18 @@ export const generatePDF = (info) => {
     return sumBy(data, (val) => Number(val?.totalAmount || 0));
   };
 
-  const convertTotalAmount = (val) => {
-    return convertBengaliToEnglishNumber(
-      val.toLocaleString("bn", {
-        minimumFractionDigits: 0,
-      })
-    );
+  const totalDueBill = () => {
+    const value =
+      Number(netTotalAmount(info?.data)) +
+      Number(info?.due || 0) -
+      Number(info?.paid || 0);
+    return value;
   };
+
+  const totalDueSection =
+    Math.sign(totalDueBill()) === -1
+      ? `CONGRATULATIONS! ADVANCE${convertTotalAmount(totalDueBill())} TAKA`
+      : `TOTAL DUE BILL- ${convertTotalAmount(totalDueBill())}`;
 
   let docDefinition = {
     info: {
@@ -88,15 +97,15 @@ export const generatePDF = (info) => {
       subject: "Shipment Bill",
     },
 
-    watermark: {
-      text: `${info?.watermark ? "PAID BILL" : ""}`,
-      color: "red",
-      opacity: 0.5,
-      bold: true,
-      italics: false,
-      fontSize: 50,
-      border: [true, true, true, true],
-    },
+    // watermark: {
+    //   text: `${info?.watermark ? "PAID BILL" : ""}`,
+    //   color: "red",
+    //   opacity: 0.5,
+    //   bold: true,
+    //   italics: false,
+    //   fontSize: 50,
+    //   border: [true, true, true, true],
+    // },
 
     content: [
       {
@@ -113,256 +122,131 @@ export const generatePDF = (info) => {
           },
         ],
       },
-      {
-        margin: [0, 0, 0, 0],
-        table: {
-          widths: ["*"],
-          body: [
-            [
-              {
-                border: [true, true, true, false],
-                columns: [
-                  {
-                    alignment: "left",
-                    width: 60,
-                    image: parcelLogo,
-                  },
-                  {
-                    alignment: "left",
-                    text: [
-                      "P",
-                      { text: "arce", color: "red" },
-                      "l ",
-                      "Trade International",
-                    ],
-                    fontSize: 30,
-                    bold: true,
-                    margin: [0, 10, 0, 0],
-                  },
-                  {
-                    alignment: "right",
-                    width: 60,
-                    image: contact27,
-                  },
-                ],
-              },
-            ],
-          ],
-        },
-        layout: {
-          defaultBorder: false,
-        },
-      },
-      {
-        table: {
-          widths: ["13%", "73%", "14%"],
-          body: [
-            [
-              {
-                stack: [
-                  {
-                    image: wechat,
-                    width: 50,
-                    margin: [10, 0, 0, 0],
-                  },
-                  {
-                    text: "WeChat",
-                    color: "#333",
-                    alignment: "center",
-                    fontSize: 9,
-                    margin: [4, 4, 0, 0],
-                  },
-                ],
-              },
-              {
-                stack: [
-                  {
-                    text: "H-2553, Sayednagor, Vatara, Gulshan-2, Dhaka-1212.\n",
-                    fontSize: 15,
-                    border: [false, true, false, true],
-                  },
-                  {
-                    text: "Cell: 01879314050, 01521584929\n",
-                    fontSize: 15,
-                    margin: [0, 5, 0, 0],
-                  },
-                ],
-                fillColor: "#555555",
-                color: "#FFFFFF",
-                bold: true,
-                alignment: "center",
-                margin: [0, 10, 0, 0],
-              },
+      HeaderOfPDF(),
+      headerBanner(),
+      // {
+      //   margin: [0, 0, 0, 0],
+      //   table: {
+      //     widths: ["*"],
+      //     body: [
+      //       [
+      //         {
+      //           border: [true, true, true, false],
+      //           columns: [
+      //             {
+      //               alignment: "left",
+      //               width: 60,
+      //               image: parcelLogo,
+      //             },
+      //             {
+      //               alignment: "left",
+      //               text: [
+      //                 "P",
+      //                 { text: "arce", color: "red" },
+      //                 "l ",
+      //                 "Trade International",
+      //               ],
+      //               fontSize: 30,
+      //               bold: true,
+      //               margin: [0, 10, 0, 0],
+      //             },
+      //             {
+      //               alignment: "right",
+      //               width: 60,
+      //               image: contact27,
+      //             },
+      //           ],
+      //         },
+      //       ],
+      //     ],
+      //   },
+      //   layout: {
+      //     defaultBorder: false,
+      //   },
+      // },
+      // {
+      //   table: {
+      //     widths: ["13%", "73%", "14%"],
+      //     body: [
+      //       [
+      //         {
+      //           stack: [
+      //             {
+      //               image: wechat,
+      //               width: 50,
+      //               margin: [10, 0, 0, 0],
+      //             },
+      //             {
+      //               text: "WeChat",
+      //               color: "#333",
+      //               alignment: "center",
+      //               fontSize: 9,
+      //               margin: [4, 4, 0, 0],
+      //             },
+      //           ],
+      //         },
+      //         {
+      //           stack: [
+      //             {
+      //               text: "H-2553, Sayednagor, Vatara, Gulshan-2, Dhaka-1212.\n",
+      //               fontSize: 15,
+      //               border: [false, true, false, true],
+      //             },
+      //             {
+      //               text: "Cell: 01879314050, 01521584929\n",
+      //               fontSize: 15,
+      //               margin: [0, 5, 0, 0],
+      //             },
+      //           ],
+      //           fillColor: "#555555",
+      //           color: "#FFFFFF",
+      //           bold: true,
+      //           alignment: "center",
+      //           margin: [0, 10, 0, 0],
+      //         },
 
-              {
-                stack: [
-                  {
-                    image: whatsApp,
-                    width: 53,
-                    margin: [10, 0, 0, 0],
-                  },
-                  {
-                    text: "WhatsApp",
-                    color: "#333",
-                    alignment: "center",
-                    fontSize: 9,
-                    margin: [4, 0, 0, 0],
-                  },
-                ],
-              },
-            ],
-          ],
-        },
-        layout: "borders",
-      },
-      {
-        style: "section",
-        margin: [0, 5, 0, 0],
-        table: {
-          widths: ["*"],
-          body: [
-            [
-              {
-                text: [{ text: "SHIPMENT BILL\n", fontSize: 20 }],
-                fillColor: "#1586D5",
-                color: "#FFFFFF",
-                alignment: "center",
-                bold: true,
-              },
-            ],
-          ],
-        },
-        layout: "noBorders",
-      },
+      //         {
+      //           stack: [
+      //             {
+      //               image: whatsApp,
+      //               width: 53,
+      //               margin: [10, 0, 0, 0],
+      //             },
+      //             {
+      //               text: "WhatsApp",
+      //               color: "#333",
+      //               alignment: "center",
+      //               fontSize: 9,
+      //               margin: [4, 0, 0, 0],
+      //             },
+      //           ],
+      //         },
+      //       ],
+      //     ],
+      //   },
+      //   layout: "borders",
+      // },
 
-      {
-        margin: [0, 5, 0, 0],
-        fontSize: 10,
-        table: {
-          widths: ["15%", "50%", "15%", "20%"],
-          body: [
-            [
-              {
-                text: "NAME",
-                alignment: "left",
-                fillColor: "#555555",
-                color: "#FFFFFF",
-                bold: true,
-              },
-              `${info?.customerName?.toUpperCase() || ""}`,
-              {
-                text: "DATE",
-                alignment: "left",
-                fillColor: "#555555",
-                color: "#FFFFFF",
-                bold: true,
-              },
-              { text: `${formartDate(new Date())}`, alignment: "left" },
-              // { text: `${info?.phone}`}
-            ],
-          ],
-        },
-      },
-      {
-        margin: [0, 0, 0, 0],
-        fontSize: 10,
-        table: {
-          widths: ["15%", "50%", "15%", "20%"],
-          body: [
-            [
-              {
-                text: "SHIPMENT",
-                alignment: "left",
-                fillColor: "#555555",
-                color: "#FFFFFF",
-                bold: true,
-                border: [true, false, false, true],
-              },
-              {
-                text: `BY ${info?.shipmentBy?.toUpperCase()}`,
-                border: [true, false, false, true],
-              },
-              {
-                text: "REPORTING",
-                alignment: "left",
-                fillColor: "#555555",
-                color: "#FFFFFF",
-                border: [true, false, false, true],
-                bold: true,
-              },
-              {
-                text: `${info?.reporting?.toUpperCase()}`,
-                alignment: "left",
-                border: [true, false, true, true],
-              },
-            ],
-          ],
-        },
-      },
-      {
-        margin: [0, 0, 0, 0],
-        fontSize: 10,
-        table: {
-          widths: ["15%", "50%", "15%", "20%"],
-          body: [
-            [
-              {
-                text: "ADDRESS",
-                alignment: "left",
-                fillColor: "#555555",
-                color: "#FFFFFF",
-                bold: true,
-                border: [true, false, false, true],
-              },
-              {
-                text: `${info?.customerAddress?.toUpperCase() || ""}`,
-                border: [true, false, false, true],
-              },
-              {
-                text: "SHIPMENT NO",
-                alignment: "left",
-                fillColor: "#555555",
-                color: "#FFFFFF",
-                bold: true,
-                border: [true, false, false, true],
-              },
-              {
-                text: `${info?.shipmentNo}`,
-                alignment: "left",
-                border: [true, false, true, true],
-              },
-            ],
-          ],
-        },
-      },
-
-      {
-        fontSize: 11,
-        margin: [0, 0, 0, 5],
-        // border:[false, false, false, false],
-        table: {
-          widths: ["14.5%", "85.5%"],
-          body: [
-            [
-              {
-                text: "REMARKS",
-                alignment: "left",
-                fillColor: "#555555",
-                color: "#FFFFFF",
-                bold: true,
-                border: [true, false, true, true],
-                margin: [0, -2, 0, 0],
-              },
-              {
-                text: `${info?.remarks?.toUpperCase()}`,
-                color: "red",
-                bold: true,
-                border: [false, false, true, true],
-              },
-            ],
-          ],
-        },
-      },
+      // {
+      //   style: "section",
+      //   margin: [0, 5, 0, 0],
+      //   table: {
+      //     widths: ["*"],
+      //     body: [
+      //       [
+      //         {
+      //           text: [{ text: "SHIPMENT BILL\n", fontSize: 15 }],
+      //           fillColor: "#1586D5",
+      //           color: "#FFFFFF",
+      //           alignment: "center",
+      //           bold: true,
+      //         },
+      //       ],
+      //     ],
+      //   },
+      //   layout: "noBorders",
+      // },
+      invoiceCustomerInfo(info),
 
       {
         style: "summartTable",
@@ -370,7 +254,7 @@ export const generatePDF = (info) => {
           // headerRows: 1,
           // dontBreakRows: true,
           // keepWithHeaderRows: 1,
-          widths: ["8%", "35%", "15%", "12%", "15%", "*"],
+          widths: ["8%", "40%", "11%", "11%", "11%", "*"],
           body: [
             [
               {
@@ -450,29 +334,25 @@ export const generatePDF = (info) => {
                 [
                   {
                     rowSpan: 3,
-                    text: `TOTAL DUE BILL- ${convertTotalAmount(
-                      Number(netTotalAmount(info?.data)) +
-                        Number(info?.due || 0) -
-                        Number(info?.paid || 0)
-                    )}`,
+                    text: totalDueSection,
                     alignment: "left",
-                    margin: [40, 15, 0, 0],
-                    fontSize: 20,
+                    margin: [40, 10, 0, 0],
+                    fontSize: 15,
                     bold: true,
-                    color: "red",
+                    color: Math.sign(totalDueBill()) === -1 ? "green" : "red",
                     border: [true, true, true, true],
                   },
                   {
                     text: "DUE",
                     fillColor: "#555555",
                     color: "#FFFFFF",
-                    fontSize: 13,
+                    fontSize: 10,
                     border: [true, true, true, false],
                   },
                   {
                     text: `${convertTotalAmount(Number(info?.due || 0))}`,
                     alignment: "right",
-                    fontSize: 13,
+                    fontSize: 10,
                     color: `${info?.due ? "red" : "black"}`,
                     border: [true, true, true, false],
                   },
@@ -483,12 +363,12 @@ export const generatePDF = (info) => {
                     text: "PAID",
                     fillColor: "#555555",
                     color: "#FFFFFF",
-                    fontSize: 13,
+                    fontSize: 10,
                   },
                   {
                     text: `${convertTotalAmount(Number(info?.paid || 0))}`,
                     alignment: "right",
-                    fontSize: 13,
+                    fontSize: 10,
                     color: `${info?.paid ? "green" : "black"}`,
                   },
                 ],
@@ -498,17 +378,15 @@ export const generatePDF = (info) => {
                     text: info?.watermark ? "" : "TOTAL",
                     fillColor: "#555555",
                     color: "#FFFFFF",
-                    fontSize: 13,
+                    fontSize: 10,
                   },
                   {
-                    text: info?.watermark ? "":`${convertTotalAmount(
-                      Number(netTotalAmount(info?.data)) +
-                        Number(info?.due || 0) -
-                        Number(info?.paid || 0)
-                    )}`,
+                    text: info?.watermark
+                      ? ""
+                      : `${convertTotalAmount(Math.abs(totalDueBill()))}`,
                     alignment: "right",
                     bold: true,
-                    fontSize: 13,
+                    fontSize: 10,
                   },
                 ],
               ],
@@ -517,18 +395,19 @@ export const generatePDF = (info) => {
           },
           {
             style: "summartTable",
-            fontSize: 11,
+            fontSize: 10,
             margin: [0, 5, 0, 0],
             table: {
               widths: ["18%", "82%"],
               body: [
                 [
                   "TAKA IN WORDS:",
+
                   {
                     text: `${convertNumberToWords(
-                      Number(netTotalAmount(info?.data)) +
-                        Number(info?.due || 0) -
-                        Number(info?.paid || 0)
+                      Math.sign(totalDueBill()) === -1
+                        ? Math.abs(totalDueBill())
+                        : totalDueBill()
                     )} TAKA ONLY.`,
                     alignment: "left",
                   },
@@ -536,62 +415,93 @@ export const generatePDF = (info) => {
               ],
             },
           },
-          {
-            // margin: [0, 35, 0, 0],
-            // border:[true, true, true, true],
-            table: {
-              widths: ["50%", "50%"],
-              body: [
-                [
-                  {
-                    text: "CUSTOMER SIGNATURE",
-                    alignment: "left",
-                    bold: true,
-                    // border: [true, true, true, false],
-                    // decoration: "overline",
-                    margin: [5, 40, 0, 0],
-                    border: [true, false, true, false],
-                  },
-                  {
-                    text: "AUTHORISE SIGNATURE",
-                    alignment: "right",
-                    bold: true,
-                    // decoration: "overline",
-                    // border: [true, true, true, false],
-                    margin: [0, 40, 10, -2],
-                    border: [false, false, true, false],
-                  },
-                ],
-              ],
-            },
-          },
-          {
-            // margin: [0, 5],
-            table: {
-              widths: ["50%", "50%"],
-              body: [
-                [
-                  {
-                    text: "https://facebook.com/parceltradeinternational",
-                    alignment: "left",
-                    link: "https://facebook.com/parceltradeinternational",
-                    bold: true,
-                    fontSize: 11,
-                  },
-                  {
-                    text: "YOUR GETWAY TO CHINA",
-                    bold: true,
-                    fontSize: 11,
-                    alignment: "right",
-                  },
-                ],
-              ],
-            },
-          },
+          // {
+          //   // margin: [0, 35, 0, 0],
+          //   // border:[true, true, true, true],
+          //   table: {
+          //     widths: ["50%", "50%"],
+          //     body: [
+          //       [
+          //         {
+          //           text: "CUSTOMER SIGNATURE",
+          //           alignment: "left",
+          //           bold: true,
+          //           // border: [true, true, true, false],
+          //           // decoration: "overline",
+          //           margin: [5, 40, 0, 0],
+          //           border: [true, false, true, false],
+          //         },
+          //         {
+          //           text: "AUTHORISE SIGNATURE",
+          //           alignment: "right",
+          //           bold: true,
+          //           // decoration: "overline",
+          //           // border: [true, true, true, false],
+          //           margin: [0, 40, 10, -2],
+          //           border: [false, false, true, false],
+          //         },
+          //       ],
+          //     ],
+          //   },
+          // },
+          InvoiceFooterAuthor(),
+          // {
+          //   // margin: [0, 5],
+          //   table: {
+          //     widths: ["50%", "50%"],
+          //     body: [
+          //       [
+          //         {
+          //           text: "https://facebook.com/parceltradeinternational",
+          //           alignment: "left",
+          //           link: "https://facebook.com/parceltradeinternational",
+          //           bold: true,
+          //           fontSize: 10,
+          //         },
+          //         {
+          //           text: "YOUR GETWAY TO CHINA",
+          //           bold: true,
+          //           fontSize: 10,
+          //           alignment: "right",
+          //         },
+          //       ],
+          //     ],
+          //   },
+          // },
         ],
         border: [true, true, true, true],
       },
     ],
+
+    background: function (currentPage, pageSize) {
+      if (info.watermark) {
+        return [
+          {
+            image: paidLogo,
+            width: 250,
+            // height: 100,
+            absolutePosition: {
+              x: (pageSize.width - 250) / 2,
+              y: (pageSize.height - 250) / 2,
+            },
+            opacity: 0.3,
+          },
+        ];
+      } else {
+        return [
+          {
+            image: parcelLogo,
+            width: 350,
+            // height: 100,
+            absolutePosition: {
+              x: (pageSize.width - 350) / 2,
+              y: (pageSize.height - 300) / 2,
+            },
+            opacity: 0.08,
+          },
+        ];
+      }
+    },
     pageSize: "A4",
 
     defaultStyle: {
@@ -602,31 +512,11 @@ export const generatePDF = (info) => {
       defaultBorder: true, // Apply the default border to all content elements
     },
     styles: {
-      headerStrip: {
-        fontSize: 8,
-      },
-      summartTable: {
-        // margin: [0, 10, 0, 0],
-        fontSize: 10,
-        alignment: "center",
-      },
-      tableHeader: {
-        bold: true,
-        fontSize: 13,
-        color: "#FFFFFF",
-        fillColor: "#555555",
-        alignment: "center",
-      },
-      tableFooter: {
-        bold: true,
-        fontSize: 12,
-        color: "#FFFFFF",
-        fillColor: "#555555",
-        alignment: "center",
-      },
-      nameStyle: {
-        color: "red",
-      },
+      headerStrip: stylesVals.headerStrip,
+      summartTable: stylesVals.summartTable,
+      tableHeader: stylesVals.tableHeader,
+      tableFooter: stylesVals.tableFooter,
+      nameStyle: stylesVals.nameStyle,
     },
   };
 
@@ -750,3 +640,39 @@ export function convertBengaliToEnglishNumber(bengaliNumber) {
 
   return englishNumber;
 }
+
+export const stylesVals = {
+  headerStrip: {
+    fontSize: 8,
+  },
+  summartTable: {
+    // margin: [0, 10, 0, 0],
+    fontSize: 8,
+    alignment: "center",
+  },
+  tableHeader: {
+    bold: true,
+    fontSize: 10,
+    color: "#FFFFFF",
+    fillColor: "#555555",
+    alignment: "center",
+  },
+  tableFooter: {
+    bold: true,
+    fontSize: 10,
+    color: "#FFFFFF",
+    fillColor: "#555555",
+    alignment: "center",
+  },
+  nameStyle: {
+    color: "red",
+  },
+};
+
+export const convertTotalAmount = (val) => {
+  return convertBengaliToEnglishNumber(
+    val.toLocaleString("bn", {
+      minimumFractionDigits: 0,
+    })
+  );
+};

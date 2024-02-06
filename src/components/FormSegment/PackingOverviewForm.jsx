@@ -2,23 +2,28 @@
 import Section from "@/common/Section";
 import { formartDate } from "@/common/formartDate";
 import Image from "next/image";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import DataField from "../Shared/DataField";
 import InputField from "../Shared/InputField";
 import SelectField from "../Shared/SelectField";
 import AsyncCreatableSelect from "react-select/async-creatable";
 import axios from "axios";
+import Modal from "../Module/Modal";
+import CustomerForm from "./CustomerForm";
 
 const PackingOverviewForm = (props) => {
   const { editMode, setCustomerInfo, customerInfo } = props;
+  const [newCustomer, setNewCustomer] = useState({});
+  const [isOpen, setIsOpen] = useState(false);
+
   const {
     handleSubmit,
     register,
     watch,
     getValues,
     formState: { errors, isValid },
-  } = useForm({ mode: "all", defaultValues: { ...customerInfo } });
+  } = useForm({ mode: "all", defaultValues: { ...customerInfo, ...newCustomer } });
 
   const onSubmit = (data) => {
     // setCustomerInfo(data);
@@ -51,7 +56,6 @@ const PackingOverviewForm = (props) => {
         ...watch(),
         ...customerInfo,
         customerName: newValue?.value?.toUpperCase(),
-        isNew: true,
       });
     } else {
       // Existing option(s) selected
@@ -60,21 +64,32 @@ const PackingOverviewForm = (props) => {
         ...watch(),
         ...customerInfo,
         customerName: value?.customerName?.toUpperCase(),
-        phone: value?.customerPhone,
+        customerPhone: value?.customerPhone,
         shipmentBy: value?.shipmentBy,
-        address: value?.customerAddress,
+        customerAddress: value?.customerAddress,
         remarks: value?.remarks,
+        customerId: value?.customerId,
       });
     }
   };
+
   const customCreateLabel = (inputValue) => (
-    // <p className=" bg-primaryBg text-white cursor-pointer">
-    //   Add New Customer: {inputValue}
-    // </p>
-    <p className="inline-flex items-center cursor-pointer px-1 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150">
+    <p
+      onClick={() => {
+        setIsOpen(true);
+        setNewCustomer({ ...newCustomer, customerName: inputValue });
+      }}
+      className="inline-flex items-center cursor-pointer px-1 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
+    >
       Add New Customer
     </p>
   );
+
+  useEffect(() => {
+    if (newCustomer) {
+      setCustomerInfo({ ...newCustomer });
+    }
+  }, [newCustomer, setCustomerInfo, isOpen]);
 
   return (
     <div>
@@ -203,19 +218,19 @@ const PackingOverviewForm = (props) => {
                     { name: "Choose a Shipment", value: "" },
                     {
                       name: "Air",
-                      value: "Air",
+                      value: "AIR",
                       isSelected:
                         customerInfo?.shipmentBy?.toLowerCase() == "air",
                     },
                     {
                       name: "Sea",
-                      value: "Sea",
+                      value: "SEA",
                       isSelected:
                         customerInfo?.shipmentBy?.toLowerCase() == "sea",
                     },
                     {
                       name: "Road",
-                      value: "Road",
+                      value: "ROAD",
                       isSelected:
                         customerInfo?.shipmentBy?.toLowerCase() == "road",
                     },
@@ -318,6 +333,24 @@ const PackingOverviewForm = (props) => {
           </div>
         </form>
       </div>
+
+      <Modal
+        isOpen={isOpen}
+        showXButton
+        onClose={() => setIsOpen(false)}
+        className={"max-w-5xl"}
+      >
+        <Modal.Title>{"Add New Customer"}</Modal.Title>
+        <Modal.Content>
+          <div>
+            <CustomerForm
+              setIsOpen={setIsOpen}
+              setNewCustomer={setNewCustomer}
+              newCustomer={newCustomer}
+            />
+          </div>
+        </Modal.Content>
+      </Modal>
     </div>
   );
 };
