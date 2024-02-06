@@ -80,12 +80,15 @@ export const generatePDF = (info) => {
       Number(netTotalAmount(info?.data)) +
       Number(info?.due || 0) -
       Number(info?.paid || 0);
+    console.log("value", value);
     return value;
   };
 
   const totalDueSection =
     Math.sign(totalDueBill()) === -1
       ? `CONGRATULATIONS! ADVANCE${convertTotalAmount(totalDueBill())} TAKA`
+      : totalDueBill() == 0
+      ? "CONGRATULATIONS!"
       : `TOTAL DUE BILL- ${convertTotalAmount(totalDueBill())}`;
 
   let docDefinition = {
@@ -339,7 +342,7 @@ export const generatePDF = (info) => {
                     margin: [40, 10, 0, 0],
                     fontSize: 15,
                     bold: true,
-                    color: Math.sign(totalDueBill()) === -1 ? "green" : "red",
+                    color: Math.sign(totalDueBill()) === -1 || totalDueBill() == 0 ? "green" : "red",
                     border: [true, true, true, true],
                   },
                   {
@@ -404,7 +407,7 @@ export const generatePDF = (info) => {
                   "TAKA IN WORDS:",
 
                   {
-                    text: `${convertNumberToWords(
+                    text: totalDueBill() == 0 ? "" : `${convertNumberToWords(
                       Math.sign(totalDueBill()) === -1
                         ? Math.abs(totalDueBill())
                         : totalDueBill()
