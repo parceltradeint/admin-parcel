@@ -1,4 +1,5 @@
 import React from "react";
+import { convertTotalAmount } from "../PDF/InvoiceDef";
 
 const ShipmentBillsTopSection = ({ dataInfo, shipmentNo }) => {
   return (
@@ -14,7 +15,7 @@ const ShipmentBillsTopSection = ({ dataInfo, shipmentNo }) => {
       {dataInfo?.aggregationResult?.totalAmount && (
         <p className="text-2xl text-black text-center">
           Total Amount-{" "}
-          {Number(dataInfo?.aggregationResult?.totalAmount).toFixed(2) || ""}
+          {convertTotalAmount(Number(dataInfo?.aggregationResult?.totalAmount), 2) || ""}
         </p>
       )}
     </div>

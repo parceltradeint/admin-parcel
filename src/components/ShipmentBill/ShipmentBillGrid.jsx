@@ -2,6 +2,7 @@ import { sumBy } from "lodash";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
+import { convertTotalAmount } from "../PDF/InvoiceDef";
 
 const ShipmentBillGrid = (props) => {
   const { data, type } = props;
@@ -79,7 +80,7 @@ const ShipmentBillGrid = (props) => {
                           {Number(item?.totalKg).toFixed(2)}
                         </td>
                         <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-black">
-                          {calculationDueBill(item)}
+                          {convertTotalAmount(Number(calculationDueBill(item)))}
                         </td>
 
                         <td className="px-6 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium">

@@ -15,6 +15,7 @@ import { errorAlert, successAlert } from "@/common/SweetAlert";
 import { generateExportBills } from "../PDF/generateExportBills";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
+import NumberFormat from "react-number-format";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const ShipmentBillCal = (props) => {
@@ -60,7 +61,19 @@ const ShipmentBillCal = (props) => {
 
     return (
       <>
-        <input
+        <NumberFormat
+          thousandSeparator={true}
+          onValueChange={(values, sourceInfo) => {
+            const { formattedValue, value } = values;
+            // handleCellRenderChange(row, value);
+            handleCellRenderChange(cellInfo, value)
+          }}
+          className={`uppercase text-center block w-full px-4 py-1  text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 `}
+          value={cellValue}
+          // decimalScale={0}
+          // fixedDecimalScale={2}
+        />
+        {/* <input
           className={`uppercase text-center block w-full px-4 py-1  text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 `}
           name="input"
           step={"any"}
@@ -74,7 +87,7 @@ const ShipmentBillCal = (props) => {
           //       ? Number(calculationDueBill(data[cellInfo.index]))
           //       : cellInfo || 0
           //   }
-        />
+        /> */}
       </>
     );
   };
@@ -158,9 +171,9 @@ const ShipmentBillCal = (props) => {
       ...value,
       // due: value.balance || 0,
       paid: value.credit || 0,
-      watermark: Number(value.balance) <= 0
+      watermark: Number(value.balance) <= 0,
     };
-    generatePDF(newInfo)
+    generatePDF(newInfo);
     // generateExportBills(data);
   };
 

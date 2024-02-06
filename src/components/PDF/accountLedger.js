@@ -135,18 +135,20 @@ export const generateLedgerPDF = (info) => {
               { text: "TOTAL", style: "tableFooter" },
               { text: "", style: "tableFooter" },
               {
-                text: `${sumBy(info?.data, (val) =>
-                  Number(val?.totalAmount || 0)
+                text: `${convertTotalAmount(
+                  sumBy(info?.data, (val) => Number(val?.totalAmount || 0))
                 )}`,
                 style: "tableFooter",
               },
               {
-                text: `${sumBy(info?.data, (val) => Number(val?.credit || 0))}`,
+                text: `${convertTotalAmount(
+                  sumBy(info?.data, (val) => Number(val?.credit || 0))
+                )}`,
                 style: "tableFooter",
               },
               {
-                text: `${sumBy(info?.data, (val) =>
-                  Number(val?.balance || 0)
+                text: `${convertTotalAmount(
+                  sumBy(info?.data, (val) => Number(val?.balance || 0))
                 )}`,
                 style: "tableFooter",
               },

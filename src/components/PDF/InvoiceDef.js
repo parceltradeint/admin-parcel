@@ -672,10 +672,10 @@ export const stylesVals = {
   },
 };
 
-export const convertTotalAmount = (val) => {
+export const convertTotalAmount = (val, toFixed) => {
   return convertBengaliToEnglishNumber(
     val.toLocaleString("bn", {
-      minimumFractionDigits: 0,
+      minimumFractionDigits: toFixed || 0,
     })
   );
 };

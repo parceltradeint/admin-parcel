@@ -18,6 +18,7 @@ import { generateLedgerPDF } from "../PDF/accountLedger";
 
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
+import NumberFormat from "react-number-format";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const CustomerAllDueBills = (props) => {
@@ -82,20 +83,17 @@ const CustomerAllDueBills = (props) => {
 
     return (
       <>
-        <input
+        <NumberFormat
+          thousandSeparator={true}
+          onValueChange={(values, sourceInfo) => {
+            const { formattedValue, value } = values;
+            // handleCellRenderChange(row, value);
+            handleCellRenderChange(cellInfo, value);
+          }}
           className={`uppercase text-center block w-full px-4 py-1  text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 `}
-          name="input"
-          step={"any"}
-          onKeyDown={handleKeyDown}
-          onChange={(e) => handleCellRenderChange(cellInfo, e.target.value)}
           value={cellValue}
-          //   value={convertTotalAmount(Number(cellValue), 0)}
-          type="number"
-          //   defaultValue={
-          //     cellInfo.column.id === "debit"
-          //       ? Number(calculationDueBill(data[cellInfo.index]))
-          //       : cellInfo || 0
-          //   }
+          // decimalScale={0}
+          // fixedDecimalScale={2}
         />
       </>
     );
@@ -188,7 +186,7 @@ const CustomerAllDueBills = (props) => {
       shipmentNo: newData.map((item) => item.shipmentNo),
       data: newData,
     };
-    generateLedgerPDF(newInfo)
+    generateLedgerPDF(newInfo);
   };
   // if (loading) {
   //   return <PlaceHolderLoading loading={true} />;
@@ -287,7 +285,7 @@ const CustomerAllDueBills = (props) => {
               {
                 Header: "Balance",
                 accessor: "balance",
-                // Cell: renderText,
+                Cell: ({row}) => <p>{convertTotalAmount(Number(row?._original?.balance))}</p>,
                 Footer: ({ row }) => (
                   <p className="text-center">
                     {convertTotalAmount(
@@ -352,7 +350,7 @@ const CustomerAllDueBills = (props) => {
             <button
               type="button"
               className=" text-white bg-indigo-600 hover:bg-indigo-500 font-bold py-2 px-4 rounded uppercase"
-                onClick={downloadPDF}
+              onClick={downloadPDF}
             >
               Print Bills
             </button>
