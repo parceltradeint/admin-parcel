@@ -92,7 +92,7 @@ const CustomersBillCal = (props) => {
   }, {});
 
   // Convert the object back to an array
-  const groupedArray = Object.values(groupedByCustomerId);
+  const groupedArray = Object.values(groupedByCustomerId).sort((a, b) => b.totalAmount - a.totalAmount);
 
   const handleExportBills = () => {
     if (window.confirm("Are you sure you want to export bills?")) {

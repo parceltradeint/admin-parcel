@@ -352,7 +352,7 @@ const CustomerAllDueBills = (props) => {
               className=" text-white bg-indigo-600 hover:bg-indigo-500 font-bold py-2 px-4 rounded uppercase"
               onClick={downloadPDF}
             >
-              Print Bills
+              Print LEDGER
             </button>
             <button
               type="button"

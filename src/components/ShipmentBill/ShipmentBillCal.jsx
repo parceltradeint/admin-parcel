@@ -167,6 +167,7 @@ const ShipmentBillCal = (props) => {
         shipmentBy: data[0]["shipmentBy"] || "",
         reporting: data[0]["reporting"] || "",
         shipmentNo: data[0]["shipmentNo"] || "",
+        deliveryDate: data[0]["deliveryDate"] || "",
       });
     }
   };
@@ -195,10 +196,16 @@ const ShipmentBillCal = (props) => {
         data={data}
         columns={[
           {
+            Header: "SL",
+            accessor: "sl",
+            Cell: (row) => <p>{ row.viewIndex + 1}</p>,
+            Footer: () => <p className="text-center">Total-</p>,
+            width: 50,
+          },
+          {
             Header: "Shiping Mark",
             accessor: "customerName",
             Cell: renderText,
-            Footer: () => <p className="text-center">Total-</p>,
           },
           {
             Header: "Shipment By",
@@ -224,21 +231,6 @@ const ShipmentBillCal = (props) => {
             Header: "Total Amount",
             accessor: "totalAmount",
             Cell: ({ row }) => (
-              <p>{convertTotalAmount(Number(row?._original?.totalAmount))}</p>
-            ),
-            Footer: ({ row }) => (
-              <p className="text-center">
-                {convertTotalAmount(
-                  sumBy(data, (item) => Number(item.totalAmount))
-                )}
-              </p>
-            ),
-          },
-          {
-            Header: "Debit",
-            accessor: "debit",
-            //   Cell: renderEditable,
-            Cell: ({ row }) => (
               <p className="text-center">
                 {convertTotalAmount(Number(calculationDueBill(row?._original)))}
               </p>
@@ -247,6 +239,22 @@ const ShipmentBillCal = (props) => {
               <p className="text-center">
                 {convertTotalAmount(
                   sumBy(data, (item) => Number(calculationDueBill(item)))
+                )}
+              </p>
+            ),
+            
+          },
+          {
+            Header: "Debit",
+            accessor: "debit",
+            //   Cell: renderEditable,
+            Cell: ({ row }) => (
+              <p className="text-center">{convertTotalAmount(Number(row?._original?.totalAmount))}</p>
+            ),
+            Footer: ({ row }) => (
+              <p className="text-center">
+                {convertTotalAmount(
+                  sumBy(data, (item) => Number(item.totalAmount))
                 )}
               </p>
             ),
@@ -279,7 +287,7 @@ const ShipmentBillCal = (props) => {
             Header: "Balance",
             accessor: "balance",
             Cell: ({ row }) => (
-              <p>{convertTotalAmount(Number(row?._original?.balance))}</p>
+              <p className="text-center">{convertTotalAmount(Number(row?._original?.balance))}</p>
             ),
             Footer: ({ row }) => (
               <p className="text-center">

@@ -40,6 +40,7 @@ export const generateExportBills = (data) => {
         {
           text: `${item?.customerName}`,
           fontSize: 9,
+          alignment: "left",
           // color: `${isBrand ? "red" : "black"}`,
         },
         // {
