@@ -16,6 +16,7 @@ import { generateExportBills } from "../PDF/generateExportBills";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import NumberFormat from "react-number-format";
+import { generateShipmentBills } from "../PDF/generateShipmentBills";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const ShipmentBillCal = (props) => {
@@ -66,7 +67,7 @@ const ShipmentBillCal = (props) => {
           onValueChange={(values, sourceInfo) => {
             const { formattedValue, value } = values;
             // handleCellRenderChange(row, value);
-            handleCellRenderChange(cellInfo, value)
+            handleCellRenderChange(cellInfo, value);
           }}
           className={`uppercase text-center block w-full px-4 py-1  text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 `}
           value={cellValue}
@@ -162,7 +163,11 @@ const ShipmentBillCal = (props) => {
 
   const handleExportBills = () => {
     if (window.confirm("Are you sure you want to export bills?")) {
-      generateExportBills(data);
+      generateShipmentBills(data, {
+        shipmentBy: data[0]["shipmentBy"] || "",
+        reporting: data[0]["reporting"] || "",
+        shipmentNo: data[0]["shipmentNo"] || "",
+      });
     }
   };
 

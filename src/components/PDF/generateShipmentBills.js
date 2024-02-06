@@ -5,7 +5,7 @@ import { formartDate } from "@/common/formartDate";
 import { cre } from "pdfmake";
 import HeaderOfPDF from "./InvoiceHeader";
 import { stylesVals } from "./InvoiceDef";
-export const generateExportBills = (data) => {
+export const generateShipmentBills = (data, info) => {
   let renderData = [];
 
   const calculationDueBill = (item) => {
@@ -38,21 +38,12 @@ export const generateExportBills = (data) => {
           // color: `${isBrand ? "red" : "black"}`,
         },
         {
-          text: `${item?.shipmentBy || ""}`,
-          fontSize: 9,
-          alignment: "left",
-        },
-        {
           text: `${Number(item?.totalKg).toFixed(2) || ""}`,
           fontSize: 9,
           alignment: "left",
         },
         {
-          text: `${item?.shipmentNo || ""}`,
-          fontSize: 9,
-        },
-        {
-          text: `${convertTotalAmount(item?.totalAmount, 2) || ""}`,
+          text: `${convertTotalAmount(item?.totalAmount) || ""}`,
           fontSize: 9,
         },
         {
@@ -127,6 +118,42 @@ export const generateExportBills = (data) => {
         layout: "noBorders",
       },
 
+      {
+        table: {
+          widths: ["*"],
+          margin: [0, 0, 0, 10],
+          body: [
+            [
+              {
+                stack: [
+                  {
+                    text: `SHIPMENT NO.- ${info.shipmentNo}\n`,
+                    fontSize: 12,
+                    bold: true,
+                    border: [false, true, false, true],
+                  },
+                  {
+                    text: `SHIPMENT BY: ${info?.shipmentBy}\n`,
+                    fontSize: 12,
+                    margin: [0, 5, 0, 0],
+                  },
+                  {
+                    text: `REPORTING: ${info?.reporting || "CHINA"}\n`,
+                    fontSize: 12,
+                    margin: [0, 5, 0, 0],
+                  },
+                ],
+                // fillColor: "#555555",
+                // color: "#FFFFFF",
+                bold: true,
+                alignment: "center",
+                margin: [0, 10, 0, 0],
+              },
+            ],
+          ],
+        },
+        layout: "borders",
+      },
       // {
       //   table: {
       //     widths: ["*"],
@@ -170,7 +197,7 @@ export const generateExportBills = (data) => {
           headerRows: 1,
           dontBreakRows: true,
           // keepWithHeaderRows: 1,
-          widths: ["12%", "5%", "9%", "9%", "13%", "13%", "13%", "13%", "13%"],
+          widths: ["16%", "9%", "15%", "15%", "15%", "15%", "15%"],
           body: [
             [
               {
@@ -178,15 +205,7 @@ export const generateExportBills = (data) => {
                 style: "tableHeader",
               },
               {
-                text: "BY",
-                style: "tableHeader",
-              },
-              {
                 text: "KG",
-                style: "tableHeader",
-              },
-              {
-                text: "SHIP NO",
                 style: "tableHeader",
               },
               {
@@ -214,13 +233,8 @@ export const generateExportBills = (data) => {
             ...renderData,
             [
               { text: "TOTAL", style: "tableFooter" },
-              { text: "", style: "tableFooter" },
               {
                 text: `${sumBy(data, (val) => Number(val?.totalKg || 0)).toFixed(2)}`,
-                style: "tableFooter",
-              },
-              {
-                text: ``,
                 style: "tableFooter",
               },
               {
@@ -296,9 +310,9 @@ export const generateExportBills = (data) => {
       defaultBorder: true, // Apply the default border to all content elements
     },
     styles: {
-      headerStrip:  stylesVals.tableFooter,
-      summartTable:  stylesVals.summartTable,
-      tableHeader:  stylesVals.tableHeader,
+      headerStrip: stylesVals.tableFooter,
+      summartTable: stylesVals.summartTable,
+      tableHeader: stylesVals.tableHeader,
       tableFooter: stylesVals.tableFooter,
       nameStyle: {
         color: "red",
