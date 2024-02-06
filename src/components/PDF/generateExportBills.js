@@ -272,20 +272,20 @@ export const generateExportBills = (data) => {
         },
       },
     ],
-    background: function (currentPage, pageSize) {
-      return [
-        {
-          image: parcelLogo,
-          width: 350,
-          // height: 100,
-          absolutePosition: {
-            x: (pageSize.width - 350) / 2,
-            y: (pageSize.height - 300) / 2,
-          },
-          opacity: 0.08,
-        },
-      ];
-    },
+    // background: function (currentPage, pageSize) {
+    //   return [
+    //     {
+    //       image: parcelLogo,
+    //       width: 350,
+    //       // height: 100,
+    //       absolutePosition: {
+    //         x: (pageSize.width - 350) / 2,
+    //         y: (pageSize.height - 300) / 2,
+    //       },
+    //       opacity: 0.08,
+    //     },
+    //   ];
+    // },
     pageSize: "A4",
 
     defaultStyle: {
