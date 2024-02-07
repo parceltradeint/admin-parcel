@@ -111,9 +111,9 @@ const BillFormSegment = (props) => {
       totalCtn: data?.filter((item) => item?.ctn?.length > 1)?.length,
       totalAmount: totalAmount,
       totalDueBill,
-      balance: totalAmount,
+      balance: totalAmount - Number(customerInfo?.credit || 0),
     };
-    // console.log("new", newData);
+
     // if (
     //   oldAditionalInfo?.customerId &&
     //   oldAditionalInfo?.balance &&
