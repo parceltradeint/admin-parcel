@@ -190,7 +190,7 @@ const ShipmentBillCal = (props) => {
         className=" bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mb-2 mx-auto flex justify-center uppercase"
         onClick={handleExportBills}
       >
-        Export Bills
+        Export Bill
       </button>
       <ReactTable
         data={data}
@@ -208,12 +208,12 @@ const ShipmentBillCal = (props) => {
             Cell: renderText,
           },
           {
-            Header: "Shipment By",
+            Header: "By",
             accessor: "shipmentBy",
             Cell: renderText,
           },
           {
-            Header: "Total Kg",
+            Header: "Kg",
             accessor: "totalKg",
             Cell: renderText,
             Footer: () => (
@@ -223,12 +223,12 @@ const ShipmentBillCal = (props) => {
             ),
           },
           {
-            Header: "Shipment No",
+            Header: "S. No.",
             accessor: "shipmentNo",
             Cell: renderText,
           },
           {
-            Header: "Total Amount",
+            Header: "Total Due",
             accessor: "totalAmount",
             Cell: ({ row }) => (
               <p className="text-center">

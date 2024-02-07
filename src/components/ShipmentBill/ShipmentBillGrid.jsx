@@ -31,7 +31,7 @@ const ShipmentBillGrid = (props) => {
                 <thead>
                   <tr>
                     <th className="flex cursor-pointer px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider">
-                      <span>Invoice Number#</span>
+                      <span>SL</span>
                     </th>
 
                     <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-black uppercase tracking-wider">
@@ -60,7 +60,7 @@ const ShipmentBillGrid = (props) => {
                     data?.map((item, index) => (
                       <tr key={index}>
                         <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
-                          {item?.invoiceNumber}
+                          {index + 1}
                         </td>
                         <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-black">
                           {item?.customerName}

@@ -16,7 +16,7 @@ const Breadcrumb = ({ items = [], type }) => {
 
   return (
     <nav
-      className="flex justify-between px-5 py-3  border border-gray-200 rounded-lg bg-gray-50 text-green-600 text-xl uppercase"
+      className="flex justify-between px-5 py-3  border border-gray-200 rounded-lg bg-gray-50   text-primaryBg text-xl uppercase"
       aria-label="Breadcrumb"
     >
       <ol className=" flex flex-wrap space-x-1 md:space-x-3">

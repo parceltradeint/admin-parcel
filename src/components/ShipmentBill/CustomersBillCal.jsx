@@ -111,7 +111,7 @@ const CustomersBillCal = (props) => {
         className=" bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mb-2 mx-auto flex justify-center uppercase"
         onClick={handleExportBills}
       >
-        Export Due Bills
+        Export Due Bill
       </button>
       <ReactTable
         data={groupedArray}
@@ -119,7 +119,8 @@ const CustomersBillCal = (props) => {
           {
             Header: "SL",
             accessor: "customerName",
-            Cell: (row ) => <p>{ row?.viewIndex + 1}</p>,
+            Cell: (row) => <p>{row?.viewIndex + 1}</p>,
+            width: 60,
             // Footer: () => <p className="text-center">Total-</p>,
           },
           {
@@ -129,7 +130,7 @@ const CustomersBillCal = (props) => {
             // Footer: () => <p className="text-center">Total-</p>,
           },
           {
-            Header: "Shipment By",
+            Header: "By",
             accessor: "shipmentBy",
             Cell: ({ row }) => (
               <div className=" relative">
@@ -153,7 +154,7 @@ const CustomersBillCal = (props) => {
             ),
           },
           {
-            Header: "Total Kg",
+            Header: "Kg",
             accessor: "totalKg",
             Cell: ({ row }) => (
               <p>{Number(row._original.totalKg).toFixed(2)}</p>
@@ -165,7 +166,7 @@ const CustomersBillCal = (props) => {
             ),
           },
           {
-            Header: "Shipment No",
+            Header: "S. No",
             accessor: "shipmentNo",
             Cell: ({ row }) => (
               <div className=" relative">

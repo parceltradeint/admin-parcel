@@ -75,7 +75,7 @@ const Finance = () => {
   const tabItems = [
     {
       id: 1,
-      label: "Customers DUE",
+      label: "Customer DUE",
       value: <CustomersBillCal type={"outbound"} />,
     },
     {
@@ -91,7 +91,7 @@ const Finance = () => {
           <div className=" mx-auto py-4 px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 space-y-2 md:space-y-0 justify-between items-center">
             <div className={"ml-4 "}>
               <h1 className="text-lg leading-6 font-semibold text-gray-900">
-                All Finances List
+                Total Due Bill
               </h1>
             </div>
           </div>

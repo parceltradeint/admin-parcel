@@ -29,6 +29,7 @@ export default function HeaderOfPDF() {
                     fontSize: 25,
                     bold: true,
                     margin: [0, 0, 0, 0],
+                    font
                   },
                   {
                     text: "H-2553, Sayednagor, Vatara, Gulshan-2, Dhaka-1212.\n",

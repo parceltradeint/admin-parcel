@@ -404,7 +404,7 @@ export const generatePDF = (info) => {
               widths: ["18%", "82%"],
               body: [
                 [
-                  "TAKA IN WORDS:",
+                  "TAKA IN WORD:",
 
                   {
                     text: totalDueBill() == 0 ? "" : `${convertNumberToWords(

@@ -129,7 +129,7 @@ const OutBound = () => {
   const tabItems = [
     {
       id: 1,
-      label: "Shipements",
+      label: "Shipement",
       value: <ShipmentBillGrid data={data} type={"outbound"} />,
     },
     {

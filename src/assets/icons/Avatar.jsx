@@ -1,12 +1,12 @@
 import React from "react";
 
-const SVGComponent = ({height}) => (
+const SVGComponent = ({height, width}) => (
   <svg
     id="457bf273-24a3-4fd8-a857-e9b918267d6a"
     data-name="Layer 1"
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"
-    width="96"
+    width={width || "96"}
     height={height || "96"}
     viewBox="0 0 698 698"
   >

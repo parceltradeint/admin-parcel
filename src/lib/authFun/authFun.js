@@ -1,3 +1,4 @@
+import { fbAuth } from "@/AuthenticApp/Config/firebase-config";
 import "firebase/auth";
 import {
   getAuth,
@@ -11,6 +12,8 @@ import {
   updatePassword,
   signInWithCustomToken,
   GoogleAuthProvider,
+  updateProfile,
+  updateCurrentUser,
 } from "firebase/auth";
 import Router from "next/router";
 import Swal from "sweetalert2";
@@ -61,4 +64,21 @@ export const signOut = async (uid, setUser) => {
     // throw err;
     errorAlert(err?.message);
   }
+};
+
+export const changePassword = async (currentPassword, newPassword) => {};
+
+export const updateUser = async (updateData) => {
+  const auth = getAuth()
+  await updateProfile(auth.currentUser, { photoURL: null})
+    .then((res) => {
+      console.log("result: ", res);
+      return res;
+    })
+    .catch((error) => {
+      console.log("error: ", error);
+      return error;
+      // An error occurred
+      // ...
+    });
 };

@@ -199,30 +199,36 @@ const CustomerAllDueBills = (props) => {
       onClose={() => setShowModal(false)}
       className={"w-auto"}
     >
-      <Modal.Title>{"View Due Details"}</Modal.Title>
+      <Modal.Title>{"View Due Detail"}</Modal.Title>
       <Modal.Content>
         <div>
           <ReactTable
             data={data}
             columns={[
+              // {
+              //   Header: "User ID",
+              //   accessor: "customerId",
+              //   Cell: renderText,
+              //   Footer: () => <p className="text-center">Total-</p>,
+              // },
               {
-                Header: "User ID",
-                accessor: "customerId",
+                Header: "DATE",
+                accessor: "deliveryDate",
                 Cell: renderText,
                 Footer: () => <p className="text-center">Total-</p>,
               },
               {
-                Header: "Shiping Mark",
+                Header: "S. Mark",
                 accessor: "customerName",
                 Cell: renderText,
               },
               {
-                Header: "Shipment By",
+                Header: "By",
                 accessor: "shipmentBy",
                 Cell: renderText,
               },
               {
-                Header: "Total Kg",
+                Header: "Kg",
                 accessor: "totalKg",
                 Cell: renderText,
                 Footer: () => (
@@ -232,7 +238,7 @@ const CustomerAllDueBills = (props) => {
                 ),
               },
               {
-                Header: "Shipment No",
+                Header: "No",
                 accessor: "shipmentNo",
                 Cell: renderText,
               },
