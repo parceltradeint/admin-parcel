@@ -38,7 +38,7 @@ function Layout(props) {
                     className="fixed inset-0"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    <div className="absolute inset-0 bg-gray-600 opacity-75" />
+                    <div className="absolute inset-0 bg-gray-800 opacity-75" />
                   </div>
                 )}
               </Transition.Child>
@@ -54,7 +54,7 @@ function Layout(props) {
                 {(ref) => (
                   <div
                     ref={ref}
-                    className="relative flex-1 flex flex-col max-w-[15rem]"
+                    className="relative flex-1 flex flex-col max-w-[15rem] bg-white"
                   >
                     <div className="absolute top-0 right-0 -mr-14 p-1 ">
                       <button
@@ -62,7 +62,7 @@ function Layout(props) {
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
                       >
                         <svg
-                          className="h-6 w-6 text-white"
+                          className="h-6 w-6 text-black"
                           stroke="currentColor"
                           fill="none"
                           viewBox="0 0 24 24"

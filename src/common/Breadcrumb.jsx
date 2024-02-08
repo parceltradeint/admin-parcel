@@ -16,11 +16,11 @@ const Breadcrumb = ({ items = [], type }) => {
 
   return (
     <nav
-      className="flex justify-between px-5 py-3  border border-gray-200 rounded-lg bg-gray-50   text-primaryBg text-xl uppercase"
+      className="flex md:justify-between justify-center items-center md:items-start md:space-y-0 space-y-1 flex-col md:flex-row px-5 py-3  border border-gray-200 rounded-lg bg-gray-50   text-primaryBg md:text-xl uppercase"
       aria-label="Breadcrumb"
     >
-      <ol className=" flex flex-wrap space-x-1 md:space-x-3">
-        <li className="inline-flex items-center gap-2 uppercase">
+      <ol className=" flex flex-wrap md:space-x-1 md:space-x-3 self-start">
+        <li className="inline-flex items-center md:gap-2 uppercase">
           <Link
             href="/dashboard"
             className="inline-flex items-center font-medium hover:text-blue-600"
@@ -28,12 +28,12 @@ const Breadcrumb = ({ items = [], type }) => {
             <FiHome className="mx-2" />
             Home
           </Link>
-          {items.length > 0 && <FiChevronRight className="mx-1" />}
+          {items.length > 0 && <FiChevronRight className="md:mx-1" />}
         </li>
         {items.map((item, index) => {
           return (
             <li key={index}>
-              <div className="flex items-center gap-2 uppercase">
+              <div className="flex items-center md:gap-2 uppercase">
                 {item.href ? (
                   <Link
                     className="inline-flex items-center font-medium hover:text-blue-600"
@@ -42,10 +42,10 @@ const Breadcrumb = ({ items = [], type }) => {
                     {item.label}
                   </Link>
                 ) : (
-                  <span className="whitespace-nowrap">{item.label}</span>
+                  <span className="md:whitespace-nowrap">{item.label}</span>
                 )}
                 {index !== items.length - 1 && (
-                  <FiChevronRight className="mx-1" />
+                  <FiChevronRight className="md:mx-1" />
                 )}
               </div>
             </li>
@@ -53,11 +53,11 @@ const Breadcrumb = ({ items = [], type }) => {
         })}
       </ol>
       {billType && (
-        <div className={"ml-4 "}>
+        <div className={"md:ml-4"}>
           <button
             onClick={billNew}
             type="button"
-            className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
+            className=" md:px-3 px-5 py-1 border border-transparent text-sm md:leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
           >
             Add New
           </button>

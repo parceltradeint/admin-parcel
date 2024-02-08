@@ -107,8 +107,8 @@ const OverViewForm = (props) => {
           <div className="w-[20%]">
             <Image src={"/parcel.png"} width={80} height={80} alt="parcel" />
           </div>
-          <div className="w-[60%]">
-            <p className="md:text-5xl text-black ml-[20%]">
+          <div className="w-[60%] mx-auto">
+            <p className="md:text-5xl text-black ml-[20%] text-center">
               P<span className="text-red-600">arce</span>l Trade International
             </p>
           </div>
@@ -116,7 +116,7 @@ const OverViewForm = (props) => {
             <Image src={"/24*7.png"} width={80} height={80} alt="24/7" />
           </div>
         </div>
-        <div className="flex justify-between">
+        <div className="md:flex justify-between hidden">
           <div className="w-[20%]">
             <Image src={"/wechat.png"} width={80} height={80} alt="wechat" />
           </div>
@@ -142,13 +142,14 @@ const OverViewForm = (props) => {
         <form onSubmit={handleSubmit(onSubmit)} c>
           <div className=" grid grid-cols-1 sm:grid-cols-3 gap-2 uppercase">
             <DataField
+              className={"w-full"}
               label={"Customer Name"}
               value={
                 <AsyncCreatableSelect
                   cacheOptions
                   loadOptions={getCustomers}
                   // defaultOptions
-                  className={`uppercase z-50 border-0 block lg:w-full w-auto px-1 text-gray-700 bg-white  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40`}
+                  className={`w-full uppercase z-50 border-0 block lg:w-full md:w-auto px-1 text-gray-700 bg-white  focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40`}
                   onChange={handleSelectChange}
                   formatCreateLabel={customCreateLabel}
                   placeholder={"Enter customer name"}

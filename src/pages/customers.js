@@ -129,7 +129,7 @@ const Customers = () => {
       <div className=" bg-white shadow-sm">
         <div className=" mx-auto py-4 px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 space-y-2 md:space-y-0 justify-between items-center">
           <div className={"ml-4 "}>
-            <h1 className="text-lg leading-6 font-semibold text-gray-900">
+            <h1 className="text-lg leading-6 font-semibold text-gray-900 text-center md:text-left">
               All Customer List
             </h1>
           </div>
@@ -209,7 +209,7 @@ const Customers = () => {
             </div>
           </div>
 
-          <div className={"ml-4  space-x-3"}>
+          <div className={"ml-4  space-x-3 flex justify-center"}>
             <button
               onClick={() => setIsOpen(true)}
               type="button"
@@ -231,14 +231,12 @@ const Customers = () => {
         {loading ? (
           <PlaceHolderLoading loading={true} />
         ) : (
-          <div className=" py-4 sm:px-0 w-full overflow-auto">
-            <CustomerGrid
+          <CustomerGrid
               data={data}
               setData={setData}
               setIsOpen={setIsOpen}
               setEditData={setEditData}
             />
-          </div>
         )}
       </div>
       <Modal

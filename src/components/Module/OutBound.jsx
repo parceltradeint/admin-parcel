@@ -142,7 +142,7 @@ const OutBound = () => {
   return (
     <>
       <div className=" bg-white shadow-sm">
-        <div className=" mx-auto py-4 px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 space-y-2 md:space-y-0 justify-between items-center">
+        <div className=" mx-auto py-4 px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 space-y-2 md:space-y-0 justify-between items-center place-items-center md:place-items-start">
           <div className={"ml-4 "}>
             <h1 className="text-lg leading-6 font-semibold text-gray-900 uppercase">
               All Customer Shipment Bill
@@ -196,7 +196,7 @@ const OutBound = () => {
                 </button>
               </div>
             </div>
-            <div className="flex justify-center">
+            {/* <div className="flex justify-center">
               <ReactPaginate
                 forcePage={Number(pageNumber)}
                 previousLabel={"<"}
@@ -221,7 +221,7 @@ const OutBound = () => {
                   "-ml-px relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-500 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150"
                 }
               />
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

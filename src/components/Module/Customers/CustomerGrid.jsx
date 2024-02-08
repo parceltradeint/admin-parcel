@@ -77,7 +77,7 @@ const CustomerGrid = (props) => {
           Cell: ({ row }) => <p>{formartDate(row?.created)}</p>,
         },
         {
-          Header: "Created By",
+          Header: "By",
           accessor: "createdBy",
           Cell: ({ row }) => <p>{row?.createdBy}</p>,
         },
@@ -85,30 +85,31 @@ const CustomerGrid = (props) => {
           Header: "Action",
           accessor: "##",
           Cell: ({ row }) => (
-            <div className={"text-center flex space-x-2"}>
+            <div className={"text-center flex md:space-x-2 flex-col md:flex-row space-y-1 md:space-y-0"}>
               <button
                 onClick={() => {
                   setIsOpen(true);
                   setEditData({ ...row?._original });
                 }}
                 type="button"
-                className=" bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded"
+                className=" bg-indigo-600 hover:bg-indigo-500 text-white font-bold md:py-2 py-0.5 md:px-4 px-1 rounded"
                 // onClick={() => setIsOpen(false)}
               >
                 View
               </button>
               <button
                 type="button"
-                className=" bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                className=" bg-red-600 hover:bg-red-700 text-white font-bold d:py-2 py-0.5 md:px-4 px-1 rounded"
                 onClick={() => handleDelete(row._index, row?._original)}
               >
                 Delete
               </button>
             </div>
           ),
+          // width: "100%"
         },
       ]}
-      className="-striped -highlight text-left overflow-auto w-full"
+      className="-striped -highlight text-left w-full"
       defaultPageSize={300}
       minRows={12}
       showPageJump={false}
