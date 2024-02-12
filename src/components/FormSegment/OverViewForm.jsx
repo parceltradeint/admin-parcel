@@ -43,7 +43,6 @@ const OverViewForm = (props) => {
   const getCustomers = async (inputText, callback) => {
     const response = await axios.get(`/api/customers?search=${inputText}`);
     if (response.data?.data.length > 0) {
-      console.log("response.data", response.data);
       callback(
         response.data?.data.map((item) => ({
           label: item.customerName,

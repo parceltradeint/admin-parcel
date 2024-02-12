@@ -18,8 +18,6 @@ import ReactPaginate from "react-paginate";
 const UserProfile = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useContext(UserContext);
-
-  console.log("iser", user);
   return (
     <Layout>
       <UserProfilePage/>

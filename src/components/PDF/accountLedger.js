@@ -26,7 +26,9 @@ export const generateLedgerPDF = (info) => {
           alignment: "center",
         },
         {
-          text: `${convertTotalAmount(Number(item?.credit || ""))}`,
+          text: `${
+            item?.credit ? convertTotalAmount(Number(item?.credit)) : ""
+          }`,
           fontSize: 9,
           alignment: "center",
         },
@@ -40,11 +42,15 @@ export const generateLedgerPDF = (info) => {
     renderData = [...newData];
   }
 
+  const dueOrAdvance =
+    Number(sumBy(info?.data, (item) => Number(item.totalAmount)).toFixed(2)) -
+    sumBy(info?.data, (item) => Number(item.credit));
+  console.log(Math.sign(dueOrAdvance));
   let docDefinition = {
     info: {
       title: `${info?.customerName}- ${formartDate(new Date())}`,
       author: "Parcel",
-      subject: "CUSTOMER LEDGER BILLS",
+      subject: "CUSTOMER LEDGER BILL",
     },
     content: [
       {
@@ -53,7 +59,7 @@ export const generateLedgerPDF = (info) => {
         columns: [
           {
             alignment: "left",
-            text: `CUSTOMER LEDGER BILLS`,
+            text: `CUSTOMER LEDGER BILL`,
           },
           {
             alignment: "right",
@@ -132,8 +138,9 @@ export const generateLedgerPDF = (info) => {
             //   ...foremanDataDetails,
             ...renderData,
             [
-              { text: "TOTAL", style: "tableFooter" },
               { text: "", style: "tableFooter" },
+              { text: "TOTAL", style: "tableFooter" },
+
               {
                 text: `${convertTotalAmount(
                   sumBy(info?.data, (val) => Number(val?.totalAmount || 0))
@@ -142,7 +149,7 @@ export const generateLedgerPDF = (info) => {
               },
               {
                 text: `${convertTotalAmount(
-                  sumBy(info?.data, (val) => Number(val?.credit || 0))
+                  sumBy(info?.data, (val) => Number(val?.credit0)) || ""
                 )}`,
                 style: "tableFooter",
               },
@@ -169,6 +176,31 @@ export const generateLedgerPDF = (info) => {
             return i === 0 || i === node.table.widths.length ? "black" : "gray";
           },
         },
+      },
+
+      {
+        text: [
+          {
+            text:
+              dueOrAdvance > 0
+                ? [
+                    {
+                      text:
+                        Math.sign(dueOrAdvance) === -1
+                          ? `CONGRATULATIONS! ADVANCE: ${convertTotalAmount(
+                              Math.abs(dueOrAdvance)
+                            )} TAKA`
+                          : `TOTAL DUE- ${convertTotalAmount(dueOrAdvance)} TAKA`,
+                      color: Math.sign(dueOrAdvance) === -1 ? "green" : "red",
+                    },
+                  ]
+                : "",
+          },
+        ],
+        alignment: "center",
+        fontSize: 20,
+        margin: [0, 20, 0, 0],
+        bold: true,
       },
     ],
     // background: function (currentPage, pageSize) {

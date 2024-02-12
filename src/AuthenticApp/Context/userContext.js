@@ -7,6 +7,7 @@ import { isEmpty } from "lodash";
 import { useRouter } from "next/router";
 import { fbAuth } from "../Config/firebase-config";
 import { errorAlert } from "@/common/SweetAlert";
+import axios from "axios";
 
 export const UserContext = createContext({
   user: "",
@@ -32,8 +33,10 @@ export default function UserContextComp({ children }) {
           const initials = `${displayName ? getInitials(displayName) : "NA"}`;
           const authToken = await user.getIdTokenResult();
           const token = await user?.getIdToken(true);
+          let isExitingUser = await axios.get(`/api/user?uid=${user.uid}`);
           // locationWithIp(uid);
-          setUser(user);
+          setUser({ ...user, ...isExitingUser.data });
+
           setLoadingUser(false);
         }
       } catch (error) {

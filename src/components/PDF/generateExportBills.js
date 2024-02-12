@@ -184,7 +184,7 @@ export const generateExportBills = (data) => {
                 style: "tableHeader",
               },
               {
-                text: "MARK",
+                text: "NAME",
                 style: "tableHeader",
               },
               // {

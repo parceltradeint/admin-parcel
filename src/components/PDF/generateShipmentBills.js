@@ -33,7 +33,7 @@ export const generateShipmentBills = (data, info) => {
     let newData = [...data].map((item, i) => {
       return [
         {
-          text: `${i+1}`,
+          text: `${i + 1}`,
           fontSize: 9,
           // color: `${isBrand ? "red" : "black"}`,
         },
@@ -45,16 +45,17 @@ export const generateShipmentBills = (data, info) => {
         {
           text: `${Number(item?.totalKg).toFixed(2) || ""}`,
           fontSize: 9,
-          alignment: "left",
+          alignment: "center",
+        },
+        {
+          text: `${convertTotalAmount(Number(item.totalDueBill)) || ""}`,
+          fontSize: 9,
         },
         {
           text: `${convertTotalAmount(item?.totalAmount) || ""}`,
           fontSize: 9,
         },
-        // {
-        //   text: `${convertTotalAmount(Number(calculationDueBill(item))) || ""}`,
-        //   fontSize: 9,
-        // },
+        
         {
           text: `${
             item?.credit ? convertTotalAmount(Number(item?.credit || 0)) : ""
@@ -126,43 +127,52 @@ export const generateShipmentBills = (data, info) => {
       {
         table: {
           widths: ["*"],
-          margin: [0, 0, 0, 10],
+          margin: [0, 60, 0, 60],
           body: [
             [
               {
-                stack: [
+                columns: [
                   {
-                    text: `SHIPMENT NO.- ${info.shipmentNo}\n`,
-                    fontSize: 12,
-                    bold: true,
-                    border: [false, true, false, true],
+                    stack: [
+                      {
+                        text: `SHIPMENT NO.- ${info.shipmentNo}\n`,
+                        fontSize: 12,
+                        bold: true,
+                        border: [false, true, false, true],
+                      },
+                      {
+                        text: `SHIPMENT BY: ${info?.shipmentBy}\n`,
+                        fontSize: 12,
+                        margin: [0, 0, 0, 0],
+                      },
+                    ],
                   },
                   {
-                    text: `SHIPMENT BY: ${info?.shipmentBy}\n`,
-                    fontSize: 12,
-                    margin: [0, 5, 0, 0],
-                  },
-                  {
-                    text: `REPORTING: ${info?.reporting || "CHINA"}\n`,
-                    fontSize: 12,
-                    margin: [0, 5, 0, 0],
-                  },
-                  {
-                    text: `DATE: ${info?.deliveryDate || "CHINA"}\n`,
-                    fontSize: 12,
-                    margin: [0, 5, 0, 0],
+                    stack: [
+                      {
+                        text: `REPORTING: ${info?.reporting || "CHINA"}\n`,
+                        fontSize: 12,
+                        margin: [0, 0, 0, 0],
+                      },
+                      {
+                        text: `DATE: ${info?.deliveryDate || "CHINA"}\n`,
+                        fontSize: 12,
+                        margin: [0, 0, 0, 0],
+                      },
+                    ],
                   },
                 ],
                 // fillColor: "#555555",
                 // color: "#FFFFFF",
                 bold: true,
                 alignment: "center",
-                margin: [0, 10, 0, 0],
+                margin: [0, 10, 0, 10],
               },
             ],
           ],
         },
-        layout: "borders",
+        margin: [0, 5, 0, 5],
+        // layout: "noBorders",
       },
       // {
       //   table: {
@@ -207,7 +217,7 @@ export const generateShipmentBills = (data, info) => {
           headerRows: 1,
           dontBreakRows: true,
           // keepWithHeaderRows: 1,
-          widths: ["5%","24%", "11%", "15%", "15%", "15%", "15%"],
+          widths: ["5%", "24%", "11%", "12%", "12%", "12%", "12%", "12%"],
           body: [
             [
               {
@@ -215,11 +225,15 @@ export const generateShipmentBills = (data, info) => {
                 style: "tableHeader",
               },
               {
-                text: "MARK",
+                text: "SHIPING MARK",
                 style: "tableHeader",
               },
               {
                 text: "KG",
+                style: "tableHeader",
+              },
+              {
+                text: "TOTAL DUE",
                 style: "tableHeader",
               },
               {
@@ -242,10 +256,19 @@ export const generateShipmentBills = (data, info) => {
             //   ...foremanDataDetails,
             ...renderData,
             [
-              { text: "TOTAL", style: "tableFooter" },
               { text: "", style: "tableFooter" },
+              { text: "TOTAL", style: "tableFooter" },
+
               {
-                text: `${sumBy(data, (val) => Number(val?.totalKg || 0)).toFixed(2)}`,
+                text: `${sumBy(data, (val) =>
+                  Number(val?.totalKg || 0)
+                ).toFixed(2)}`,
+                style: "tableFooter",
+              },
+              {
+                text: `${convertTotalAmount(
+                  sumBy(data, (val) => Number(val?.totalDueBill || 0))
+                )}`,
                 style: "tableFooter",
               },
               {

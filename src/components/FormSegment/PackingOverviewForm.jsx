@@ -171,9 +171,9 @@ const PackingOverviewForm = (props) => {
                   register={register}
                   required={true}
                   handleInputChange={handleInputChange}
-                  name={"phone"}
+                  name={"customerPhone"}
                   placeholder={"Enter Phone Number"}
-                  defaultValue={customerInfo?.phone}
+                  defaultValue={customerInfo?.customerPhone}
                 />
               }
             />

@@ -5,51 +5,11 @@ import { formartDate } from "@/common/formartDate";
 import { cre } from "pdfmake";
 import HeaderOfPDF from "./InvoiceHeader";
 import { stylesVals } from "./InvoiceDef";
-export const generateExportCustomers = (data) => {
-  let renderData = [];
-  if (data) {
-    let newData = [...data].map((item, i) => {
-      return [
-        {
-          text: `${i + 1}`,
-          fontSize: 9,
-          // color: `${isBrand ? "red" : "black"}`,
-        },
-        // {
-        //   text: `${item?.customerId || ""}`,
-        //   fontSize: 9,
-        //   alignment: "left",
-        // },
-        {
-          text: `${item?.customerName || ""}`,
-          fontSize: 9,
-          alignment: "left",
-        },
-        {
-          text: `${item?.customerPhone || ""}`,
-          fontSize: 9,
-        },
-        {
-          text: `${item?.customerAddress || ""}`,
-          fontSize: 9,
-        },
-        {
-          text: `${formartDate(item?.created) || ""}`,
-          fontSize: 9,
-        },
-        {
-          text: `${item?.createdBy || ""}`,
-          fontSize: 9,
-        },
-      ];
-    });
-
-    renderData = [...newData];
-  }
-
+import InvoiceFooterAuthor from "./InvoiceFooterAuthor";
+export const generateNoticePdf = (value) => {
   let docDefinition = {
     info: {
-      title: `CUSTOMER LIST- ${formartDate(new Date())}`,
+      title: `NOTICE BOARD- ${formartDate(new Date())}`,
       author: "Parcel",
       subject: "",
     },
@@ -60,7 +20,7 @@ export const generateExportCustomers = (data) => {
         columns: [
           {
             alignment: "left",
-            text: `CUSTOMER LIST`,
+            text: `NOTICE BOARD`,
           },
           {
             alignment: "right",
@@ -77,7 +37,7 @@ export const generateExportCustomers = (data) => {
           body: [
             [
               {
-                text: [{ text: `${"CUSTOMER LIST"}\n`, fontSize: 20 }],
+                text: [{ text: `${"NOTICE BOARD"}\n`, fontSize: 20 }],
                 fillColor: "#1586D5",
                 color: "#FFFFFF",
                 alignment: "center",
@@ -88,101 +48,42 @@ export const generateExportCustomers = (data) => {
         },
         layout: "noBorders",
       },
-
       {
         style: "summartTable",
         table: {
           headerRows: 1,
           dontBreakRows: true,
           // keepWithHeaderRows: 1,
-          widths: ["5%", "20%", "15%", "35%", "15%", "12%"],
+          widths: ["*"],
+          heights: ["*"],
           body: [
             [
               {
-                text: "SL",
-                style: "tableHeader",
-              },
-              // {
-              //   text: "ID",
-              //   style: "tableHeader",
-              // },
-              {
-                text: "NAME",
-                style: "tableHeader",
-              },
-              {
-                text: "PHONE",
-                style: "tableHeader",
-              },
-              {
-                text: "ADDRESS",
-                style: "tableHeader",
-              },
-              {
-                text: "CREATED",
-                style: "tableHeader",
-              },
-              {
-                text: "BY",
-                style: "tableHeader",
+                text: `${value}`,
+                fontSize: 20
               },
             ],
-            //   ...foremanDataDetails,
-            ...renderData,
-            // [
-            //   { text: "TOTAL", style: "tableFooter" },
-            //   { text: "", style: "tableFooter" },
-            //   {
-            //     text: `${sumBy(info?.data, (val) =>
-            //       Number(val?.totalAmount || 0)
-            //     )}`,
-            //     style: "tableFooter",
-            //   },
-            //   {
-            //     text: `${sumBy(info?.data, (val) => Number(val?.credit || 0))}`,
-            //     style: "tableFooter",
-            //   },
-            //   {
-            //     text: `${sumBy(info?.data, (val) =>
-            //       Number(val?.balance || 0)
-            //     )}`,
-            //     style: "tableFooter",
-            //   },
-            // ],
           ],
         },
-        layout: {
-          hLineWidth: function (i, node) {
-            return i === 0 || i === node.table.body.length ? 1 : 1;
-          },
-          vLineWidth: function (i, node) {
-            return i === 0 || i === node.table.widths.length ? 1 : 1;
-          },
-          hLineColor: function (i, node) {
-            return i === 0 || i === node.table.body.length ? "black" : "gray";
-          },
-          vLineColor: function (i, node) {
-            return i === 0 || i === node.table.widths.length ? "black" : "gray";
-          },
-        },
+        layout: "border",
+        margin: [0, 10, 0, 0]
       },
+      InvoiceFooterAuthor(),
     ],
-
-    // background: function (currentPage, pageSize) {
-    //   return [
-    //     {
-    //       image: parcelLogo,
-    //       width: 350,
-    //       // height: 100,
-    //       absolutePosition: {
-    //         x: (pageSize.width - 350) / 2,
-    //         y: (pageSize.height - 300) / 2,
-    //       },
-    //       opacity: 0.08,
-    //     },
-    //   ];
-    // },
-
+    background: function (currentPage, pageSize) {
+      return [
+        {
+          image: parcelLogo,
+          width: 350,
+          // height: 100,
+          absolutePosition: {
+            x: (pageSize.width - 350) / 2,
+            y: (pageSize.height - 300) / 2,
+          },
+          opacity: 0.08,
+        },
+      ];
+    },
     pageSize: "A4",
 
     defaultStyle: {
@@ -193,12 +94,14 @@ export const generateExportCustomers = (data) => {
       defaultBorder: true, // Apply the default border to all content elements
     },
     styles: {
-      headerStrip: stylesVals.headerStrip,
+      headerStrip: stylesVals.tableFooter,
       summartTable: stylesVals.summartTable,
       tableHeader: stylesVals.tableHeader,
       tableFooter: stylesVals.tableFooter,
-      nameStyle: stylesVals.nameStyle,
-    }
+      nameStyle: {
+        color: "red",
+      },
+    },
   };
 
   // const pdfDocGenerator = pdfMake.createPdf(docDefinition);

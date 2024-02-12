@@ -8,18 +8,24 @@ import { isEmpty, sumBy } from "lodash";
 import React, { useContext, useEffect, useState } from "react";
 import { NumericFormat } from "react-number-format";
 import { UserContext } from "@/AuthenticApp/Context/userContext";
-import PlaceHolderLoading from "@/common/PlaceHolderLoading";
+import PlaceHolderLoading, { SpingSvgIcon } from "@/common/PlaceHolderLoading";
 import Image from "next/image";
 import { Avatar } from "@/assets/icons";
 import { fileToDataUri } from "@/lib/utilis";
 import ChangePassword from "./ChangePassword";
 import { updateUser } from "@/lib/authFun/authFun";
 import Modal from "../Module/Modal";
+import DataField from "../Shared/DataField";
+import InputField from "../Shared/InputField";
+import { useForm } from "react-hook-form";
+import UserEditForm from "./UserEditForm";
+import axios from "axios";
+import { errorAlert, successAlert } from "@/common/SweetAlert";
 
 const UserProfilePage = (props) => {
   const { userId } = props;
-  const { user, loadingUser } = useContext(UserContext);
-  const [profileURL, setProfileURL] = useState("");
+  const { user, loadingUser, setUser } = useContext(UserContext);
+  const [profileURL, setProfileURL] = useState(user.photoURL);
   const [profileFile, setProfileFile] = useState("");
   const [profileImageLoading, setProfileImageLoading] = useState(false);
   const [btnTrue, setBtnTrue] = useState(false);
@@ -40,13 +46,21 @@ const UserProfilePage = (props) => {
 
   const handleUploadProfile = async () => {
     setProfileImageLoading(true);
-    await updateUser({ photoURL: profileURL })
+    await axios
+      .patch(`/api/user`, {
+        uid: user?.uid,
+        data: { ...user, photoURL: profileURL },
+      })
       .then((res) => {
-        console.log("res", res);
-        //   setProfileURL(res.photoURL);
+        successAlert("Successfully Updated");
+        setUser({ ...user, photoURL: profileURL });
       })
       .catch((err) => {
         console.log("err", err);
+        errorAlert("Something went wrong!");
+      })
+      .finally(() => {
+        setProfileImageLoading(false);
       });
     setProfileImageLoading(false);
     setBtnTrue(false);
@@ -94,10 +108,17 @@ const UserProfilePage = (props) => {
                     <button
                       type="button"
                       onClick={handleUploadProfile}
-                      disabled={!btnTrue}
+                      disabled={!btnTrue || profileImageLoading}
                       className=" bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-2 rounded mt-1 mx-auto flex justify-center uppercase"
                     >
-                      Update
+                      {profileImageLoading ? (
+                        <>
+                          <SpingSvgIcon />
+                          Updating..
+                        </>
+                      ) : (
+                        "Update"
+                      )}
                     </button>
                   )}
                 </span>
@@ -125,138 +146,34 @@ const UserProfilePage = (props) => {
                 Details and informations about user.
               </p>
             </div>
-            <div className="border-t border-gray-200">
-              <dl>
-                <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">
-                    Full name
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {user?.displayName || "Name"}
-                  </dd>
-                </div>
-                <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">Email</dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {user?.email || "Name"}
-                  </dd>
-                </div>
-                <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">Gender</dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {user?.customClaims ? user?.customClaims["gender"] : "MALE"}
-                  </dd>
-                </div>
-                <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">
-                    DATE OF BIRTH
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {user?.customClaims
-                      ? user?.customClaims["birthday"]
-                      : "1-2-33"}
-                  </dd>
-                </div>
-                <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">About</dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    To get social media testimonials like these, keep your
-                    customers engaged with your social media accounts by posting
-                    regularly yourself
-                  </dd>
-                </div>
-              </dl>
+            <div className="border-t border-gray-200 ">
+              {!isOpen && (
+                <UserEditForm
+                  user={user}
+                  setUser={setUser}
+                  setIsOpen={setIsOpen}
+                  isOpen={isOpen}
+                />
+              )}
             </div>
-
-            <button
-              type="button"
-              onClick={() => setIsOpen(true)}
-              className=" bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-2 rounded mt-1 mx-auto flex justify-center uppercase"
-            >
-              Edit Profile
-            </button>
           </div>
 
-          <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} showXButton>
+          <Modal
+            isOpen={isOpen}
+            onClose={() => setIsOpen(false)}
+            showXButton
+            className={"md:w-3/5"}
+          >
             <Modal.Title>User Update section</Modal.Title>
             <Modal.Content>
-              <div className="w-full bg-gray-100 shadow overflow-hidden sm:rounded-lg mb-3">
-                <div className="px-4 py-5 sm:px-6">
-                  <h3 className="text-lg leading-6 font-medium text-gray-900">
-                    User BIO
-                  </h3>
-                  <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                    Details and informations about user.
-                  </p>
-                </div>
-                <div className="border-t border-gray-200">
-                  <dl>
-                    <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                      <dt className="text-sm font-medium text-gray-500">
-                        Full name
-                      </dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        {user?.displayName || "Name"}
-                      </dd>
-                    </div>
-                    <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                      <dt className="text-sm font-medium text-gray-500">
-                        Email
-                      </dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        {user?.email || "Name"}
-                      </dd>
-                    </div>
-                    <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                      <dt className="text-sm font-medium text-gray-500">
-                        Gender
-                      </dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        {user?.customClaims
-                          ? user?.customClaims["gender"]
-                          : "MALE"}
-                      </dd>
-                    </div>
-                    <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                      <dt className="text-sm font-medium text-gray-500">
-                        DATE OF BIRTH
-                      </dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        {user?.customClaims
-                          ? user?.customClaims["birthday"]
-                          : "1-2-33"}
-                      </dd>
-                    </div>
-                    <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                      <dt className="text-sm font-medium text-gray-500">
-                        About
-                      </dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        To get social media testimonials like these, keep your
-                        customers engaged with your social media accounts by
-                        posting regularly yourself
-                      </dd>
-                    </div>
-                  </dl>
-                </div>
-              </div>
+              <UserEditForm
+                editMode
+                setUser={setUser}
+                user={user}
+                setIsOpen={setIsOpen}
+                isOpen={isOpen}
+              />
             </Modal.Content>
-            <Modal.Footer>
-              <button
-                type="button"
-                onClick={() => setIsOpen(true)}
-                className=" bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-2 rounded mt-1 mx-auto flex justify-center uppercase"
-              >
-                Update
-              </button>
-              <button
-                type="button"
-                onClick={() => setIsOpen(true)}
-                className=" bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-2 rounded mt-1 mx-auto flex justify-center uppercase"
-              >
-                Close
-              </button>
-            </Modal.Footer>
           </Modal>
 
           <ChangePassword />

@@ -4,18 +4,22 @@ import {
   faAirFreshener,
   faBoxesPacking,
   faBriefcase,
+  faBullhorn,
   faCheckCircle,
   faCircleInfo,
   faCirclePlus,
+  faCoins,
   faDashboard,
   faDatabase,
   faDonate,
+  faFlag,
   faGift,
   faMoneyBills,
   faMoneyBillTransfer,
   faSearch,
   faShop,
   faShoppingBag,
+  faSortAmountAsc,
   faTasks,
   faUserCircle,
   faUsers,
@@ -24,9 +28,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Avatar } from "../../assets/icons";
 import { UserContext } from "@/AuthenticApp/Context/userContext";
+import Modal from "../Module/Modal";
+import DataField from "../Shared/DataField";
+import InputField from "../Shared/InputField";
+import NoticeForm from "../FormSegment/NoticeForm";
 // import { UserContext } from "../../AuthenticationApp/Context/userContext";
 
 const SideBar = () => {
@@ -39,6 +47,8 @@ const SideBar = () => {
     type = urlParams.get("type") || router?.query?.type;
   }
 
+  const [isNoticeOpen, setIsNoticeOpen] = useState(false);
+
   return (
     <>
       <div
@@ -46,7 +56,9 @@ const SideBar = () => {
       >
         <div className="hidden lg:block">
           <p className="font-bold text-2xl text-center text-black">
-            <span>P<span className="text-red-600">ARCE</span>L</span>
+            <span>
+              P<span className="text-red-600">ARCE</span>L
+            </span>
           </p>
         </div>
         <div className="flex flex-col items-center mt-6 -mx-2">
@@ -192,7 +204,7 @@ const SideBar = () => {
               } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
             >
               <div>
-                <FontAwesomeIcon icon={faUsers} />
+                <FontAwesomeIcon icon={faCoins} />
                 <span className="mx-4 font-medium">Finance</span>
               </div>
             </Link>
@@ -205,9 +217,41 @@ const SideBar = () => {
                 <span className="mx-4 font-medium">Admin Dashboard</span>
               </div>
             </div>
+
+            <Link
+              as={"/marketing"}
+              href={{
+                pathname: "/marketing",
+              }}
+              className={`${
+                pathname === "/marketing"
+                  ? "bg-sideBarHoverBg  text-sideBarHoverText "
+                  : "text-sideBarText  "
+              } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
+            >
+              <div>
+                <FontAwesomeIcon icon={faBullhorn} />
+                <span className="mx-4 font-medium">Marketing</span>
+              </div>
+            </Link>
+
+            <button
+              onClick={() => setIsNoticeOpen(true)}
+              className={`text-sideBarText w-full flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
+            >
+              <div>
+                <FontAwesomeIcon icon={faFlag} />
+                <span className="mx-4 font-medium">Notice</span>
+              </div>
+            </button>
           </nav>
         </div>
       </div>
+
+      <NoticeForm
+        isNoticeOpen={isNoticeOpen}
+        setIsNoticeOpen={setIsNoticeOpen}
+      />
     </>
   );
 };

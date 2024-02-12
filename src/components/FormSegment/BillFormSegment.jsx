@@ -318,7 +318,7 @@ const BillFormSegment = (props) => {
   }, [editMode]);
 
   useEffect(() => {
-    if (customerInfo?.customerId && router.pathname?.includes("new")) {
+    if (customerInfo?.customerId && router.pathname?.includes("new") && type !== "packing") {
       async function fetchCustomer() {
         setLoadingUserDetails(true);
         await axios
@@ -371,7 +371,7 @@ const BillFormSegment = (props) => {
         customerInfo &&
         customerInfo?.customerName &&
         customerInfo?.shipmentBy &&
-        customerInfo?.shipmentNo && (
+        customerInfo?.shipmentNo && customerInfo?.customerAddress && (
           <>
             <BillFormDetails
               data={data}
