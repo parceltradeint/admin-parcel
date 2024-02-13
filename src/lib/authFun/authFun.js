@@ -113,3 +113,18 @@ export const updateUser = async (updateData) => {
       // ...
     });
 };
+
+
+export const sendResetPasswordLink = async (email) => {
+  const auth = getAuth();
+  return await sendPasswordResetEmail(auth, email);
+};
+
+export const LoginAsUser = async (token) => {
+  const auth = getAuth();
+  try {
+    return await signInWithCustomToken(auth, token);
+  } catch (err) {
+    throw err;
+  }
+};

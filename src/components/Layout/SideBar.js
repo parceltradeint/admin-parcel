@@ -35,6 +35,7 @@ import Modal from "../Module/Modal";
 import DataField from "../Shared/DataField";
 import InputField from "../Shared/InputField";
 import NoticeForm from "../FormSegment/NoticeForm";
+import { signOut } from "@/lib/authFun/authFun";
 // import { UserContext } from "../../AuthenticationApp/Context/userContext";
 
 const SideBar = () => {
@@ -69,6 +70,16 @@ const SideBar = () => {
           <p className="mx-2 mt-1 text-sm font-medium text-sideBarText hover:underline">
             {user?.email || "Email"}
           </p>
+        </div>
+
+        <div>
+          <button
+            type="button"
+            onClick={() => signOut()}
+            className=" bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-2 rounded mt-1 mx-auto flex justify-center uppercase"
+          >
+            Logout
+          </button>
         </div>
 
         <div className="">
@@ -209,15 +220,6 @@ const SideBar = () => {
               </div>
             </Link>
 
-            <div
-              className={`text-sideBarText  flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
-            >
-              <div>
-                <FontAwesomeIcon icon={faDatabase} />
-                <span className="mx-4 font-medium">Admin Dashboard</span>
-              </div>
-            </div>
-
             <Link
               as={"/marketing"}
               href={{
@@ -235,6 +237,22 @@ const SideBar = () => {
               </div>
             </Link>
 
+            <Link
+              as={"/admin-dashboard"}
+              href={{
+                pathname: "/admin-dashboard",
+              }}
+              className={`${
+                pathname === "/admin-dashboard"
+                  ? "bg-sideBarHoverBg  text-sideBarHoverText "
+                  : "text-sideBarText  "
+              } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
+            >
+              <div>
+                <FontAwesomeIcon icon={faDatabase} />
+                <span className="mx-4 font-medium">Admin Dashboard</span>
+              </div>
+            </Link>
             {/* <button
               onClick={() => setIsNoticeOpen(true)}
               className={`text-sideBarText w-full flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
