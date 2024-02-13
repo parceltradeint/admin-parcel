@@ -109,9 +109,9 @@ const AllEmployees = () => {
     ];
   };
 
-  if (pageLoading) {
-    return <OverlayLoading />;
-  }
+  // if (pageLoading) {
+  //   return <OverlayLoading />;
+  // }
   // if (loading) {
   //   return <PlaceHolderLoading loading={loading} />;
   // }
