@@ -4,7 +4,6 @@
 // import Swal from "sweetalert2";
 // import OverlayLoading from "../components/common/OverlayLoading";
 
-
 // const LoginAsUserComponent = () => {
 //   const [processing, setProcessing] = useState(false);
 //   const router = useRouter();
@@ -97,3 +96,9 @@
 // };
 
 // export default LoginAsUserComponent;
+
+const LoginAsUserComponent = () => {
+  return <p>Login user</p>;
+};
+
+export default LoginAsUserComponent;
