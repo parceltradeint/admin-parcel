@@ -8,9 +8,14 @@ import InvoiceFooterAuthor from "./InvoiceFooterAuthor";
 // title: `${customerName}- ${type}- ${new Date().toLocaleString()}`,
 
 export const generatePDF = (info) => {
+  const allData = [...info.data];
+  if (info.rmb) {
+    allData.push({ ...info.rmb, des: "REPACKING CHARGE" });
+  }
+console.log("allData", allData);
   let renderData = [];
-  if (info?.data) {
-    let newData = info?.data?.map((item, i) => {
+  if (allData) {
+    let newData = allData?.map((item, i) => {
       let totalAmount =
         Number(item?.kg || item?.qty || 0) * Number(item?.rate || 0);
       const isBrand = item?.goodsName?.match(/brand/i) ? true : false;
@@ -58,9 +63,9 @@ export const generatePDF = (info) => {
       ];
     });
 
-    for (let i = 0; i < 25 - info?.data.length; i++) {
+    for (let i = 0; i < 25 - allData.length; i++) {
       newData.push([
-        { text: `${info?.data.length + i + 1}`, fontSize: 9 },
+        { text: `${allData.length + i + 1}`, fontSize: 9 },
         "",
         "",
         "",
@@ -72,15 +77,17 @@ export const generatePDF = (info) => {
   }
 
   const netTotalAmount = (data) => {
-    return sumBy(data, (val) => Number(val?.totalAmount || 0));
+    return (
+      sumBy(data, (val) => Number(val?.totalAmount || 0)) +
+      Number(info?.rmb?.rate || 0) * Number(info?.rmb?.qty || 0)
+    );
   };
 
   const totalDueBill = () => {
     const value =
-      Number(netTotalAmount(info?.data)) +
+      Number(netTotalAmount(allData)) +
       Number(info?.due || 0) -
       Number(info?.paid || 0);
-    console.log("value", value);
     return value;
   };
 
@@ -292,19 +299,19 @@ export const generatePDF = (info) => {
               { text: "", style: "tableFooter" },
               {
                 text: `${
-                  info?.data?.filter((item) => item?.ctn?.length > 0).length
+                  allData?.filter((item) => item?.ctn?.length > 0).length
                 }`,
                 style: "tableFooter",
               },
               {
                 text: `${Number(
-                  sumBy(info?.data, (val) => Number(val?.kg || 0))
+                  sumBy(allData, (val) => Number(val?.kg || 0))
                 ).toFixed(2)}`,
                 style: "tableFooter",
               },
               { text: "", style: "tableFooter" },
               {
-                text: `${convertTotalAmount(netTotalAmount(info?.data))}`,
+                text: `${convertTotalAmount(netTotalAmount(allData))}`,
                 style: "tableFooter",
                 alignment: "right",
               },
@@ -342,7 +349,10 @@ export const generatePDF = (info) => {
                     margin: [40, 10, 0, 0],
                     fontSize: 15,
                     bold: true,
-                    color: Math.sign(totalDueBill()) === -1 || totalDueBill() == 0 ? "green" : "red",
+                    color:
+                      Math.sign(totalDueBill()) === -1 || totalDueBill() == 0
+                        ? "green"
+                        : "red",
                     border: [true, false, true, true],
                   },
                   {
@@ -407,11 +417,14 @@ export const generatePDF = (info) => {
                   "TAKA IN WORD:",
 
                   {
-                    text: totalDueBill() == 0 ? "" : `${convertNumberToWords(
-                      Math.sign(totalDueBill()) === -1
-                        ? Math.abs(totalDueBill())
-                        : totalDueBill()
-                    )} TAKA ONLY.`,
+                    text:
+                      totalDueBill() == 0
+                        ? ""
+                        : `${convertNumberToWords(
+                            Math.sign(totalDueBill()) === -1
+                              ? Math.ceil(Math.abs(totalDueBill()))
+                              : Math.ceil(totalDueBill())
+                          )} TAKA ONLY.`,
                     alignment: "left",
                   },
                 ],
