@@ -46,11 +46,12 @@ const CustomerGrid = (props) => {
           Header: "SL",
           accessor: "SL",
           Cell: (row) => <p>{row?.viewIndex + 1}</p>,
+          width: 60
         },
-        {
-          Header: "USER ID",
-          accessor: "customerId",
-        },
+        // {
+        //   Header: "USER ID",
+        //   accessor: "customerId",
+        // },
         {
           Header: "Name",
           accessor: "customerName",

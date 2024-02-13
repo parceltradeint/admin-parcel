@@ -92,7 +92,9 @@ const CustomersBillCal = (props) => {
   }, {});
 
   // Convert the object back to an array
-  const groupedArray = Object.values(groupedByCustomerId).sort((a, b) => b.totalAmount - a.totalAmount);
+  const groupedArray = Object.values(groupedByCustomerId).sort(
+    (a, b) => b.totalAmount - a.totalAmount
+  );
 
   const handleExportBills = () => {
     if (window.confirm("Are you sure you want to export bills?")) {
@@ -126,8 +128,11 @@ const CustomersBillCal = (props) => {
           {
             Header: "Shiping Mark",
             accessor: "customerName",
-            // Cell: renderText,
+            Cell: ({ row }) => (
+              <p className=" text-left">{row?._original?.customerName}</p>
+            ),
             // Footer: () => <p className="text-center">Total-</p>,
+            width: 220,
           },
           {
             Header: "By",
@@ -216,7 +221,9 @@ const CustomersBillCal = (props) => {
             Header: "Credit",
             accessor: "credit",
             // Cell: renderEditable,
-            Cell:({row}) => <p>{convertTotalAmount(Number(row?._original?.credit))}</p>,
+            Cell: ({ row }) => (
+              <p>{convertTotalAmount(Number(row?._original?.credit))}</p>
+            ),
             Footer: ({ row }) => (
               <p className="text-center">
                 {convertTotalAmount(
@@ -228,7 +235,9 @@ const CustomersBillCal = (props) => {
           {
             Header: "Discount",
             accessor: "discount",
-            Cell:({row}) => <p>{convertTotalAmount(Number(row?._original?.discount))}</p>,
+            Cell: ({ row }) => (
+              <p>{convertTotalAmount(Number(row?._original?.discount))}</p>
+            ),
             // Cell: renderEditable,
             Footer: ({ row }) => (
               <p className="text-center">
@@ -242,7 +251,9 @@ const CustomersBillCal = (props) => {
           {
             Header: "Balance",
             accessor: "balance",
-            Cell:({row}) => <p>{convertTotalAmount(Number(row?._original?.balance))}</p>,
+            Cell: ({ row }) => (
+              <p>{convertTotalAmount(Number(row?._original?.balance))}</p>
+            ),
             // Cell: renderText,
             Footer: ({ row }) => (
               <p className="text-center">

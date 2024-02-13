@@ -1,4 +1,5 @@
 import { fbAuth } from "@/AuthenticApp/Config/firebase-config";
+import { successAlert } from "@/common/SweetAlert";
 import "firebase/auth";
 import {
   getAuth,
@@ -66,11 +67,41 @@ export const signOut = async (uid, setUser) => {
   }
 };
 
-export const changePassword = async (currentPassword, newPassword) => {};
+export const changePassword = async (currentPassword, newPassword) => {
+  const auth = getAuth();
+  const user = auth.currentUser;
+  const credential = EmailAuthProvider.credential(user.email, currentPassword);
+  await reauthenticateWithCredential(user, credential)
+    .then((res) => {
+      updatePassword(user, newPassword)
+        .then((res) => {
+          successAlert("Successfully updated your password.");
+        })
+        .catch((err) => {
+          if (err.code === "auth/weak-password") {
+            errorAlert(
+              "Weak Password! Password should be at least 6 characters."
+            );
+          } else {
+            errorAlert("Something went wrong. Please try again later.");
+          }
+        });
+    })
+    .catch((err) => {
+      if (err.code === "auth/wrong-password") {
+        errorAlert(
+          "Invalid your current password. Please check your current password."
+        );
+      } else {
+        errorAlert("Something went wrong. Please try again later.");
+      }
+    });
+  return true;
+};
 
 export const updateUser = async (updateData) => {
-  const auth = getAuth()
-  await updateProfile(auth.currentUser, { photoURL: null})
+  const auth = getAuth();
+  await updateProfile(auth.currentUser, { photoURL: null })
     .then((res) => {
       console.log("result: ", res);
       return res;

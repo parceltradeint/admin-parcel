@@ -235,7 +235,7 @@ const SideBar = () => {
               </div>
             </Link>
 
-            <button
+            {/* <button
               onClick={() => setIsNoticeOpen(true)}
               className={`text-sideBarText w-full flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
             >
@@ -243,15 +243,15 @@ const SideBar = () => {
                 <FontAwesomeIcon icon={faFlag} />
                 <span className="mx-4 font-medium">Notice</span>
               </div>
-            </button>
+            </button> */}
           </nav>
         </div>
       </div>
 
-      <NoticeForm
+      {/* <NoticeForm
         isNoticeOpen={isNoticeOpen}
         setIsNoticeOpen={setIsNoticeOpen}
-      />
+      /> */}
     </>
   );
 };

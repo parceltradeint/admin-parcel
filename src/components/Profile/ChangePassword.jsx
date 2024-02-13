@@ -16,12 +16,13 @@ const ChangePassword = () => {
   } = useForm({ mode: "all" });
 
   const handlePassword = async (data) => {
+    if (!window.confirm("Are you confirm change your password?")) {
+      return
+    }
     setLoading(true);
     await changePassword(data.current_password, data.password);
     setLoading(false);
   };
-    
-    console.log("errors", errors);
   if (loading) {
     return <PlaceHolderLoading loading={loading} />;
   }
@@ -31,7 +32,7 @@ const ChangePassword = () => {
         <p className="text-primaryText text-lg">
           Accout Password{" "}
           <span className=" text-errorColor">
-            (Please carefully update your password.)
+            (Please carefully update your password)
           </span>
         </p>
 
@@ -120,7 +121,8 @@ const ChangePassword = () => {
         <button
           type="submit"
           disabled={watch("password") != confirmPassword || !isValid}
-          className=" bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-2 rounded mt-1 mx-auto flex justify-center uppercase"        >
+          className=" bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-2 rounded mt-1 mx-auto flex justify-center uppercase"
+        >
           Change Password
         </button>
       </form>

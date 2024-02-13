@@ -268,6 +268,7 @@ const Marketing = () => {
           </div>
         </div>
       </div>
+
       <div className=" mx-auto py-2">
         {loading ? (
           <PlaceHolderLoading loading={true} />
@@ -280,6 +281,7 @@ const Marketing = () => {
           />
         )}
       </div>
+
       <Modal
         isOpen={isOpen}
         showXButton
@@ -309,9 +311,10 @@ const Marketing = () => {
                       {...register("customerName", {
                         required: true,
                       })}
+                      defaultValue={editData?.customerName}
                       name="customerName"
                       placeholder="Enter your customer name"
-                      className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                      className=" uppercase block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                     />
                   </div>
                   <div>
@@ -325,9 +328,10 @@ const Marketing = () => {
                       {...register("customerPhone", {
                         required: true,
                       })}
+                      defaultValue={editData?.customerPhone}
                       name="customerPhone"
                       placeholder="Enter phone number"
-                      className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                      className="uppercase block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                     />
                   </div>
                   <div>
@@ -341,6 +345,7 @@ const Marketing = () => {
                       {...register("weChatId", {
                         required: false,
                       })}
+                      defaultValue={editData?.weChatId}
                       name="weChatId"
                       placeholder="Enter customer wechat ID"
                       className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
@@ -359,9 +364,10 @@ const Marketing = () => {
                       {...register("customerAddress", {
                         required: true,
                       })}
+                      defaultValue={editData?.customerAddress}
                       name="customerAddress"
                       placeholder="Enter customer address"
-                      className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                      className="uppercase block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                     />
                   </div>
 
@@ -376,7 +382,7 @@ const Marketing = () => {
                       id="shipmentBy"
                       defaultValue={editData?.shipmentBy || "AIR"}
                       {...register("shipmentBy", { required: false })}
-                      className="block w-full uppercase px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                      className=" block w-full uppercase px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                     >
                       <option value="">Choose a Shipment</option>
                       <option value="AIR">AIR</option>
@@ -410,9 +416,10 @@ const Marketing = () => {
                     </label>
                     <input
                       {...register("remarks", { required: false })}
+                      defaultValue={editData?.remarks}
                       name="remarks"
                       placeholder="Enter your remarks"
-                      className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                      className="uppercase block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                     />
                   </div>
                 </div>

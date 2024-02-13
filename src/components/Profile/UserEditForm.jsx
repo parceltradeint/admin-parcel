@@ -108,7 +108,7 @@ export default function UserEditForm({
               required={true}
               name={"phoneNumber"}
               defaultValue={user?.phoneNumber || "NEED ADD Number"}
-              readOnly={true}
+              readOnly={!editMode}
               className={"lowercase border"}
             />
           }

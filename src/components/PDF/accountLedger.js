@@ -43,9 +43,11 @@ export const generateLedgerPDF = (info) => {
   }
 
   const dueOrAdvance =
-    Number(sumBy(info?.data, (item) => Number(item.totalAmount)).toFixed(2)) -
-    sumBy(info?.data, (item) => Number(item.credit));
+    Number(sumBy(info?.data, (item) => Number(item.totalAmount || 0)).toFixed(2)) -
+    sumBy(info?.data, (item) => Number(item.credit || 0));
   console.log(Math.sign(dueOrAdvance));
+  console.log(dueOrAdvance);
+
   let docDefinition = {
     info: {
       title: `${info?.customerName}- ${formartDate(new Date())}`,
@@ -139,7 +141,7 @@ export const generateLedgerPDF = (info) => {
             ...renderData,
             [
               { text: "", style: "tableFooter" },
-              { text: "TOTAL", style: "tableFooter" },
+              { text: "TOTAL", style: "tableFooter", alignment: "left" },
 
               {
                 text: `${convertTotalAmount(
@@ -197,7 +199,7 @@ export const generateLedgerPDF = (info) => {
                 : "",
           },
         ],
-        alignment: "center",
+        alignment: "right",
         fontSize: 20,
         margin: [0, 20, 0, 0],
         bold: true,
