@@ -81,7 +81,7 @@ export default async function customersAPI(req, res) {
     try {
       let data;
       const objectId = new ObjectId(req?.query?.id);
-      data = await collection.deleteOne({ _id: objectId });
+      data = await collection.deleteOne({ customerId: req?.query?.customerId });
       await client.close();
       res.status(200).json(data.deletedCount);
     } catch (error) {
