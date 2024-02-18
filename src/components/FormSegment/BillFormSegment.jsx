@@ -322,11 +322,10 @@ const BillFormSegment = (props) => {
       async function fetchCustomer() {
         setLoadingUserDetails(true);
         await axios
-          .get(`/api/customers-bills`, {
+          .get(`/api/${type === "cnf" ? "inbound" : "customers-bills"}`, {
             params: { customerId: customerInfo.customerId },
           })
           .then((res) => {
-            console.log("res", res);
             // setOldAditionalInfo({ ...res.data.res });
             let balance = res.data.totalBalance || 0;
             if (balance >= 0) {

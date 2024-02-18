@@ -45,7 +45,6 @@ export const generateLedgerPDF = (info) => {
   const dueOrAdvance =
     Number(sumBy(info?.data, (item) => Number(item.totalAmount || 0)).toFixed(2)) -
     sumBy(info?.data, (item) => Number(item.credit || 0));
-  console.log(Math.sign(dueOrAdvance));
   console.log(dueOrAdvance);
 
   let docDefinition = {
@@ -151,7 +150,7 @@ export const generateLedgerPDF = (info) => {
               },
               {
                 text: `${convertTotalAmount(
-                  sumBy(info?.data, (val) => Number(val?.credit0)) || ""
+                  sumBy(info?.data, (val) => Number(val?.credit || 0)) || ""
                 )}`,
                 style: "tableFooter",
               },
@@ -184,11 +183,11 @@ export const generateLedgerPDF = (info) => {
         text: [
           {
             text:
-              dueOrAdvance > 0
+              dueOrAdvance
                 ? [
                     {
                       text:
-                        Math.sign(dueOrAdvance) === -1
+                        Math.sign(dueOrAdvance)
                           ? `CONGRATULATIONS! ADVANCE: ${convertTotalAmount(
                               Math.abs(dueOrAdvance)
                             )} TAKA`

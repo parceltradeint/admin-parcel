@@ -277,7 +277,8 @@ const Marketing = () => {
             data={data}
             setData={setData}
             setIsOpen={setIsOpen}
-            setEditData={setEditData}
+              setEditData={setEditData}
+              type="customers-marketing"
           />
         )}
       </div>

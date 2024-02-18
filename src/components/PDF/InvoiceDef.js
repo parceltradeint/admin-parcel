@@ -9,10 +9,13 @@ import InvoiceFooterAuthor from "./InvoiceFooterAuthor";
 
 export const generatePDF = (info) => {
   const allData = [...info.data];
+
   if (info.rmb) {
-    allData.push({ ...info.rmb, des: "REPACKING CHARGE" });
+    let findIndx = info.data.findIndex((item) => item.des == "REPACKING CHARGE")
+    allData[findIndx] = { ...info.rmb, des: "REPACKING CHARGE" }
+    // allData.push({ ...info.rmb, des: "REPACKING CHARGE" });
   }
-console.log("allData", allData);
+
   let renderData = [];
   if (allData) {
     let newData = allData?.map((item, i) => {

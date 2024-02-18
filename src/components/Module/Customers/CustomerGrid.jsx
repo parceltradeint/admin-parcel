@@ -7,14 +7,17 @@ import ReactTable from "react-table-v6";
 import useSound from "use-sound";
 
 const CustomerGrid = (props) => {
-  const { data, setData, setIsOpen, setEditData } = props;
+  const { data, setData, setIsOpen, setEditData, type } = props;
   const [loading, setLoading] = useState(false);
   const [deleteSoundPlay] = useSound("/assets/sounds/deleted.mp3", {
     volume: 2,
   });
 
   const handleDelete = async (index, row) => {
-    console.log("index", index);
+    let url = `/api/customers?id=` + row._id;
+    if (type) {
+      url = `/api/${type}?customerId=` + row.customerId;
+    }
     deleteSoundPlay();
     errorAlert(
       `Are you want to delete - ${row.customerName}-(${row.customerId})?`
@@ -26,7 +29,7 @@ const CustomerGrid = (props) => {
           setData(newData);
         }
         await axios
-          .delete(`/api/customers?id=` + row._id)
+          .delete(url)
           .then((res) => {
             successAlert("Successfully Deleted");
           })
@@ -46,7 +49,7 @@ const CustomerGrid = (props) => {
           Header: "SL",
           accessor: "SL",
           Cell: (row) => <p>{row?.viewIndex + 1}</p>,
-          width: 60
+          width: 60,
         },
         // {
         //   Header: "USER ID",
@@ -86,7 +89,11 @@ const CustomerGrid = (props) => {
           Header: "Action",
           accessor: "##",
           Cell: ({ row }) => (
-            <div className={"text-center flex md:space-x-2 flex-col md:flex-row space-y-1 md:space-y-0"}>
+            <div
+              className={
+                "text-center flex md:space-x-2 flex-col md:flex-row space-y-1 md:space-y-0"
+              }
+            >
               <button
                 onClick={() => {
                   setIsOpen(true);

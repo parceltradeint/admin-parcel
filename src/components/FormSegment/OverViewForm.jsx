@@ -259,31 +259,31 @@ const OverViewForm = (props) => {
                         customerInfo?.reporting?.toLowerCase() == "china",
                     },
                     {
-                      name: "Hongkong",
-                      value: "Hongkong",
+                      name: "HONGKONG",
+                      value: "HONGKONG",
                       isSelected:
                         customerInfo?.reporting?.toLowerCase() == "hongkong",
                     },
                     {
-                      name: "Chongqing",
-                      value: "Chongqing",
+                      name: "CHONGQING",
+                      value: "CHONGQING",
                       isSelected:
                         customerInfo?.reporting?.toLowerCase() == "chongqing",
                     },
                     {
-                      name: "South Korea",
-                      value: "South Korea",
+                      name: "SOUTH KOREA",
+                      value: "SOUTH KOREA",
                       isSelected:
                         customerInfo?.reporting?.toLowerCase() == "south korea",
                     },
                     {
-                      name: "India",
-                      value: "India",
+                      name: "INDIA",
+                      value: "INDIA",
                       isSelected: customerInfo?.reporting == "India",
                     },
                     {
-                      name: "Hand Carry",
-                      value: "Hand Carry",
+                      name: "HAND CARRY",
+                      value: "HAND CARRY",
                       isSelected: customerInfo?.reporting == "Hand Carry",
                     },
                   ]}
