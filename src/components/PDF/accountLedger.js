@@ -186,8 +186,7 @@ export const generateLedgerPDF = (info) => {
               dueOrAdvance
                 ? [
                     {
-                      text:
-                        Math.sign(dueOrAdvance)
+                      text: Math.sign(dueOrAdvance) === -1 
                           ? `CONGRATULATIONS! ADVANCE: ${convertTotalAmount(
                               Math.abs(dueOrAdvance)
                             )} TAKA`

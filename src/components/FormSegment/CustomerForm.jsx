@@ -159,7 +159,7 @@ const {user} = useContext(UserContext)
               </label>
               <input
                 {...register("customerAddress", {
-                  required: true,
+                  required: false,
                 })}
                 name="customerAddress"
                 placeholder="Enter customer address"
