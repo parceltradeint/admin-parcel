@@ -42,7 +42,7 @@ export default async function newShipmentBill(req, res) {
             $match: {
               // Your condition here
               customerId: req?.query?.customerId,
-              // shipmentNo: new RegExp("^" + shipmentNo + "$", "i"),
+              // shipmentNo: new RegExp("^" + req?.query?.shipmentNo + "$", "i"),
               // year: new RegExp("^" + year + "$", "i")
             },
           },

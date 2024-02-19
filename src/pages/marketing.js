@@ -363,7 +363,7 @@ const Marketing = () => {
                     </label>
                     <input
                       {...register("customerAddress", {
-                        required: true,
+                        required: false,
                       })}
                       defaultValue={editData?.customerAddress}
                       name="customerAddress"

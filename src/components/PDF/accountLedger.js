@@ -44,8 +44,7 @@ export const generateLedgerPDF = (info) => {
 
   const dueOrAdvance =
     Number(sumBy(info?.data, (item) => Number(item.totalAmount || 0)).toFixed(2)) -
-    sumBy(info?.data, (item) => Number(item.credit || 0));
-  console.log(dueOrAdvance);
+    sumBy(info?.data, (item) => Number(item.credit || 0)) - sumBy(info?.data, (item) => Number(item.discount || 0));
 
   let docDefinition = {
     info: {
