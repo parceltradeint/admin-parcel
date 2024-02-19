@@ -95,10 +95,11 @@ const ShipmentBillCal = (props) => {
 
   const handleCellRenderChange = (cellInfo, val) => {
     const newData = [...data];
-    newData[cellInfo.index][cellInfo.column.id] = val;
-    let debit = Number(newData[cellInfo.index]["totalAmount"]);
-    let credit = Number(newData[cellInfo.index]["credit"]);
-    newData[cellInfo.index]["balance"] = debit - credit;
+    let debit = Number(newData[cellInfo.index]["totalAmount"] || 0).toFixed(2);
+    let credit = Number(newData[cellInfo.index]["credit"] || 0);
+    let discount = Number(newData[cellInfo.index]["discount"] || 0);
+    newData[cellInfo.index]["balance"] = Number(debit) - credit - discount;
+    newData[cellInfo.index]["due"] = newData[cellInfo.index]["balance"];
     setData(newData);
   };
 
