@@ -70,8 +70,8 @@ const CustomersBillCal = (props) => {
         credit: Number(credit) || 0,
         customerName,
         shipmentBy: [shipmentBy],
-        paid,
-        discount,
+        paid: Number(paid || 0),
+        discount: Number(discount || 0),
       };
     } else {
       // If yes, append to the existing entry and update the additional keys
