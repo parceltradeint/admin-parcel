@@ -101,7 +101,7 @@ export const changePassword = async (currentPassword, newPassword) => {
 
 export const updateUser = async (updateData) => {
   const auth = getAuth();
-  await updateProfile(auth.currentUser, { photoURL: null })
+  await updateProfile(auth.currentUser, { displayName: updateData.displayName, photoURL: updateData.photoURL})
     .then((res) => {
       console.log("result: ", res);
       return res;

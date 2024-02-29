@@ -1,13 +1,8 @@
 const admin = require("firebase-admin");
 
-const firebaseConfig = JSON.parse(process.env.FIREBASE_CONFIG);
-firebaseConfig.databaseURL = "https://otul-pro-default-rtdb.firebaseio.com";
+// const firebaseConfig = JSON.parse(process.env.FIREBASE_CONFIG);
 
-admin.initializeApp({
+export const adminContext = admin.initializeApp({
   credential: admin.credential.applicationDefault(),
-  ...firebaseConfig
+  // ...firebaseConfig
 });
-
-module.exports = {
-  admin,
-};

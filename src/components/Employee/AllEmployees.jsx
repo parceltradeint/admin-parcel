@@ -18,7 +18,7 @@ const AllEmployees = () => {
   // const [data, setData] = useState([]);
   const [openUpdate, setOpenUpdate] = useState(false);
   const [pageLoading, setPageLoading] = useState(false);
-
+  const [data, setData] = useState();
   const pagginationHandler = ({ nextSelectedPage }) => {
     if (nextSelectedPage !== undefined) {
       setPage(nextSelectedPage + 1);
@@ -73,6 +73,22 @@ const AllEmployees = () => {
     });
   };
 
+  const deleteEmployee = async (data) => {
+    if (!window.confirm("Are you sure you want to delete?")) {
+      return;
+    }
+    setPageLoading(true);
+    return await axios
+      .post(`/api/admin/deleteEmployee`, { ...data })
+      .then((res) => {
+        console.log("res delte", res);
+        setData((prev) => prev.filter((item) => item.uid !== data?.uid));
+        return res.data;
+      })
+      .catch((err) => console.log("error", err))
+      .finally(() => setPageLoading(false));
+  };
+
   const summaryData = (value) => {
     return [
       {
@@ -108,6 +124,17 @@ const AllEmployees = () => {
       },
     ];
   };
+
+  useEffect(() => {
+    axios
+      .get(`/api/admin/getEmployees`)
+      .then((res) => {
+        console.log("res", res);
+        // return res.data;
+        setData(res.data?.users);
+      })
+      .catch((err) => console.log("error", err));
+  }, []);
 
   // if (pageLoading) {
   //   return <OverlayLoading />;
@@ -161,90 +188,27 @@ const AllEmployees = () => {
       </button>
 
       <div>
-        {/* <Table
-          columns={columns}
-          data={data}
-          // handleProve={handleProve}
-          loading={loading}
-          error={error}
-        /> */}
-        {/* {data?.map((item, i) => {
-          const summary = summaryData(item);
-          return (
-            <>
-              <div className="flex md:justify-between md:flex-row flex-col md:px-10 px-1 py-3">
-                <div>
-                  <p>Uid: {item?.uid}</p>
-                  <p>Email: {item?.email}</p>
-                  <p>Phone Number: {item?.phone_number || ""}</p>
-                  <p>Name: {item?.displayName || ""}</p>
-                </div>
-                <div>
-                  <p>Role: {item?.customClaims?.role || "Is Employee"}</p>
-                  <p>Created Time: {item?.metadata?.creationTime || ""}</p>
-                  <p>
-                    Last Sign Time:{" "}
-                    {item?.metadata?.lastSignInTime || "Not Sign In"}
-                  </p>
-                  <p>
-                    Last Refresh Time:{" "}
-                    {item?.metadata?.lastRefreshTime || "Not Sign In"}
-                  </p>
-                </div>
-              </div>
-              <div className="flex space-x-2 p-2">
-                <button
-                  className="btn btn-accent px-3 py-0.5 btn-sm m-1"
-                  type="button"
-                  //   disabled={!isValid}
-                  onClick={() => {
-                    update_employee(item);
-                  }}
-                >
-                  Update
-                </button>
-                <button
-                  className="btn btn-error px-3 py-0.5 btn-sm m-1"
-                  type="button"
-                  //   disabled={!isValid}
-                  // onClick={() => {
-                  //   update_withdraw(item);
-                  // }}
-                >
-                  Delete
-                </button>
-                <button
-                  onClick={() => {
-                    handleLoginAsEmployee(item?.uid);
-                  }}
-                  type="button"
-                  className="btn btn-info px-3 py-0.5 btn-sm m-1"
-                >
-                  Login As Employee
-                </button>
-              </div>
-            </>
-          );
-        })} */}
-
         <ReactTable
-          data={[]}
+          data={data}
           columns={[
             {
               Header: "SL",
               accessor: "sl",
+              Cell: (row) => <p>{row.viewIndex + 1}</p>,
               width: 60,
               // Footer: () => <p className="text-center">Total-</p>,
             },
             {
               Header: "Name",
-              accessor: "dispalyName",
-              width: 200
+              accessor: "displayName",
+              Cell: ({ row }) => <p>{row._original.displayName ?? "--"}</p>,
+              width: 200,
               // Footer: () => <p className="text-center">Total-</p>,
             },
             {
-              Header: "PhoneNumber",
+              Header: "Number",
               accessor: "phoneNumber",
+              Cell: ({ row }) => <p>{row._original.phoneNumber ?? "--"}</p>,
               // value: value?.phoneNumber || "",
             },
             {
@@ -254,22 +218,25 @@ const AllEmployees = () => {
             },
             {
               Header: "role",
-              accessor: "role",
+              accessor: "customClaims.role",
+              Cell: ({ row }) => (
+                <p>{row._original.customClaims?.role ?? "--"}</p>
+              ),
               // value: value?.role || "Is Employee",
             },
             {
               Header: "Created Time",
-              accessor: "dispalyName",
-              Cell: ({ row }) =>
-                formartDate(row._original?.createdAt?._seconds * 1000, true),
+              accessor: "metadata.creationTime",
+              // Cell: ({ row }) =>
+              //   formartDate(row._original?.creationTime?._seconds * 1000, true),
             },
-            {
-              Header: "Status",
-              accessor: "status",
-            },
+            // {
+            //   Header: "Status",
+            //   accessor: "status",
+            // },
             {
               Header: "Last Active",
-              accessor: "lastActive",
+              accessor: "metadata.lastSignInTime",
               // value: `${formartDate(
               //   value?.lastActive || Date.now(),
               //   true
@@ -279,28 +246,28 @@ const AllEmployees = () => {
               Header: "Action",
               accessor: "#",
               Cell: ({ row }) => (
-                <div className="flex space-x-2 p-2">
+                <div className="flex md:space-x-2 justify-center md:flex-row flex-col items-center">
                   <button
-                    className="btn btn-accent px-3 py-0.5 btn-sm m-1"
+                    className=" bg-primaryBg hover:opacity-75 rounded-md px-3 py-1 text-white"
                     type="button"
                     //   disabled={!isValid}
                     onClick={() => {
-                      update_employee(item);
+                      update_employee(row?._original);
                     }}
                   >
                     Update
                   </button>
                   <button
-                    className="btn btn-error px-3 py-0.5 btn-sm m-1"
+                    className=" bg-red-600 hover:opacity-75 rounded-md px-3 py-1 text-white"
                     type="button"
                     //   disabled={!isValid}
-                    // onClick={() => {
-                    //   update_withdraw(item);
-                    // }}
+                    onClick={() => {
+                      deleteEmployee(row?._original);
+                    }}
                   >
                     Delete
                   </button>
-                  <button
+                  {/* <button
                     onClick={() => {
                       handleLoginAsEmployee(item?.uid);
                     }}
@@ -308,7 +275,7 @@ const AllEmployees = () => {
                     className="btn btn-info px-3 py-0.5 btn-sm m-1"
                   >
                     Login As Employee
-                  </button>
+                  </button> */}
                 </div>
               ),
             },
@@ -338,6 +305,8 @@ const AllEmployees = () => {
         <Modal
           openUpdate={openUpdate}
           setOpenUpdate={setOpenUpdate}
+          data={data}
+          setData={setData}
           // updateEmployee={updateEmployee}
         />
       )}
@@ -352,12 +321,15 @@ import { Fragment, useContext } from "react";
 import { useForm } from "react-hook-form";
 import { UserContext } from "@/AuthenticApp/Context/userContext";
 import { ReactTableDefaults } from "react-table-v6";
+import { formartDate } from "@/common/formartDate";
+import { errorAlert, successAlert } from "@/common/SweetAlert";
+import { SpingSvgIcon } from "@/common/PlaceHolderLoading";
 
 export function Modal(props) {
   let [isOpen, setIsOpen] = useState(true);
   const { user } = useContext(UserContext);
   const [pageLoading, setPageLoading] = useState(false);
-  const { openUpdate, setOpenUpdate, refetch } = props;
+  const { openUpdate, setOpenUpdate, data, setData } = props;
   const [roleUpdate, setRoleUpdate] = useState(false);
   const {
     handleSubmit,
@@ -370,45 +342,49 @@ export function Modal(props) {
     setOpenUpdate(false);
   }
   const updateEmployee = async (data) => {
-    // console.log("cell", cell.original);
-    // setPageLoading(true);
-    const update = httpsCallable(functions, "updateUser");
-    return update({ ...data })
-      .then((result) => {
-        return result.data;
+    setPageLoading(true);
+    await axios
+      .patch(`/api/admin/updateEmployee?uid=${data.uid}`, { ...data })
+      .then((res) => {
+        console.log("res", res);
+        // return res.data;
       })
-      .catch((error) => {
-        console.log("error", error);
-        return error;
-        // setPageLoading(false);
-        // errorAlert("Something went wrong!");
-      });
+      .catch((err) => console.log("error", err))
+      .finally(() => setPageLoading(false));
+    // setPageLoading(true);
+    // const update = httpsCallable(functions, "updateUser");
+    // return update({ ...data })
+    //   .then((result) => {
+    //     return result.data;
+    //   })
+    //   .catch((error) => {
+    //     console.log("error", error);
+    //     return error;
+    //     // setPageLoading(false);
+    //     // errorAlert("Something went wrong!");
+    //   });
   };
 
   const createEmployee = async (data) => {
-    // console.log("cell", cell.original);
-    // setPageLoading(true);
-    const create = httpsCallable(functions, "createNewUser");
-    return create({ ...data })
-      .then((result) => {
-        return result.data;
+    setPageLoading(true);
+    return await axios
+      .post(`/api/admin/createNewEmployee`, { ...data })
+      .then((res) => {
+        console.log("res", res);
+        return res.data;
       })
-      .catch((error) => {
-        console.log("error", error);
-        return error;
-        // setPageLoading(false);
-        // errorAlert("Something went wrong!");
-      });
+      .catch((err) => console.log("error", err))
+      .finally(() => setPageLoading(false));
   };
 
   const onSubmit = async (data) => {
-    setPageLoading(true);
+    // setPageLoading(true);
     const newData = {
       uid: data.uid,
       displayName: data.displayName,
       email: data.email,
       disabled: data.disabled,
-      phoneNumber: `+88${data?.phoneNumber}`,
+      // phoneNumber: `+88${data?.phoneNumber}`,
       customClaims: {
         ...data?.customClaims,
         role: data.role,
@@ -416,37 +392,35 @@ export function Modal(props) {
       },
     };
 
-    // if (user.role === "owner" || user.role === "admin") {
-    //   newData["customClaims"] = {
-    //     ...data?.customClaims,
-    //     role: data.role,
-    //     update: openUpdate?.type === "create" ? true : roleUpdate,
-    //   };
-    // }
-
-    if (watch("password")?.length > 6) {
+    if (watch("password")?.length >= 6) {
       newData["password"] = watch("password");
     }
-    if (watch("phoneNumber")?.length > 12) {
-      newData["phoneNumber"] = watch("phoneNumber");
+    if (watch("phoneNumber")?.length >= 11) {
+      newData["phoneNumber"] = `${data?.phoneNumber}`;
     }
-    if (openUpdate?.type === "create") {
-      newData["customClaims"]["isEmployee"] = true;
-    }
+    // if (openUpdate?.type === "create") {
+    //   newData["customClaims"]["isEmployee"] = true;
+    // }
     let res;
     if (openUpdate?.type === "update") {
       res = await updateEmployee(newData);
+      if (res?.uid) {
+        const findInx = data.findIndex((item) => item.uid === res.uid);
+        data[findInx] = res;
+        setData(data);
+      }
     }
     if (openUpdate?.type === "create") {
       res = await createEmployee(newData);
+      if (res?.uid) {
+        setData([...data, { ...res }]);
+      }
     }
-
     if (res?.uid) {
       setPageLoading(false);
       setOpenUpdate(false);
       setRoleUpdate(false);
       closeModal();
-      refetch();
       successAlert(`Successfully ${openUpdate?.type}.`);
     } else {
       setPageLoading(false);
@@ -495,7 +469,7 @@ export function Modal(props) {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                   <Dialog.Title
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900 py-5"
@@ -541,10 +515,7 @@ export function Modal(props) {
                           className="appearance-none block w-full bg-white dark:bg-black text-gray-700 dark:text-white border border-gray-200 dark:border-black dark:focus:border-black rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                           id={"email"}
                           type={"email"}
-                          {...register("email", {
-                            required:
-                              openUpdate?.type === "create" ? true : false,
-                          })}
+                          {...register("email")}
                           placeholder={"Enter Employee email"}
                         />
 
@@ -557,16 +528,17 @@ export function Modal(props) {
                       <div className="w-full md:w-full my-3 md:mb-2">
                         <label
                           className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                          htmlFor="displayName"
+                          htmlFor="phoneNumber"
                         >
                           Phone Number
                         </label>
                         <input
                           className="appearance-none block w-full bg-white dark:bg-black text-gray-700 dark:text-white border border-gray-200 dark:border-black dark:focus:border-black rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                           id={"phoneNumber"}
-                          type={"number"}
+                          type={"text"}
                           {...register("phoneNumber")}
                           placeholder={"Enter Employee Phone Number"}
+                          // defaultValue={employee}
                         />
 
                         {errors["phoneNumber"] && (
@@ -617,12 +589,11 @@ export function Modal(props) {
                         <input
                           className="appearance-none block w-full bg-white dark:bg-black text-gray-700 dark:text-white border border-gray-200 dark:border-black dark:focus:border-black rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                           id={"password"}
+                          name={"password"}
                           type={"text"}
-                          {...register("password", {
-                            required:
-                              openUpdate?.type === "create" ? true : false,
-                          })}
-                          placeholder={"Enter Employee password"}
+                          {...register("password")}
+                          minLength={6}
+                          placeholder={"*******"}
                         />
 
                         {errors["password"] && (
@@ -631,16 +602,31 @@ export function Modal(props) {
                           </p>
                         )}
                       </div>
-                      <div className="w-full md:w-full my-3 md:mb-2">
+                      <div className="w-full md:w-full my-3 md:mb-2 ">
                         <label
                           className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                           htmlFor="disabled"
                         >
                           Disable
                         </label>
-                        <div className="form-check">
+                        <div class="flex items-center space-x-2">
                           <input
-                            className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+                            id="flexCheckChecked"
+                            type="checkbox"
+                            {...register("disabled")}
+                            value=""
+                            className="w-8 h-8 cursor-pointer text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 "
+                          />
+                          <label
+                            for="flexCheckChecked"
+                            className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                          >
+                            Disable Employee
+                          </label>
+                        </div>
+                        {/* <div className="form-check">
+                          <input
+                            className=" appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                             type="checkbox"
                             value=""
                             id="flexCheckChecked"
@@ -652,7 +638,7 @@ export function Modal(props) {
                           >
                             Disable Employee
                           </label>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
 
@@ -660,13 +646,24 @@ export function Modal(props) {
                       <button
                         type="submit"
                         className=" bg-primaryBg hover:opacity-75 rounded-md px-3 py-1 text-white m-1"
-                        disabled={true}
-                        >
-                        {openUpdate?.type === "update" ? "Update" : "Create"}
+                        // disabled={true}
+                      >
+                        {pageLoading ? (
+                          <>
+                            <SpingSvgIcon />
+                            {openUpdate?.type === "update"
+                              ? "Updating"
+                              : "Creating"}
+                          </>
+                        ) : openUpdate?.type === "update" ? (
+                          "Update"
+                        ) : (
+                          "Create"
+                        )}
                       </button>
                       <button
                         onClick={() => {
-                          closeModal();
+                          // closeModal();
                           props?.setOpenUpdate(false);
                         }}
                         type="button"

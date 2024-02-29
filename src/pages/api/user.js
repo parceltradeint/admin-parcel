@@ -1,3 +1,4 @@
+import { updateUser } from "@/lib/authFun/authFun";
 import { dbClient } from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
@@ -30,9 +31,8 @@ export default async function usersAPI(req, res) {
       const uid = req?.query?.uid;
       data = await collection.updateOne(
         { uid: uid }, // Filter criteria to find the document
-        { $set: req.body.data } // Fields to update
+        { $set: { ...req.body } } // Fields to update
       );
-
       await client.close();
       res.status(200).json(data);
     } catch (error) {

@@ -30,9 +30,10 @@ export default function UserContextComp({ children }) {
         if (user) {
           // User is signed in.
           const { uid, displayName, email, photoURL, emailVerified } = user;
-          const initials = `${displayName ? getInitials(displayName) : "NA"}`;
-          const authToken = await user.getIdTokenResult();
-          const token = await user?.getIdToken(true);
+          // console.log("User", user);
+          // const initials = `${displayName ? getInitials(displayName) : "NA"}`;
+          // const authToken = await user.getIdTokenResult();
+          // const token = await user?.getIdToken(true);
           let isExitingUser = await axios.get(`/api/user?uid=${user.uid}`);
           // locationWithIp(uid);
           setUser({ ...user, ...isExitingUser.data });

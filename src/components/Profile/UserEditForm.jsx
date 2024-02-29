@@ -6,6 +6,7 @@ import Modal from "../Module/Modal";
 import { SpingSvgIcon } from "@/common/PlaceHolderLoading";
 import axios from "axios";
 import { errorAlert, successAlert } from "@/common/SweetAlert";
+import { updateUser } from "@/lib/authFun/authFun";
 
 export default function UserEditForm({
   user,
@@ -28,7 +29,7 @@ export default function UserEditForm({
   });
   const onSubmit = async (data) => {
     setIsLoading(true);
-    let isExitingUser = await axios.get(`/api/user?uid=${data.uid}`);
+    let isExitingUser = await axios.get(`/api/user?uid=${user.uid}`);
 
     if (!isExitingUser.data) {
       await axios
@@ -50,8 +51,7 @@ export default function UserEditForm({
         });
     } else {
       await axios
-        .patch(`/api/user`, {
-          uid: data?.uid,
+        .patch(`/api/user?uid=${user?.uid}`, {
           ...data,
         })
         .then((res) => {
@@ -65,6 +65,10 @@ export default function UserEditForm({
         .finally(() => {
           setIsOpen(false);
           setIsLoading(false);
+          updateUser({
+            displayName: data.displayName,
+            photoURL: data.photoURL || null,
+          });
         });
     }
   };

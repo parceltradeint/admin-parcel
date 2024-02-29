@@ -1,5 +1,7 @@
 // const { admin } = require("../../src/lib/firebaseAdmin");
 
+import admin from "../firebaseAdmin";
+
 // const getEmployees = async (filter, limit, page, context) => {
 //   // Checking that the user is authenticated.
 
@@ -45,3 +47,17 @@
 // module.exports = {
 //   getEmployees,
 // };
+
+// pages/api/users.js
+
+
+export default async function handler(req, res) {
+  try {
+    // Perform Firebase Admin SDK operations
+    const users = await admin.auth().listUsers();
+    res.status(200).json({...users});
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}

@@ -34,7 +34,7 @@ import React, { useContext } from "react";
 const Page = ({ children }) => {
   const router = useRouter();
   const { user, loadingUser, setUser } = useContext(UserContext);
-
+// console.log("user", user);
   if (loadingUser) {
     return <OverlayLoading />;
   }
