@@ -574,9 +574,8 @@ export function Modal(props) {
                           </option>
                           <option value={"owner"}>Owner</option>
                           <option value={"admin"}>Admin</option>
+                          <option value={"hr"}>HR</option>
                           <option value={"it"}>IT Manager</option>
-                          <option value={"analytics"}>Analytics</option>
-                          <option value={"finance"}>Finance</option>
                         </select>
                       </div>
                       <div className="w-full md:w-full my-3 md:mb-2">
