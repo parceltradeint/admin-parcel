@@ -219,6 +219,22 @@ const SideBar = () => {
                 <span className="mx-4 font-medium">Finance</span>
               </div>
             </Link>
+            <Link
+              as={"/balance"}
+              href={{
+                pathname: "/balance",
+              }}
+              className={`${
+                pathname === "/balance"
+                  ? "bg-sideBarHoverBg  text-sideBarHoverText "
+                  : "text-sideBarText  "
+              } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
+            >
+              <div>
+                <FontAwesomeIcon icon={faCoins} />
+                <span className="mx-4 font-medium">balance</span>
+              </div>
+            </Link>
 
             <Link
               as={"/marketing"}
