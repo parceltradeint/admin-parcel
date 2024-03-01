@@ -7,8 +7,8 @@ if (!admin.apps.length) {
   // Initialize Firebase Admin SDK with application default credentials
   admin.initializeApp({
       credential: admin.credential.applicationDefault(),
-      projectId: "admin-parcel-dash",
-      databaseURL: "https://admin-parcel-dash-default-rtdb.firebaseio.com"
+      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+      databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL
   });
 }
 
