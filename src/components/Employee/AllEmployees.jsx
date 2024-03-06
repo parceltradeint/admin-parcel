@@ -83,7 +83,6 @@ const AllEmployees = () => {
       .then((res) => {
         console.log("res delte", res);
         setData((prev) => prev.filter((item) => item.uid !== data?.uid));
-        return res.data;
       })
       .catch((err) => console.log("error", err))
       .finally(() => setPageLoading(false));
@@ -126,14 +125,16 @@ const AllEmployees = () => {
   };
 
   useEffect(() => {
+    setPageLoading(true);
     axios
       .get(`/api/admin/getEmployees`)
       .then((res) => {
-        console.log("res", res);
+        // console.log("res", res);
         // return res.data;
         setData(res.data?.users);
       })
-      .catch((err) => console.log("error", err));
+      .catch((err) => console.log("error", err))
+      .finally(() => setPageLoading(false));
   }, []);
 
   // if (pageLoading) {
@@ -144,39 +145,7 @@ const AllEmployees = () => {
   // }
   return (
     <div>
-      <div className={"flex pr-8 justify-end"}>
-        <div className=" flex rounded-md shadow-sm">
-          <div className="relative flex items-stretch flex-grow focus-within:z-10">
-            <input
-              onChange={(e) => setSearchInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              value={searchInput}
-              className="form-input block w-full rounded-none rounded-l-md transition ease-in-out duration-150 sm:text-sm sm:leading-5"
-              placeholder={"Search"}
-            />
-          </div>
-          <button
-            onClick={handleSearch}
-            className=" relative items-center px-5 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-r-md text-gray-700 bg-gray-50 hover:text-gray-500 hover:bg-white focus:outline-none focus:shadow-outline-blue focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150"
-          >
-            {/* Heroicon name: sort-ascending */}
-
-            <FontAwesomeIcon icon={faSearch} />
-            {/*<span className="ml-2">Search</span>*/}
-          </button>
-        </div>
-        <div className={"mt-1 mx-2"}>
-          <button
-            onClick={handleClear}
-            className={
-              "inline-flex items-center px-5 py-3 border border-transparent text-xs leading-4 font-medium rounded text-indigo-700 bg-indigo-300 hover:bg-indigo-50 focus:outline-none focus:border-indigo-300 focus:shadow-outline-indigo active:bg-indigo-200 transition ease-in-out duration-150"
-            }
-            type={"button"}
-          >
-            Clear
-          </button>
-        </div>
-      </div>
+      
 
       <button
         // disabled={!isValid}
@@ -184,7 +153,7 @@ const AllEmployees = () => {
         className=" bg-primaryBg rounded-md px-3 py-1 text-white m-1"
         onClick={create_employee}
       >
-        Add New User
+        Add New Employee
       </button>
 
       <div>
@@ -286,6 +255,7 @@ const AllEmployees = () => {
           showPageJump={false}
           pageSizeOptions={[200, 250, 300]}
           showPagination={true}
+          loading={pageLoading}
           // showPagination={false}
           sortable={true}
         />
@@ -324,11 +294,12 @@ import { ReactTableDefaults } from "react-table-v6";
 import { formartDate } from "@/common/formartDate";
 import { errorAlert, successAlert } from "@/common/SweetAlert";
 import { SpingSvgIcon } from "@/common/PlaceHolderLoading";
+import phoneCode from "@/assets/phoneCode";
 
 export function Modal(props) {
   let [isOpen, setIsOpen] = useState(true);
   const { user } = useContext(UserContext);
-  const [pageLoading, setPageLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { openUpdate, setOpenUpdate, data, setData } = props;
   const [roleUpdate, setRoleUpdate] = useState(false);
   const {
@@ -342,61 +313,48 @@ export function Modal(props) {
     setOpenUpdate(false);
   }
   const updateEmployee = async (data) => {
-    setPageLoading(true);
-    await axios
+    setLoading(true);
+    return await axios
       .patch(`/api/admin/updateEmployee?uid=${data.uid}`, { ...data })
       .then((res) => {
-        console.log("res", res);
-        // return res.data;
-      })
-      .catch((err) => console.log("error", err))
-      .finally(() => setPageLoading(false));
-    // setPageLoading(true);
-    // const update = httpsCallable(functions, "updateUser");
-    // return update({ ...data })
-    //   .then((result) => {
-    //     return result.data;
-    //   })
-    //   .catch((error) => {
-    //     console.log("error", error);
-    //     return error;
-    //     // setPageLoading(false);
-    //     // errorAlert("Something went wrong!");
-    //   });
-  };
-
-  const createEmployee = async (data) => {
-    setPageLoading(true);
-    return await axios
-      .post(`/api/admin/createNewEmployee`, { ...data })
-      .then((res) => {
-        console.log("res", res);
         return res.data;
       })
       .catch((err) => console.log("error", err))
-      .finally(() => setPageLoading(false));
+      .finally(() => setLoading(false));
   };
 
-  const onSubmit = async (data) => {
+  const createEmployee = async (data) => {
+    setLoading(true);
+    return await axios
+      .post(`/api/admin/createNewEmployee`, { ...data })
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => console.log("error", err))
+      .finally(() => setLoading(false));
+  };
+
+  const onSubmit = async (val) => {
     // setPageLoading(true);
     const newData = {
-      uid: data.uid,
-      displayName: data.displayName,
-      email: data.email,
-      disabled: data.disabled,
+      uid: val.uid,
+      displayName: val.displayName,
+      email: val.email,
+      disabled: val.disabled,
       // phoneNumber: `+88${data?.phoneNumber}`,
       customClaims: {
-        ...data?.customClaims,
-        role: data.role,
+        ...val?.customClaims,
+        role: val.role,
         update: openUpdate?.type === "create" ? true : roleUpdate,
       },
     };
 
-    if (watch("password")?.length >= 6) {
+    if (val["password"]?.length >= 6) {
       newData["password"] = watch("password");
     }
-    if (watch("phoneNumber")?.length >= 11) {
-      newData["phoneNumber"] = `${data?.phoneNumber}`;
+    if (val["phoneNumber"]?.length >= 5) {
+      newData["phoneNumber"] = `${val?.phoneNumber}`;
+      newData["phoneCode"] = `${val?.phoneCode}`;
     }
     // if (openUpdate?.type === "create") {
     //   newData["customClaims"]["isEmployee"] = true;
@@ -404,7 +362,7 @@ export function Modal(props) {
     let res;
     if (openUpdate?.type === "update") {
       res = await updateEmployee(newData);
-      if (res?.uid) {
+      if (res.uid) {
         const findInx = data.findIndex((item) => item.uid === res.uid);
         data[findInx] = res;
         setData(data);
@@ -417,19 +375,17 @@ export function Modal(props) {
       }
     }
     if (res?.uid) {
-      setPageLoading(false);
+      setLoading(false);
       setOpenUpdate(false);
       setRoleUpdate(false);
       closeModal();
       successAlert(`Successfully ${openUpdate?.type}.`);
     } else {
-      setPageLoading(false);
+      setLoading(false);
       setOpenUpdate(false);
       setRoleUpdate(false);
       closeModal();
-      errorAlert(
-        `${res?.errorInfo?.message} Please try again ${openUpdate?.type}.`
-      );
+      errorAlert(`${res?.message ?? ""} Please try again ${openUpdate?.type}.`);
     }
   };
 
@@ -469,7 +425,7 @@ export function Modal(props) {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                <Dialog.Panel className="w-full max-w-4xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                   <Dialog.Title
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900 py-5"
@@ -532,21 +488,40 @@ export function Modal(props) {
                         >
                           Phone Number
                         </label>
-                        <input
-                          className="appearance-none block w-full bg-white dark:bg-black text-gray-700 dark:text-white border border-gray-200 dark:border-black dark:focus:border-black rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                          id={"phoneNumber"}
-                          type={"text"}
-                          {...register("phoneNumber")}
-                          placeholder={"Enter Employee Phone Number"}
-                          // defaultValue={employee}
-                        />
-
+                        <div className="flex mb-4">
+                          <select
+                            name="phoneCode"
+                            id="phoneCode"
+                            className=" bg-white dark:bg-black text-gray-700 dark:text-white border border-gray-200 dark:border-black dark:focus:border-black py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                            {...register("phoneCode")}
+                          >
+                            <option value={"+880"} selected>
+                              BD (+880)
+                            </option>
+                            {phoneCode?.map((item, i) => (
+                              <option key={i} value={item.dial_code}>
+                                {item.code} ({item.dial_code})
+                              </option>
+                            ))}
+                          </select>
+                          <div class="relative w-full">
+                            <input
+                              type="text"
+                              placeholder={"Enter Employee Phone Number"}
+                              // pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+                              className="appearance-none block w-full bg-white dark:bg-black text-gray-700 dark:text-white border border-gray-200 dark:border-black dark:focus:border-black rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                              id={"phoneNumber"}
+                              {...register("phoneNumber")}
+                            />
+                          </div>
+                        </div>
                         {errors["phoneNumber"] && (
                           <p className="text-errorColor text-xs italic">
                             Please fill out this field.
                           </p>
                         )}
                       </div>
+
                       <div className="w-full md:w-full my-3 md:mb-2">
                         <label
                           className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
@@ -555,8 +530,8 @@ export function Modal(props) {
                           Role
                         </label>
                         <select
-                          className="select select-accent max-w-full select-sm w-full bg-inherit"
-                          {...register("role")}
+                          className=" block w-full bg-white dark:bg-black text-gray-700 dark:text-white border border-gray-200 dark:border-black dark:focus:border-black rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                          {...register("role", {required: true})}
                           name="role"
                           defaultValue={
                             openUpdate?.employee?.customClaims?.role || ""
@@ -564,13 +539,11 @@ export function Modal(props) {
                           onChange={changeRole}
                         >
                           <option
-                            selected
+                            // selectd
                             className="first-letter:capitalize"
-                            value={
-                              openUpdate?.employee?.customClaims?.role || ""
-                            }
+                            value={""}
                           >
-                            {openUpdate?.employee?.customClaims?.role || "-"}
+                            {"-"}
                           </option>
                           <option value={"owner"}>Owner</option>
                           <option value={"admin"}>Admin</option>
@@ -641,19 +614,19 @@ export function Modal(props) {
                       </div>
                     </div>
 
-                    <div className="mt-4">
+                    <div className="mt-4 flex items-center">
                       <button
                         type="submit"
                         className=" bg-primaryBg hover:opacity-75 rounded-md px-3 py-1 text-white m-1"
-                        // disabled={true}
+                        disabled={loading}
                       >
-                        {pageLoading ? (
-                          <>
+                        {loading ? (
+                          <span className="flex items-center ">
                             <SpingSvgIcon />
                             {openUpdate?.type === "update"
                               ? "Updating"
                               : "Creating"}
-                          </>
+                          </span>
                         ) : openUpdate?.type === "update" ? (
                           "Update"
                         ) : (

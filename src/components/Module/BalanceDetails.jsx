@@ -273,18 +273,6 @@ const BalanceDetails = (props) => {
             ),
           },
           {
-            Header: "Discount",
-            accessor: "discount",
-            Cell: renderEditable,
-            Footer: ({ row }) => (
-              <p className="text-center">
-                {convertTotalAmount(
-                  sumBy(data, (item) => Number(item?.discount || 0))
-                )}
-              </p>
-            ),
-          },
-          {
             Header: "Total Taka",
             accessor: "total",
             Cell: ({ row }) => (

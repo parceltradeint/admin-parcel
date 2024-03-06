@@ -5,13 +5,16 @@ const deleteEmployee = async (req, res) => {
   const data = req.body;
   try {
     const res = await admin.auth().deleteUser(data?.uid);
-    return res;
+    res.send({
+      success: true,
+      message: "Deleted employee!",
+    });
   } catch (err) {
     console.log("err", err);
-    return {
+    res.send({
       success: false,
       message: "Something went wrong! Please try again.",
-    };
+    });
   }
 };
 

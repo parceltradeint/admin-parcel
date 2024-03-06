@@ -72,19 +72,6 @@ const Balance = () => {
   };
 
 
-
-  const tabItems = [
-    {
-      id: 1,
-      label: "Customer DUE",
-      value: <CustomersBillCal type={"outbound"} />,
-    },
-    {
-      id: 2,
-      label: "CNF DUE",
-      value: <ShipmentBillCal data={data} type={"outbound"} />,
-    },
-  ];
   return (
     <Layout>
       <div>
