@@ -71,6 +71,22 @@ const Balance = () => {
     // setPageNumber(0)
   };
 
+  useEffect(() => {
+    async function fetchCustomers() {
+      setLoading(true);
+      await axios
+        .get("/api/balance")
+        .then((res) => {
+          setData(res.data);
+        })
+        .catch((err) => {
+          errorAlert("Something went wrong!");
+        })
+        .finally(() => setLoading(false));
+    }
+    fetchCustomers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Layout>
@@ -85,7 +101,7 @@ const Balance = () => {
           </div>
         </div>
         
-        <BalanceDetails/>
+        <BalanceDetails data={data} setData={setData} />
       </div>
     </Layout>
   );

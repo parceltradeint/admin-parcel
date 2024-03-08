@@ -22,16 +22,19 @@ import NumberFormat from "react-number-format";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const BalanceDetails = (props) => {
-  const { type, items, setShowModal } = props;
+  const { type, items, setShowModal, data, setData } = props;
   const [loading, setLoading] = useState(false);
 
-  const [data, setData] = useState([]);
   const router = useRouter();
   const { handleSubmit } = useForm({ mode: "all" });
 
   const [addItemsSoundPlay] = useSound("/assets/sounds/save.mp3", {
     volume: 0.25,
   });
+  const [deleteItemsSoundPlay] = useSound("/assets/sounds/delete-item.mp3", {
+    volume: 0.25,
+  });
+
   // const [loading, setLoading] = useState(false);
 
   //   useEffect(() => {
@@ -121,14 +124,14 @@ const BalanceDetails = (props) => {
     );
   };
 
-  const handleOnSubmit = (val) => {
+  const handleOnSubmit = (val, index) => {
     addItemsSoundPlay();
     const newData = {
       ...val,
     };
 
     Swal.fire({
-      title: `ARE YOU SURE FOR UPDATE`,
+      title: `ARE YOU SURE FOR UPDATE?`,
       icon: "question",
       confirmButtonColor: "#006EB8",
       confirmButtonText: `Confirm`,
@@ -139,14 +142,12 @@ const BalanceDetails = (props) => {
       showCancelButton: true,
     }).then(async (resP) => {
       if (resP.isConfirmed) {
-        setLoading(val?._id);
+        setLoading(index);
         delete newData?._id;
         await axios
-          .patch(`/api/${type}`, {
-            id: val?._id,
-            data: { ...newData },
-          })
+          .post(`/api/balance?=id${val?._id || null}`)
           .then((res) => {
+            console.log("res", res);
             successAlert("Successfully Update");
           })
           .catch((err) => {
@@ -154,6 +155,49 @@ const BalanceDetails = (props) => {
             errorAlert("Something went wrong!");
           })
           .finally(() => setLoading(false));
+      } else {
+        return;
+      }
+    });
+  };
+
+  const handleDelete = (val, index) => {
+    deleteItemsSoundPlay();
+    const newData = {
+      ...val,
+    };
+
+    Swal.fire({
+      title: `ARE YOU SURE FOR DELETE?`,
+      icon: "question",
+      confirmButtonColor: "#006EB8",
+      confirmButtonText: `Confirm`,
+      allowOutsideClick: false,
+      // cancelButtonText: "No",
+      showCloseButton: true,
+      showConfirmButton: true,
+      showCancelButton: true,
+    }).then(async (resP) => {
+      if (resP.isConfirmed) {
+        setLoading(index);
+        delete newData?._id;
+        await axios
+          .delete(`/api/balance?=id${val?._id}`)
+          .then((res) => {
+            // console.log("res", res);
+            successAlert("Successfully Deleted.");
+          })
+          .catch((err) => {
+            // console.log("err", err);
+            errorAlert("Something went wrong!");
+          })
+          .finally(() => {
+            setLoading(false);
+            if (index !== -1) {
+              data.splice(index, 1);
+              setData(data.splice(index, 1));
+            }
+          });
       } else {
         return;
       }
@@ -276,7 +320,9 @@ const BalanceDetails = (props) => {
             Header: "Total Taka",
             accessor: "total",
             Cell: ({ row }) => (
-              <p className="text-right">{convertTotalAmount(Number(row?._original?.total))}</p>
+              <p className="text-right">
+                {convertTotalAmount(Number(row?._original?.total))}
+              </p>
             ),
             Footer: ({ row }) => (
               <p className="text-center">
@@ -290,12 +336,12 @@ const BalanceDetails = (props) => {
             Cell: ({ row }) => (
               <div className={"text-center flex space-x-1"}>
                 <button
-                  onClick={(e) => handleOnSubmit(row._original)}
+                  onClick={(e) => handleOnSubmit(row._original, row._viewIndex)}
                   className=" uppercase inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
-                  disabled={true}
+                  disabled={loading === row._viewIndex}
                   type="button"
                 >
-                  {loading === row._original?._id ? (
+                  {loading === row._viewIndex ? (
                     <>
                       <SpingSvgIcon />
                       Updating..
@@ -305,12 +351,12 @@ const BalanceDetails = (props) => {
                   )}
                 </button>
                 <button
-                  onClick={(e) => handleOnSubmit(row._original)}
+                  onClick={(e) => handleDelete(row._original, row._viewIndex)}
                   className=" uppercase inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-red-600 hover:bg-red-500 focus:outline-none focus:border-red-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
-                  disabled={true}
+                  disabled={loading === row._viewIndex}
                   type="button"
                 >
-                  {loading === row._original?._id ? (
+                  {loading === row._viewIndex  ? (
                     <>
                       <SpingSvgIcon />
                       Deleting..
