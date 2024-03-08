@@ -105,8 +105,7 @@ const BalanceDetails = (props) => {
     newData[cellInfo.index][cellInfo.column.id] = val;
     let debit = Number(newData[cellInfo.index]["debit"] || 0).toFixed(2);
     let credit = Number(newData[cellInfo.index]["credit"] || 0);
-    let discount = Number(newData[cellInfo.index]["discount"] || 0);
-    newData[cellInfo.index]["total"] = Number(debit) - credit - discount;
+    newData[cellInfo.index]["total"] = Number(debit) - Number(credit) || 0;
     setData(newData);
   };
 
@@ -129,7 +128,6 @@ const BalanceDetails = (props) => {
     const newData = {
       ...val,
     };
-
     Swal.fire({
       title: `ARE YOU SURE FOR UPDATE?`,
       icon: "question",
@@ -145,7 +143,7 @@ const BalanceDetails = (props) => {
         setLoading(index);
         delete newData?._id;
         await axios
-          .post(`/api/balance?=id${val?._id || null}`)
+          .post(`/api/balance?=id${val?._id || null}`, { ...newData })
           .then((res) => {
             console.log("res", res);
             successAlert("Successfully Update");
@@ -179,25 +177,34 @@ const BalanceDetails = (props) => {
       showCancelButton: true,
     }).then(async (resP) => {
       if (resP.isConfirmed) {
-        setLoading(index);
-        delete newData?._id;
-        await axios
-          .delete(`/api/balance?=id${val?._id}`)
-          .then((res) => {
-            // console.log("res", res);
-            successAlert("Successfully Deleted.");
-          })
-          .catch((err) => {
-            // console.log("err", err);
-            errorAlert("Something went wrong!");
-          })
-          .finally(() => {
-            setLoading(false);
-            if (index !== -1) {
-              data.splice(index, 1);
-              setData(data.splice(index, 1));
-            }
-          });
+        if (val?._id) {
+          setLoading(index);
+          delete newData?._id;
+          await axios
+            .delete(`/api/balance?=id${val?._id}`)
+            .then((res) => {
+              // console.log("res", res);
+              successAlert("Successfully Deleted.");
+            })
+            .catch((err) => {
+              // console.log("err", err);
+              errorAlert("Something went wrong!");
+            })
+            .finally(() => {
+              setLoading(false);
+              if (index > -1) {
+                let newItems = [...data];
+                newItems.splice(index, 1);
+                setData(newItems);
+              }
+            });
+        } else {
+          if (index > -1) {
+            let newItems = [...data];
+            newItems.splice(index, 1);
+            setData(newItems);
+          }
+        }
       } else {
         return;
       }
@@ -238,9 +245,9 @@ const BalanceDetails = (props) => {
     let newData = [...data];
     const newBill = {
       details: "",
-      debit: 0,
-      credit: 0,
-      total: 0,
+      debit: "",
+      credit: "",
+      total: "",
     };
     newData.push(newBill);
     setData(newData);
@@ -250,9 +257,9 @@ const BalanceDetails = (props) => {
     if (data?.length < 1) {
       const newBill = {
         details: "",
-        debit: 0,
-        credit: 0,
-        total: 0,
+        debit: "",
+        credit: "",
+        total: "",
       };
       setData([{ ...newBill }]);
     }
@@ -356,7 +363,7 @@ const BalanceDetails = (props) => {
                   disabled={loading === row._viewIndex}
                   type="button"
                 >
-                  {loading === row._viewIndex  ? (
+                  {loading === row._viewIndex ? (
                     <>
                       <SpingSvgIcon />
                       Deleting..

@@ -92,3 +92,7 @@ input::-webkit-inner-spin-button {
 .css-13cymwt-control {
   border: none !important;
 }
+.custom-Hover .ReactTable .rt-tr:hover .rt-td {
+  background-color: #e53e3e;
+   color: white !important;;
+}

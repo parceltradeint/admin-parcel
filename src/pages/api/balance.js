@@ -9,22 +9,8 @@ export default async function balanceAPI(req, res) {
   if (req.method == "POST") {
     try {
       const objectId = new ObjectId(req?.query?.id);
-      // collection.findOneAndUpdate(
-      //   { _id: objectId },
-      //   { $set: req.body },
-      //   { upsert: true, new: true },
-      //   (err, doc) => {
-      //     if (err) {
-      //       // console.error("Error:", err);
-      //       res.status(500).json({ status: false, data: err });
-      //     } else {
-      //       // console.log("Data:", doc);
-      //       res.status(200).json({ status: 200, data: doc });
-      //     }
-      //   }
-      // );
       const result = await collection.findOneAndUpdate(
-        { _id: objectId },
+        { _id: objectId || "" },
         { $set: req.body },
         { upsert: true, new: true }
       );
