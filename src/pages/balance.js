@@ -81,7 +81,18 @@ const Balance = () => {
       await axios
         .get("/api/balance")
         .then((res) => {
-          setData(res.data);
+          console.log("res", res);
+          if (res.data?.length < 1) {
+            const newBill = {
+              details: "",
+              debit: "",
+              credit: "",
+              total: "",
+            };
+            setData([{ ...newBill }]);
+          } else {
+            setData(res.data);
+          }
         })
         .catch((err) => {
           errorAlert("Something went wrong!");
@@ -91,31 +102,31 @@ const Balance = () => {
     fetchCustomers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
+
   if (loadingUser) {
     return <OverlayLoading />;
   }
   if (!isAccessModule(user.access, `/balance`)) {
     router.push("/403");
   }
-  
+
   return (
-      <Layout>
-        <div>
-          <div className=" bg-white shadow-sm">
-            <div className=" mx-auto py-4 px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 space-y-2 md:space-y-0 justify-between items-center">
-              <div className={"ml-4 "}>
-                <h1 className="text-lg leading-6 font-semibold text-gray-900">
-                  Total Balance Details
-                </h1>
-              </div>
+    <Layout>
+      <div>
+        <div className=" bg-white shadow-sm">
+          <div className=" mx-auto py-4 px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 space-y-2 md:space-y-0 justify-between items-center">
+            <div className={"ml-4 "}>
+              <h1 className="text-lg leading-6 font-semibold text-gray-900">
+                Total Balance Details
+              </h1>
             </div>
           </div>
-
-          <BalanceDetails data={data} setData={setData} />
         </div>
-      </Layout>
-    );
+
+        <BalanceDetails data={data} setData={setData} loading={loading} setLoading={setLoading} />
+      </div>
+    </Layout>
+  );
 };
 
 export default Balance;

@@ -82,8 +82,9 @@ export default async function customersAPI(req, res) {
       let data;
       const objectId = new ObjectId(req?.query?.id);
       data = await collection.deleteOne({ _id: objectId });
-      await client.close();
       res.status(200).json(data.deletedCount);
+      await client.close();
+
     } catch (error) {
       console.log("err", error);
       res.status(500).json({ status: false, data: {} });

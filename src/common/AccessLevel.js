@@ -45,10 +45,8 @@ export const accessControl = [
     ),
   },
   {
-    role: "it manager",
-    access: accessSideBar.filter((item) =>
-      ["admin dashboard"].includes(item.name)
-    ),
+    role: "it",
+    access: accessSideBar
   },
   {
     role: "marketing",

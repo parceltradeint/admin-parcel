@@ -47,8 +47,9 @@ export default async function balanceAPI(req, res) {
       let data;
       const objectId = new ObjectId(req?.query?.id);
       data = await collection.deleteOne({ _id: objectId });
-      await client.close();
+      console.log(data);
       res.status(200).json(data.deletedCount);
+      await client.close();
     } catch (error) {
       console.log("err", error);
       res.status(500).json({ status: false, data: {} });

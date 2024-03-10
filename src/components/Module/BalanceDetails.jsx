@@ -22,8 +22,8 @@ import NumberFormat from "react-number-format";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const BalanceDetails = (props) => {
-  const { type, items, setShowModal, data, setData } = props;
-  const [loading, setLoading] = useState(false);
+  const { type, items, setShowModal, data, setData,loading, setLoading } = props;
+  // const [loading, setLoading] = useState(false);
 
   const router = useRouter();
   const { handleSubmit } = useForm({ mode: "all" });
@@ -181,7 +181,7 @@ const BalanceDetails = (props) => {
           setLoading(index);
           delete newData?._id;
           await axios
-            .delete(`/api/balance?=id${val?._id}`)
+            .delete(`/api/balance?=id ` + val?._id)
             .then((res) => {
               // console.log("res", res);
               successAlert("Successfully Deleted.");
@@ -253,17 +253,17 @@ const BalanceDetails = (props) => {
     setData(newData);
   };
 
-  useEffect(() => {
-    if (data?.length < 1) {
-      const newBill = {
-        details: "",
-        debit: "",
-        credit: "",
-        total: "",
-      };
-      setData([{ ...newBill }]);
-    }
-  }, [data?.length, setData]);
+  // useEffect(() => {
+  //   if (data?.length < 1) {
+  //     const newBill = {
+  //       details: "",
+  //       debit: "",
+  //       credit: "",
+  //       total: "",
+  //     };
+  //     setData([{ ...newBill }]);
+  //   }
+  // }, [data?.length, setData]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -307,7 +307,7 @@ const BalanceDetails = (props) => {
             // ),
             Footer: ({ row }) => (
               <p className="text-center">
-                {convertTotalAmount(sumBy(data, (item) => Number(item.debit)))}
+                {convertTotalAmount(sumBy(data, (item) => Number(item.debit || 0)))}
               </p>
             ),
           },
@@ -328,12 +328,12 @@ const BalanceDetails = (props) => {
             accessor: "total",
             Cell: ({ row }) => (
               <p className="text-right">
-                {convertTotalAmount(Number(row?._original?.total))}
+                {convertTotalAmount(Number(row?._original?.total || 0))}
               </p>
             ),
             Footer: ({ row }) => (
               <p className="text-center">
-                {convertTotalAmount(sumBy(data, (item) => Number(item.total)))}
+                {convertTotalAmount(sumBy(data, (item) => Number(item.total || 0)))}
               </p>
             ),
           },
@@ -403,6 +403,7 @@ const BalanceDetails = (props) => {
         showPagination={true}
         // showPagination={false}
         sortable={true}
+        loading={loading}
       />
     </form>
   );
