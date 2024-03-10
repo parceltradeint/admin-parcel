@@ -1,3 +1,6 @@
+import { UserContext } from "@/AuthenticApp/Context/userContext";
+import { isAccessModule } from "@/common/AccessLevel";
+import OverlayLoading from "@/common/OverlayLoading";
 import PlaceHolderLoading from "@/common/PlaceHolderLoading";
 import { errorAlert } from "@/common/SweetAlert";
 import AllEmployees from "@/components/Employee/AllEmployees";
@@ -11,7 +14,7 @@ import ShipmentBillCal from "@/components/ShipmentBill/ShipmentBillCal";
 import ShipmentBillGrid from "@/components/ShipmentBill/ShipmentBillGrid";
 import axios from "axios";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 
 const AdminDashboard = () => {
@@ -27,6 +30,7 @@ const AdminDashboard = () => {
   const [pageCount, setPageCount] = useState(null);
   const [loading, setLoading] = useState(false);
   const [editData, setEditData] = useState(false);
+  const { user, loadingUser } = useContext(UserContext);
 
   const pagginationHandler = ({ selected }) => {
     setPageNumber(selected);
@@ -71,15 +75,19 @@ const AdminDashboard = () => {
     // setPageNumber(0)
   };
 
-
-
   const tabItems = [
     {
       id: 1,
       label: "ALL EMPLOYEE",
       value: <AllEmployees />,
-    }
+    },
   ];
+  if (loadingUser) {
+    return <OverlayLoading />;
+  }
+  if (!isAccessModule(user.access, `/admin-dashboard`)) {
+    router.push("/403");
+  }
   return (
     <Layout>
       <div>

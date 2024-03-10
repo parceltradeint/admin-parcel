@@ -6,12 +6,15 @@ import CustomerGrid from "@/components/Module/Customers/CustomerGrid";
 import Modal from "@/components/Module/Modal";
 import axios from "axios";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { generateExportCustomers } from "@/components/PDF/generateExportCustomers";
+import { isAccessModule } from "@/common/AccessLevel";
+import { UserContext } from "@/AuthenticApp/Context/userContext";
+import OverlayLoading from "@/common/OverlayLoading";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const Customers = () => {
@@ -28,6 +31,7 @@ const Customers = () => {
   const [loading, setLoading] = useState(false);
   const [editData, setEditData] = useState(false);
   // const { randomUUID } = new ShortUniqueId({ length: 6 });
+  const { user, loadingUser } = useContext(UserContext);
 
   const pagginationHandler = ({ selected }) => {
     setPageNumber(selected);
@@ -121,9 +125,16 @@ const Customers = () => {
 
   const handleExportCustomers = () => {
     if (window.confirm("Are you sure you want to export?")) {
-      generateExportCustomers(data)
+      generateExportCustomers(data);
     }
   };
+  if (loadingUser) {
+    return <OverlayLoading />;
+  }
+  if (!isAccessModule(user.access, `/customers`)) {
+    router.push("/403");
+  }
+
   return (
     <Layout>
       <div className=" bg-white shadow-sm">
@@ -232,11 +243,11 @@ const Customers = () => {
           <PlaceHolderLoading loading={true} />
         ) : (
           <CustomerGrid
-              data={data}
-              setData={setData}
-              setIsOpen={setIsOpen}
-              setEditData={setEditData}
-            />
+            data={data}
+            setData={setData}
+            setIsOpen={setIsOpen}
+            setEditData={setEditData}
+          />
         )}
       </div>
       <Modal

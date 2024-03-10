@@ -1,3 +1,6 @@
+import { UserContext } from "@/AuthenticApp/Context/userContext";
+import { isAccessModule } from "@/common/AccessLevel";
+import OverlayLoading from "@/common/OverlayLoading";
 import PlaceHolderLoading from "@/common/PlaceHolderLoading";
 import { errorAlert } from "@/common/SweetAlert";
 import CustomerForm from "@/components/FormSegment/CustomerForm";
@@ -10,7 +13,7 @@ import ShipmentBillCal from "@/components/ShipmentBill/ShipmentBillCal";
 import ShipmentBillGrid from "@/components/ShipmentBill/ShipmentBillGrid";
 import axios from "axios";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 
 const Finance = () => {
@@ -26,6 +29,7 @@ const Finance = () => {
   const [pageCount, setPageCount] = useState(null);
   const [loading, setLoading] = useState(false);
   const [editData, setEditData] = useState(false);
+  const { user, loadingUser } = useContext(UserContext);
 
   const pagginationHandler = ({ selected }) => {
     setPageNumber(selected);
@@ -84,6 +88,15 @@ const Finance = () => {
       value: <ShipmentBillCal data={data} type={"outbound"} />,
     },
   ];
+
+
+  if (loadingUser) {
+    return <OverlayLoading />;
+  }
+  if (!isAccessModule(user?.access, `/finance`)) {
+    router.push("/403");
+  }
+
   return (
     <Layout>
       <div className="custom-Hover">

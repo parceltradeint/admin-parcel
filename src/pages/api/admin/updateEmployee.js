@@ -48,6 +48,7 @@ const updateEmployee = async (req, res) => {
           { uid: updateUser.uid },
           { $set: updateUser }
         );
+       await admin.auth().revokeRefreshTokens(data?.uid)
         res.status(200).json({ status: true, ...updateUser });
         await client.close();
       } catch (error) {

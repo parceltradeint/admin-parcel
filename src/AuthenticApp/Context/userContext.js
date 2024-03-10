@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import { fbAuth } from "../Config/firebase-config";
 import { errorAlert } from "@/common/SweetAlert";
 import axios from "axios";
+import { accessControl } from "@/common/AccessLevel";
 
 export const UserContext = createContext({
   user: "",
@@ -36,7 +37,9 @@ export default function UserContextComp({ children }) {
           // const token = await user?.getIdToken(true);
           let isExitingUser = await axios.get(`/api/user?uid=${user.uid}`);
           // locationWithIp(uid);
-          setUser({ ...user, ...isExitingUser.data });
+          const access = accessControl.find((item) => item.role === isExitingUser.data?.customClaims?.role)
+
+          setUser({ ...user, ...isExitingUser.data, access: access.access });
 
           setLoadingUser(false);
         }

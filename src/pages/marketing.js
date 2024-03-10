@@ -16,6 +16,8 @@ import ShortUniqueId from "short-unique-id";
 import { useForm } from "react-hook-form";
 import useSound from "use-sound";
 import { UserContext } from "@/AuthenticApp/Context/userContext";
+import OverlayLoading from "@/common/OverlayLoading";
+import { isAccessModule } from "@/common/AccessLevel";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const Marketing = () => {
@@ -35,7 +37,7 @@ const Marketing = () => {
   // const { randomUUID } = new ShortUniqueId({ length: 6 });
   const { randomUUID } = new ShortUniqueId({ length: 4 });
   const [saveSoundPlay] = useSound("/assets/sounds/save.mp3", { volume: 0.45 });
-  const { user } = useContext(UserContext);
+  const { user, loadingUser } = useContext(UserContext);
   const {
     handleSubmit,
     register,
@@ -164,6 +166,13 @@ const Marketing = () => {
         });
     }
   };
+
+  if (loadingUser) {
+    return <OverlayLoading />;
+  }
+  if (!isAccessModule(user?.access, `/marketing`)) {
+    router.push("/403");
+  }
 
   return (
     <Layout>

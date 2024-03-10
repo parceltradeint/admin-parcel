@@ -1,7 +1,11 @@
+import { UserContext } from "@/AuthenticApp/Context/userContext";
+import { isAccessModule } from "@/common/AccessLevel";
+import OverlayLoading from "@/common/OverlayLoading";
 import Layout from "@/components/Layout/Layout";
 import FolderComponents from "@/components/Module/FolderComponents";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useContext } from "react";
 import { useState } from "react";
 
 const months = [
@@ -21,7 +25,15 @@ const months = [
 
 const MonthsPage = ({ type }) => {
   const [selectYear, setSelectYear] = useState(new Date().getFullYear());
+  const { user, loadingUser } = useContext(UserContext);
+  const router = useRouter();
+  if (loadingUser) {
+    return <OverlayLoading />;
+  }
 
+  if (!isAccessModule(user.access, `/bills/${type}/months`)) {
+    router.push("/403");
+  }
   return (
     <Layout billType={type}>
       <div className="flex flex-row items-center justify-center space-x-3 w-full py-2 bg-gray-100 mb-2">

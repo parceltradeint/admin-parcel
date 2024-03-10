@@ -81,8 +81,11 @@ const AllEmployees = () => {
     return await axios
       .post(`/api/admin/deleteEmployee`, { ...data })
       .then((res) => {
-        console.log("res delte", res);
+        // console.log("res delte", res);
         setData((prev) => prev.filter((item) => item.uid !== data?.uid));
+        if (user?.uid === data?.uid) {
+          signOut()
+        }
       })
       .catch((err) => console.log("error", err))
       .finally(() => setPageLoading(false));
@@ -295,6 +298,7 @@ import { formartDate } from "@/common/formartDate";
 import { errorAlert, successAlert } from "@/common/SweetAlert";
 import { SpingSvgIcon } from "@/common/PlaceHolderLoading";
 import phoneCode from "@/assets/phoneCode";
+import { signOut } from "@/lib/authFun/authFun";
 
 export function Modal(props) {
   let [isOpen, setIsOpen] = useState(true);
@@ -307,7 +311,8 @@ export function Modal(props) {
     register,
     formState: { isValid, errors },
     watch,
-  } = useForm({ mode: "onChange", defaultValues: openUpdate?.employee });
+    getValues
+  } = useForm({ mode: "onChange", defaultValues: {...openUpdate?.employee, phoneNumber: openUpdate?.employee?.phoneNumber?.replace(/^\+\d{3}/, '')} });
   function closeModal() {
     setIsOpen(false);
     setOpenUpdate(false);
@@ -366,6 +371,9 @@ export function Modal(props) {
         const findInx = data.findIndex((item) => item.uid === res.uid);
         data[findInx] = res;
         setData(data);
+        if (user?.uid === res?.uid) {
+          signOut()
+        }
       }
     }
     if (openUpdate?.type === "create") {
@@ -549,6 +557,7 @@ export function Modal(props) {
                           <option value={"admin"}>Admin</option>
                           <option value={"hr"}>HR</option>
                           <option value={"it"}>IT Manager</option>
+                          <option value={"marketing"}>Marketing</option>
                         </select>
                       </div>
                       <div className="w-full md:w-full my-3 md:mb-2">
@@ -566,6 +575,7 @@ export function Modal(props) {
                           {...register("password")}
                           minLength={6}
                           placeholder={"*******"}
+                          required={openUpdate?.type === "create" ? true: false }
                         />
 
                         {errors["password"] && (

@@ -53,7 +53,7 @@ const SideBar = () => {
   return (
     <>
       <div
-        className={`scrollbar  h-screen overflow-y-auto overflow-x-hidden bg-[beige] text-green-600 py-1`}
+        className={`scrollbar overflow-auto h-screen bg-[beige] text-green-600 py-1`}
       >
         <div className="hidden lg:block">
           <p className="font-bold text-2xl text-center text-black">
@@ -100,7 +100,26 @@ const SideBar = () => {
                 <span className="mx-4 font-medium">My Profile</span>
               </div>
             </Link>
-            <Link
+            {user?.access.map((item, i) => (
+              <Link
+                as={item.link}
+                href={{
+                  pathname: item.link,
+                }}
+                key={i}
+                className={`${
+                  pathname === item.link
+                    ? "bg-sideBarHoverBg  text-sideBarHoverText "
+                    : "text-sideBarText  "
+                } flex items-center px-4 py-2 md:mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
+              >
+                <div>
+                  <FontAwesomeIcon icon={item.icon} />
+                  <span className="mx-4 font-medium">{item.name}</span>
+                </div>
+              </Link>
+            ))}
+            {/* <Link
               as={"/dashboard"}
               href={{
                 pathname: "/dashboard",
@@ -186,23 +205,6 @@ const SideBar = () => {
               </div>
             </Link>
 
-            {/* <Link
-              as={"/"}
-              href={{
-                pathname: "/",
-              }}
-              className={`${
-                pathname === "/shipment"
-                  ? "bg-sideBarBg  text-sideBarHoverText "
-                  : "text-sideBarText  "
-              } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
-            >
-              <div>
-                <FontAwesomeIcon icon={faAirFreshener} />
-                <span className="mx-4 font-medium">Shipment</span>
-              </div>
-            </Link> */}
-
             <Link
               as={"/finance"}
               href={{
@@ -268,7 +270,7 @@ const SideBar = () => {
                 <FontAwesomeIcon icon={faDatabase} />
                 <span className="mx-4 font-medium">Admin Dashboard</span>
               </div>
-            </Link>
+            </Link> */}
             {/* <button
               onClick={() => setIsNoticeOpen(true)}
               className={`text-sideBarText w-full flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
