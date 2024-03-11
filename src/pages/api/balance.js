@@ -45,15 +45,18 @@ export default async function balanceAPI(req, res) {
   } else if (req.method == "DELETE") {
     try {
       let data;
-      const objectId = new ObjectId(req?.query?.id);
+      // console.log("req,", req.query);
+      const objectId = new ObjectId(req.query.id);
       data = await collection.deleteOne({ _id: objectId });
-      console.log(data);
-      res.status(200).json(data.deletedCount);
+      // console.log("res Data", data);
+      // console.log("id", objectId);
+      res.status(200).json(data);
       await client.close();
     } catch (error) {
       console.log("err", error);
       res.status(500).json({ status: false, data: {} });
     }
   }
+
   // Close the MongoDB client connection when done
 }

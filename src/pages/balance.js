@@ -81,7 +81,6 @@ const Balance = () => {
       await axios
         .get("/api/balance")
         .then((res) => {
-          console.log("res", res);
           if (res.data?.length < 1) {
             const newBill = {
               details: "",

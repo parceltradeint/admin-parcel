@@ -22,7 +22,8 @@ import NumberFormat from "react-number-format";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const BalanceDetails = (props) => {
-  const { type, items, setShowModal, data, setData,loading, setLoading } = props;
+  const { type, items, setShowModal, data, setData, loading, setLoading } =
+    props;
   // const [loading, setLoading] = useState(false);
 
   const router = useRouter();
@@ -161,9 +162,6 @@ const BalanceDetails = (props) => {
 
   const handleDelete = (val, index) => {
     deleteItemsSoundPlay();
-    const newData = {
-      ...val,
-    };
 
     Swal.fire({
       title: `ARE YOU SURE FOR DELETE?`,
@@ -179,24 +177,27 @@ const BalanceDetails = (props) => {
       if (resP.isConfirmed) {
         if (val?._id) {
           setLoading(index);
-          delete newData?._id;
+
           await axios
-            .delete(`/api/balance?=id ` + val?._id)
+            .delete(`/api/balance?id=` + val._id)
             .then((res) => {
-              // console.log("res", res);
-              successAlert("Successfully Deleted.");
+              if (index > -1 && res.data.deletedCount > 0) {
+                successAlert("Successfully Deleted.");
+                let newItems = [...data];
+                newItems.splice(index, 1);
+                setData(newItems);
+              } else {
+                errorAlert("Something went wrong!");
+                return;
+              }
             })
             .catch((err) => {
               // console.log("err", err);
               errorAlert("Something went wrong!");
+              return;
             })
             .finally(() => {
               setLoading(false);
-              if (index > -1) {
-                let newItems = [...data];
-                newItems.splice(index, 1);
-                setData(newItems);
-              }
             });
         } else {
           if (index > -1) {
@@ -307,7 +308,9 @@ const BalanceDetails = (props) => {
             // ),
             Footer: ({ row }) => (
               <p className="text-center">
-                {convertTotalAmount(sumBy(data, (item) => Number(item.debit || 0)))}
+                {convertTotalAmount(
+                  sumBy(data, (item) => Number(item.debit || 0))
+                )}
               </p>
             ),
           },
@@ -333,7 +336,9 @@ const BalanceDetails = (props) => {
             ),
             Footer: ({ row }) => (
               <p className="text-center">
-                {convertTotalAmount(sumBy(data, (item) => Number(item.total || 0)))}
+                {convertTotalAmount(
+                  sumBy(data, (item) => Number(item.total || 0))
+                )}
               </p>
             ),
           },
@@ -403,7 +408,7 @@ const BalanceDetails = (props) => {
         showPagination={true}
         // showPagination={false}
         sortable={true}
-        loading={loading}
+        loading={loading === 0 || loading ? true : false}
       />
     </form>
   );
