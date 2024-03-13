@@ -1,6 +1,6 @@
 import { formartDate } from "@/common/formartDate";
 
-export default function invoiceCustomerInfo(info) {
+export default function invoiceCustomerInfo(info, type) {
   const infoDetails = [
     {
       margin: [0, 5, 0, 0],
@@ -74,7 +74,7 @@ export default function invoiceCustomerInfo(info) {
         body: [
           [
             {
-              text: "ADDRESS",
+              text: `${type === "Challan" ? "PHONE" : "ADDRESS"}`,
               alignment: "left",
               fillColor: "#555555",
               color: "#FFFFFF",
@@ -82,7 +82,7 @@ export default function invoiceCustomerInfo(info) {
               border: [true, false, false, true],
             },
             {
-              text: `${info?.customerAddress?.toUpperCase() || ""}`,
+              text: `${type === "Challan" ? info?.customerPhone : info?.customerAddress?.toUpperCase() || ""}`,
               border: [true, false, false, true],
             },
             {
@@ -111,7 +111,7 @@ export default function invoiceCustomerInfo(info) {
         body: [
           [
             {
-              text: "REMARKS",
+              text: `${type === "Challan" ? "ADDRESS" : "REMARKS"}`,
               alignment: "left",
               fillColor: "#555555",
               color: "#FFFFFF",
@@ -120,7 +120,7 @@ export default function invoiceCustomerInfo(info) {
               margin: [0, -2, 0, 0],
             },
             {
-              text: `${info?.remarks?.toUpperCase()}`,
+              text: `${type === "Challan" ? info?.customerAddress?.toUpperCase(): info?.remarks?.toUpperCase()}`,
               color: "red",
               bold: true,
               border: [false, false, true, true],

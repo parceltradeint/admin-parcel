@@ -129,7 +129,7 @@ const BalanceDetails = (props) => {
     const newData = {
       ...val,
     };
-    console.log("val", val);
+
     Swal.fire({
       title: `ARE YOU SURE FOR UPDATE?`,
       icon: "question",
@@ -166,7 +166,6 @@ const BalanceDetails = (props) => {
           }
         })
           .then((res) => {
-            console.log("re data", res);
             if (res.data?.insertedId) {
               let newData = [...data];
               newData[index] = { ...newData[index], _id: res.data?.insertedId };
@@ -323,20 +322,6 @@ const BalanceDetails = (props) => {
           },
 
           {
-            Header: "Credit",
-            accessor: "credit",
-            Cell: renderEditable,
-            Footer: ({ row }) => (
-              <p className="text-center">
-                {convertTotalAmount(
-                  sumBy(data, (item) => Number(item.credit || 0))
-                )}
-              </p>
-            ),
-          },
-
-
-          {
             Header: "Debit",
             accessor: "debit",
             Cell: renderEditable,
@@ -353,6 +338,20 @@ const BalanceDetails = (props) => {
               </p>
             ),
           },
+
+          {
+            Header: "Credit",
+            accessor: "credit",
+            Cell: renderEditable,
+            Footer: ({ row }) => (
+              <p className="text-center">
+                {convertTotalAmount(
+                  sumBy(data, (item) => Number(item.credit || 0))
+                )}
+              </p>
+            ),
+          },
+
           {
             Header: "Total Taka",
             accessor: "total",

@@ -234,7 +234,7 @@ export const generatePackingPDF = (info, type) => {
       // },
       HeaderOfPDF(),
       headerBanner(`${type?.toUpperCase()}\n`),
-      invoiceCustomerInfo(info),
+      invoiceCustomerInfo(info, type),
       // {
       //   style: "section",
       //   margin: [0, 0, 0, 0],
