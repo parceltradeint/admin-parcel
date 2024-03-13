@@ -74,7 +74,7 @@ export default function invoiceCustomerInfo(info, type) {
         body: [
           [
             {
-              text: `${type === "Challan" ? "PHONE" : "ADDRESS"}`,
+              text: `${type === "Challan" ? "MOBILE" : "ADDRESS"}`,
               alignment: "left",
               fillColor: "#555555",
               color: "#FFFFFF",
@@ -121,7 +121,7 @@ export default function invoiceCustomerInfo(info, type) {
             },
             {
               text: `${type === "Challan" ? info?.customerAddress?.toUpperCase(): info?.remarks?.toUpperCase()}`,
-              color: "red",
+              color: `${type === "Challan" ? "black" : "red"}`,
               bold: true,
               border: [false, false, true, true],
             },
