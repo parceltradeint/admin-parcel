@@ -106,7 +106,7 @@ const BalanceDetails = (props) => {
     newData[cellInfo.index][cellInfo.column.id] = val;
     let debit = Number(newData[cellInfo.index]["debit"] || 0).toFixed(2);
     let credit = Number(newData[cellInfo.index]["credit"] || 0);
-    newData[cellInfo.index]["total"] = Number(debit) - Number(credit) || 0;
+    newData[cellInfo.index]["total"] =Number(credit) - Number(debit) || 0;
     setData(newData);
   };
 
@@ -129,6 +129,7 @@ const BalanceDetails = (props) => {
     const newData = {
       ...val,
     };
+    console.log("val", val);
     Swal.fire({
       title: `ARE YOU SURE FOR UPDATE?`,
       icon: "question",
@@ -143,10 +144,34 @@ const BalanceDetails = (props) => {
       if (resP.isConfirmed) {
         setLoading(index);
         delete newData?._id;
-        await axios
-          .post(`/api/balance?=id${val?._id || null}`, { ...newData })
+        new Promise(async (resolve, reject) => {
+          if (val?._id) {
+            await axios
+              .patch(`/api/balance?id=${val?._id}`, {
+                ...newData,
+              })
+              .then(
+                (res) => resolve(res.data),
+                (err) => reject(err)
+              );
+          } else {
+            await axios
+              .post(`/api/balance`, {
+                ...newData,
+              })
+              .then(
+                (res) => resolve(res.data),
+                (err) => reject(err)
+              );
+          }
+        })
           .then((res) => {
-            console.log("res", res);
+            console.log("re data", res);
+            if (res.data?.insertedId) {
+              let newData = [...data];
+              newData[index] = { ...newData[index], _id: res.data?.insertedId };
+              setData(newData);
+            }
             successAlert("Successfully Update");
           })
           .catch((err) => {
@@ -298,6 +323,20 @@ const BalanceDetails = (props) => {
           },
 
           {
+            Header: "Credit",
+            accessor: "credit",
+            Cell: renderEditable,
+            Footer: ({ row }) => (
+              <p className="text-center">
+                {convertTotalAmount(
+                  sumBy(data, (item) => Number(item.credit || 0))
+                )}
+              </p>
+            ),
+          },
+
+
+          {
             Header: "Debit",
             accessor: "debit",
             Cell: renderEditable,
@@ -310,18 +349,6 @@ const BalanceDetails = (props) => {
               <p className="text-center">
                 {convertTotalAmount(
                   sumBy(data, (item) => Number(item.debit || 0))
-                )}
-              </p>
-            ),
-          },
-          {
-            Header: "Credit",
-            accessor: "credit",
-            Cell: renderEditable,
-            Footer: ({ row }) => (
-              <p className="text-center">
-                {convertTotalAmount(
-                  sumBy(data, (item) => Number(item.credit || 0))
                 )}
               </p>
             ),

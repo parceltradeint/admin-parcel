@@ -8,12 +8,8 @@ export default async function balanceAPI(req, res) {
 
   if (req.method == "POST") {
     try {
-      const objectId = new ObjectId(req?.query?.id);
-      const result = await collection.findOneAndUpdate(
-        { _id: objectId || "" },
-        { $set: req.body },
-        { upsert: true, new: true }
-      );
+      const result = await collection.insertOne({...req.body});
+      console.log("result", result.insertedId);
       res.status(200).json({ status: 200, data: result });
       await client.close();
     } catch (error) {
