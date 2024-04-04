@@ -34,12 +34,13 @@ const BillFormSegment = (props) => {
   });
   const [saveSoundPlay] = useSound("/assets/sounds/save.mp3", { volume: 0.45 });
 
-  let type = router?.query?.type.includes("outbound") ? "customer"
-      : router?.query?.type.includes("inbound")
-      ? "cnf"
-      : router?.query?.type.includes("packing")
-      ? "packing"
-      : "";
+  let type = router?.query?.type.includes("outbound")
+    ? "customer"
+    : router?.query?.type.includes("inbound")
+    ? "cnf"
+    : router?.query?.type.includes("packing")
+    ? "packing"
+    : "";
   const downloadPDF = () => {
     // var win = window.open("", "_blank");
     const newData = [...data];
@@ -205,7 +206,9 @@ const BillFormSegment = (props) => {
             (newData["type"] = resP.value),
             await axios
               .post(`/api/${selectedType}`, { ...newData })
-              .then((res) => res)
+              .then((res) => {
+                console.log("res", res);
+              })
               .catch((err) => {
                 console.log("err", err);
                 errorAlert("Something went wrong!");
@@ -251,11 +254,41 @@ const BillFormSegment = (props) => {
               });
         } else {
           delete newData?._id;
-          await axios
-            .patch(`/api/${selectedType}`, {
-              id: editMode?._id,
-              data: { ...newData },
-            })
+
+          let response;
+          if (resP.value != newData["type"]) {
+            response = new Promise((resolve, reject) => {
+              axios
+                .delete(
+                  `/api/${
+                    newData["type"] === "customer"
+                      ? "outbound"
+                      : newData["type"] === "cnf"
+                      ? "inbound"
+                      : newData["type"]
+                  }?id=` + editMode?._id
+                )
+                .then((res) => res)
+                .catch((err) => err);
+              
+              axios
+                .post(`/api/${selectedType}`, { ...newData, type: resP.type })
+                .then((res) => resolve(res))
+                .catch((err) => reject(err));
+            });
+          } else {
+            response = new Promise((resolve, reject) => {
+              axios
+                .patch(`/api/${selectedType}`, {
+                  id: editMode?._id,
+                  data: { ...newData },
+                })
+                .then((res) => resolve(res))
+                .catch((err) => reject(err));
+            });
+          }
+
+          response
             .then((res) => {
               successAlert("Successfully Update");
               router.push(
@@ -286,7 +319,15 @@ const BillFormSegment = (props) => {
         setLoading(true);
         if (editMode) {
           await axios
-            .delete(`/api/${type === "customer" ? "outbound" : type === "cnf" ? "inbound" : type}?id=` + editMode?._id)
+            .delete(
+              `/api/${
+                type === "customer"
+                  ? "outbound"
+                  : type === "cnf"
+                  ? "inbound"
+                  : type
+              }?id=` + editMode?._id
+            )
             .then((res) => {
               successAlert("Successfully Deleted");
               router.push(
@@ -318,7 +359,11 @@ const BillFormSegment = (props) => {
   }, [editMode]);
 
   useEffect(() => {
-    if (customerInfo?.customerId && router.pathname?.includes("new") && type !== "packing") {
+    if (
+      customerInfo?.customerId &&
+      router.pathname?.includes("new") &&
+      type !== "packing"
+    ) {
       async function fetchCustomer() {
         setLoadingUserDetails(true);
         await axios
@@ -370,7 +415,8 @@ const BillFormSegment = (props) => {
         customerInfo &&
         customerInfo?.customerName &&
         customerInfo?.shipmentBy &&
-        customerInfo?.shipmentNo && customerInfo?.customerAddress && (
+        customerInfo?.shipmentNo &&
+        customerInfo?.customerAddress && (
           <>
             <BillFormDetails
               data={data}
