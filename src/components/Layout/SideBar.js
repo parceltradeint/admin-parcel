@@ -40,7 +40,7 @@ import { signOut } from "@/lib/authFun/authFun";
 
 const SideBar = () => {
   const router = useRouter();
-  const { pathname, query } = router;
+  const { pathname, query, asPath } = router;
   const { user } = useContext(UserContext);
   let type = router?.query?.type;
   if (typeof window !== "undefined") {
@@ -91,9 +91,9 @@ const SideBar = () => {
               }}
               className={`${
                 pathname === "/my-profile"
-                  ? "bg-sideBarHoverBg  text-sideBarHoverText "
+                  ? "bg-sideBarMenuBg  text-sideBarHoverText "
                   : "text-sideBarText  "
-              } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
+              } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarMenuBg   hover:text-sideBarHoverText`}
             >
               <div>
                 <FontAwesomeIcon icon={faUserCircle} />
@@ -108,8 +108,8 @@ const SideBar = () => {
                 }}
                 key={i}
                 className={`${
-                  pathname === item.link
-                    ? "bg-sideBarHoverBg  text-sideBarHoverText "
+                  asPath.includes(item.link?.replace(/months/g, "month"))
+                    ? "bg-sideBarMenuBg  text-sideBarHoverText "
                     : "text-sideBarText  "
                 } flex items-center px-4 py-2 md:mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
               >
@@ -119,167 +119,6 @@ const SideBar = () => {
                 </div>
               </Link>
             ))}
-            {/* <Link
-              as={"/dashboard"}
-              href={{
-                pathname: "/dashboard",
-              }}
-              className={`${
-                pathname === "/dashboard"
-                  ? "bg-sideBarHoverBg  text-sideBarHoverText "
-                  : "text-sideBarText  "
-              } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
-            >
-              <div>
-                <FontAwesomeIcon icon={faDashboard} />
-                <span className="mx-4 font-medium">Dashboard</span>
-              </div>
-            </Link>
-
-            <Link
-              // as={"/outbound"}
-              // href={{
-              //   pathname: "/outbound",
-              // }}
-              href={`/bills/customer/months`}
-              className={`${
-                query?.type === "customer" ||
-                pathname === "/bills/customer/months" ||
-                type === "outbound"
-                  ? "bg-sideBarHoverBg  text-sideBarHoverText"
-                  : "text-sideBarText  "
-              } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
-            >
-              <div>
-                <FontAwesomeIcon icon={faShop} />
-                <span className="mx-4 font-medium">Customer Bill</span>
-              </div>
-            </Link>
-
-            <Link
-              href={`/bills/cnf/months`}
-              className={`${
-                pathname === "/bills/cnf/months" ||
-                query?.type === "cnf" ||
-                type === "inbound"
-                  ? "bg-sideBarHoverBg  text-sideBarHoverText "
-                  : "text-sideBarText  "
-              } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg hover:text-sideBarHoverText`}
-            >
-              <div>
-                <FontAwesomeIcon icon={faShop} />
-                <span className="mx-4 font-medium">CnF Bill</span>
-              </div>
-            </Link>
-
-            <Link
-              href={`/bills/packing/months`}
-              className={`${
-                pathname === "/bills/packing/months" ||
-                query?.type === "packing" ||
-                type === "packing"
-                  ? "bg-sideBarHoverBg  text-sideBarHoverText "
-                  : "text-sideBarText  "
-              } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg hover:text-sideBarHoverText`}
-            >
-              <div>
-                <FontAwesomeIcon icon={faBoxesPacking} />
-                <span className="mx-4 font-medium">Packing Lists</span>
-              </div>
-            </Link>
-
-            <Link
-              as={"/customers"}
-              href={{
-                pathname: "/customers",
-              }}
-              className={`${
-                pathname === "/customers"
-                  ? "bg-sideBarHoverBg  text-sideBarHoverText "
-                  : "text-sideBarText  "
-              } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
-            >
-              <div>
-                <FontAwesomeIcon icon={faUsers} />
-                <span className="mx-4 font-medium">Customers List</span>
-              </div>
-            </Link>
-
-            <Link
-              as={"/finance"}
-              href={{
-                pathname: "/finance",
-              }}
-              className={`${
-                pathname === "/finance"
-                  ? "bg-sideBarHoverBg  text-sideBarHoverText "
-                  : "text-sideBarText  "
-              } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
-            >
-              <div>
-                <FontAwesomeIcon icon={faCoins} />
-                <span className="mx-4 font-medium">Finance</span>
-              </div>
-            </Link>
-            <Link
-              as={"/balance"}
-              href={{
-                pathname: "/balance",
-              }}
-              className={`${
-                pathname === "/balance"
-                  ? "bg-sideBarHoverBg  text-sideBarHoverText "
-                  : "text-sideBarText  "
-              } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
-            >
-              <div>
-                <FontAwesomeIcon icon={faCoins} />
-                <span className="mx-4 font-medium">balance</span>
-              </div>
-            </Link>
-
-            <Link
-              as={"/marketing"}
-              href={{
-                pathname: "/marketing",
-              }}
-              className={`${
-                pathname === "/marketing"
-                  ? "bg-sideBarHoverBg  text-sideBarHoverText "
-                  : "text-sideBarText  "
-              } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
-            >
-              <div>
-                <FontAwesomeIcon icon={faBullhorn} />
-                <span className="mx-4 font-medium">Marketing</span>
-              </div>
-            </Link>
-
-            <Link
-              as={"/admin-dashboard"}
-              href={{
-                pathname: "/admin-dashboard",
-              }}
-              className={`${
-                pathname === "/admin-dashboard"
-                  ? "bg-sideBarHoverBg  text-sideBarHoverText "
-                  : "text-sideBarText  "
-              } flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
-            >
-              <div>
-                <FontAwesomeIcon icon={faDatabase} />
-                <span className="mx-4 font-medium">Admin Dashboard</span>
-              </div>
-            </Link> */}
-            {/* <button
-              onClick={() => setIsNoticeOpen(true)}
-              className={`text-sideBarText w-full flex items-center px-4 py-2 mt-5  transition-colors duration-200 transform  hover:bg-sideBarHoverBg   hover:text-sideBarHoverText`}
-            >
-              <div>
-                <FontAwesomeIcon icon={faFlag} />
-                <span className="mx-4 font-medium">Notice</span>
-              </div>
-            </button> */}
           </nav>
         </div>
       </div>
