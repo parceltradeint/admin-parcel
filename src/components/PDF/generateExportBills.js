@@ -14,9 +14,10 @@ export const generateExportBills = (data) => {
     } else {
       let total =
         sumBy(item.data, (v) => Number(v.totalAmount || 0)) +
-        Number(item?.rmb?.qty || 0) * Number(item?.rmb?.rate || 0) +
-        Number(item?.due || 0) -
-        Number(item?.paid || 0);
+        Number(item?.rmb?.qty || 0) * Number(item?.rmb?.rate || 0);
+      // +
+      // Number(item?.due || 0) -
+      // Number(item?.paid || 0);
       return total.toFixed(2);
     }
   };
@@ -281,9 +282,9 @@ export const generateExportBills = (data) => {
       defaultBorder: true, // Apply the default border to all content elements
     },
     styles: {
-      headerStrip:  stylesVals.tableFooter,
-      summartTable:  stylesVals.summartTable,
-      tableHeader:  stylesVals.tableHeader,
+      headerStrip: stylesVals.tableFooter,
+      summartTable: stylesVals.summartTable,
+      tableHeader: stylesVals.tableHeader,
       tableFooter: stylesVals.tableFooter,
       nameStyle: {
         color: "red",

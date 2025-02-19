@@ -7,7 +7,7 @@ import PlaceHolderLoading, { SpingSvgIcon } from "@/common/PlaceHolderLoading";
 import axios from "axios";
 import { errorAlert } from "@/common/SweetAlert";
 
-import CustomerAllDueBills from "./CustomerAllDueBills";
+import CustomerAllDueBills, { getStatusColor } from "./CustomerAllDueBills";
 import ToolTip from "@/common/ToolTip";
 import { Button, Tooltip, Typography } from "@material-tailwind/react";
 import { generateExportBills } from "../PDF/generateExportBills";
@@ -23,7 +23,16 @@ const CustomersBillCal = (props) => {
       await axios
         .get(`/api/customers-bills`)
         .then((res) => {
-          setData(res.data.data);
+          const statusPriority = {
+            pending: 1,
+            ongoing: 2,
+            rejected: 3,
+            approved: 4,
+          };
+          const newData = res.data.data?.sort(
+            (a, b) => statusPriority[a?.approval] - statusPriority[b?.approval]
+          );
+          setData(newData);
         })
         .catch((err) => {
           errorAlert("Something went wrong!");
@@ -263,6 +272,19 @@ const CustomersBillCal = (props) => {
               </p>
             ),
           },
+          // {
+          //   Header: "Approval",
+          //   accessor: "approval",
+          //   Cell: ({ row }) => (
+          //     <p
+          //       className={`${getStatusColor(
+          //         row?._original?.approval || "pending"
+          //       )}`}
+          //     >
+          //       {row?._original?.approval || "Pending"}
+          //     </p>
+          //   ),
+          // },
           {
             Header: "Action",
             accessor: "##",

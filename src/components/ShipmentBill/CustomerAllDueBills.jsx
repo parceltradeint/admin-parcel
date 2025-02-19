@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import ReactTable from "react-table-v6";
-import { convertBengaliToEnglishNumber } from "../PDF/InvoiceDef";
+import { convertBengaliToEnglishNumber, generatePDF } from "../PDF/InvoiceDef";
 import useSound from "use-sound";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
@@ -19,12 +19,14 @@ import { generateLedgerPDF } from "../PDF/accountLedger";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import NumberFormat from "react-number-format";
+import { MdCloudUpload, MdOutlineDoNotDisturb } from "react-icons/md";
+import { SlideshowLightbox } from "lightbox.js-react";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const CustomerAllDueBills = (props) => {
   const { type, items, setShowModal } = props;
   const [loading, setLoading] = useState(false);
-
+  const [statusValue, setStatusValue] = useState("pending");
   const [data, setData] = useState([...props.items]);
   const router = useRouter();
   const [addItemsSoundPlay] = useSound("/assets/sounds/save.mp3", {
@@ -192,6 +194,75 @@ const CustomerAllDueBills = (props) => {
   //   return <PlaceHolderLoading loading={true} />;
   // }
 
+  const handleOnViewPDF = (value) => {
+    const newInfo = {
+      ...value,
+      // due: value.balance || 0,
+      paid: value.credit || 0,
+      watermark: Number(value.balance) <= 0,
+    };
+    generatePDF(newInfo);
+    // generateExportBills(data);
+  };
+
+  const renderEditableFile = (cellInfo, fixed) => {
+    const cellValue = data[cellInfo.index][cellInfo.column.id];
+    return (
+      <label className="flex items-center justify-center text-center px-4 py-1">
+        {cellValue ? (
+          <SlideshowLightbox
+            showControls
+            open={showImg}
+            onClose={() => setShowImg(false)}
+            onOpen={() => setShowImg(true)}
+            showThumbnails={false}
+            backgroundColor="rgba(0, 0, 0, 0.034)" // Black with 70% opacity
+            modalClose="clickOutside"
+            animateThumbnails={false}
+            className="lightbox-custom"
+            iconColor={"black"}
+            // className="container grid grid-cols-3 gap-2 mx-auto"
+          >
+            <img className="w-full rounded h-10" src={cellValue} />
+          </SlideshowLightbox>
+        ) : (
+          <span className=" cursor-not-allowed flex items-center space-x-2">
+            <MdOutlineDoNotDisturb size={25} />
+          </span>
+        )}
+        {/* <IoEyeSharp onClick={() => setShowImg(true)} /> */}
+      </label>
+    );
+  };
+
+  const renderEditableStatus = (cellInfo, fixed) => {
+    const cellValue = data[cellInfo.index][cellInfo.column.id];
+
+    return (
+      <select
+        className={`block w-full bg-white dark:bg-black border border-gray-200 dark:border-black rounded py-1 px-4 leading-tight focus:outline-none ${getStatusColor(
+          cellValue || "pending"
+        )}`}
+        value={cellValue}
+        onChange={(e) => handleStatusChange(cellInfo, e.target.value)}
+        // disabled={cellInfo?.row?.approval === "approved"}
+      >
+        <option value="pending">Pending</option>
+        <option value="approved">Approved</option>
+        <option value="rejected">Rejected</option>
+        <option value="ongoing">On Going</option>
+      </select>
+    );
+  };
+
+  const handleStatusChange = (cellInfo, value) => {
+    // const cellValue = data[cellInfo.index][cellInfo.column.id];
+    // setStatusValue(event.target.value);
+    const newData = [...data];
+    newData[cellInfo.index][cellInfo.column.id] = value;
+    setData(newData);
+  };
+
   return (
     <Modal
       isOpen={items ? true : false}
@@ -199,7 +270,7 @@ const CustomerAllDueBills = (props) => {
       onClose={() => setShowModal(false)}
       className={"w-auto"}
     >
-      <Modal.Title>{"View Due Detail"}</Modal.Title>
+      <Modal.Title>{`View Customer Bill Detail: ${data[0]["customerName"]}`}</Modal.Title>
       <Modal.Content>
         <div>
           <ReactTable
@@ -217,11 +288,11 @@ const CustomerAllDueBills = (props) => {
                 Cell: renderText,
                 Footer: () => <p className="text-center">Total-</p>,
               },
-              {
-                Header: "S. Mark",
-                accessor: "customerName",
-                Cell: renderText,
-              },
+              // {
+              //   Header: "S. Mark",
+              //   accessor: "customerName",
+              //   Cell: renderText,
+              // },
               {
                 Header: "By",
                 accessor: "shipmentBy",
@@ -291,7 +362,9 @@ const CustomerAllDueBills = (props) => {
               {
                 Header: "Balance",
                 accessor: "balance",
-                Cell: ({row}) => <p>{convertTotalAmount(Number(row?._original?.balance))}</p>,
+                Cell: ({ row }) => (
+                  <p>{convertTotalAmount(Number(row?._original?.balance))}</p>
+                ),
                 Footer: ({ row }) => (
                   <p className="text-center">
                     {convertTotalAmount(
@@ -299,6 +372,17 @@ const CustomerAllDueBills = (props) => {
                     )}
                   </p>
                 ),
+              },
+              {
+                Header: "Pay Slip",
+                accessor: "payslip",
+                Cell: renderEditableFile,
+              },
+              {
+                Header: "Approval",
+                accessor: "approval",
+                Cell: renderEditableStatus,
+                width: 135,
               },
               {
                 Header: "Action",
@@ -319,8 +403,16 @@ const CustomerAllDueBills = (props) => {
                         "Update"
                       )}
                     </button>
+                    <button
+                      onClick={(e) => handleOnViewPDF(row._original)}
+                      className="uppercase inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded transition ease-in-out duration-150 bg-red-600 hover:bg-red-700 text-white"
+                      disabled={loading}
+                    >
+                      View Pdf
+                    </button>
                   </div>
                 ),
+                width: 180,
               },
               // {
               //   //   id: "headerId",
@@ -377,3 +469,18 @@ const CustomerAllDueBills = (props) => {
 };
 
 export default CustomerAllDueBills;
+
+export const getStatusColor = (value) => {
+  switch (value) {
+    case "approved":
+      return "text-green-600";
+    case "rejected":
+      return "text-red-600";
+    case "pending":
+      return "text-purple-600";
+    case "ongoing":
+      return "text-yellow-600";
+    default:
+      return "";
+  }
+};

@@ -10,8 +10,12 @@ import useSound from "use-sound";
 
 const BillFormDetails = (props) => {
   const { data, setData, aditionalInfo, setAditionalInfo, type } = props;
-  const [deleteItemsSoundPlay] = useSound("/assets/sounds/delete-item.mp3", {"volume": 0.25});
-  const [addItemsSoundPlay] = useSound("/assets/sounds/save.mp3", {"volume": 0.25});
+  const [deleteItemsSoundPlay] = useSound("/assets/sounds/delete-item.mp3", {
+    volume: 0.25,
+  });
+  const [addItemsSoundPlay] = useSound("/assets/sounds/save.mp3", {
+    volume: 0.25,
+  });
 
   const handleKeyDown = (event) => {
     if (event.key === "ArrowUp" || event.key === "ArrowDown") {
@@ -84,7 +88,9 @@ const BillFormDetails = (props) => {
     return (
       <>
         <input
-          className={`flex items-center ${type == "all" ? "mt-1":"mt-5"} cursor-pointer ml-2 text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 mark-box`}
+          className={`flex items-center ${
+            type == "all" ? "mt-1" : "mt-5"
+          } cursor-pointer ml-2 text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 mark-box`}
           type="checkbox"
           onChange={(e) =>
             handleCellMarkChange(cellInfo, e.target.checked, type)
@@ -98,8 +104,8 @@ const BillFormDetails = (props) => {
     const newData = [...data];
     if (type === "all") {
       const markDatas = newData.map((item) => ({ ...item, mark: val }));
-      const rowCheckboxes = document.querySelectorAll('.mark-box');
-      rowCheckboxes.forEach(checkbox => {
+      const rowCheckboxes = document.querySelectorAll(".mark-box");
+      rowCheckboxes.forEach((checkbox) => {
         checkbox.checked = val;
       });
       setData(markDatas);
@@ -118,7 +124,7 @@ const BillFormDetails = (props) => {
   };
 
   const handleDelete = (original, index) => {
-    deleteItemsSoundPlay()
+    deleteItemsSoundPlay();
     let newData = [...data];
     if (index !== -1) {
       newData.splice(index, 1);
@@ -134,7 +140,7 @@ const BillFormDetails = (props) => {
   } = useForm({ mode: "all" });
 
   const onSubmit = (val) => {
-    addItemsSoundPlay()
+    addItemsSoundPlay();
     let newData = [...data];
     const newBill = {
       goodsName: "",
@@ -215,7 +221,6 @@ const BillFormDetails = (props) => {
         <ReactTable
           data={data}
           columns={[
-            
             {
               Header: "SL",
               accessor: "sl",
@@ -372,10 +377,10 @@ const BillFormDetails = (props) => {
                       value={aditionalInfo?.rmb?.rate}
                     /> */}
                   </span>
-                  <span className=" border-y-2 mt-4">Total</span>
+                  {/* <span className=" border-y-2 mt-4">Total</span>
                   <span className="text-red-600">Due</span>
-                  <span className=" border-y-2 text-green-600">ADVANCE</span>
-                  <span className=" ">Total Bill</span>
+                  <span className=" border-y-2 text-green-600">ADVANCE</span> */}
+                  <span className=" mt-2">Total Bill</span>
                 </div>
               ),
             },
@@ -396,10 +401,9 @@ const BillFormDetails = (props) => {
                             Number(aditionalInfo?.rmb?.rate) || 0
                         )}
                         disabled
-                        // inputMode="numeric"
                       />
                     </span>
-                    <span className=" border-y-2 text-right">
+                    {/* <span className=" border-y-2 text-right">
                       <NumberFormat
                         thousandSeparator={true}
                         className="text-right font-semibold block w-full bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
@@ -407,7 +411,6 @@ const BillFormDetails = (props) => {
                         disabled
                         // inputMode="numeric"
                       />
-                      {/* {convertTotalAmount(netTotalAmount(row?.data))} */}
                     </span>
                     <span>
                       <NumberFormat
@@ -421,16 +424,6 @@ const BillFormDetails = (props) => {
                         inputMode="numeric"
                         disabled
                       />
-                      {/* <input
-                        className="text-right block w-full bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-                        name="input"
-                        type={"number"}
-                        // onChange={(e) => handleCellRenderChange(cellInfo, e.target.value)}
-                        onChange={(e) =>
-                          handleAditionalInfo(e.target.value, "due")
-                        }
-                        defaultValue={aditionalInfo?.due}
-                      /> */}
                     </span>
                     <span>
                       <NumberFormat
@@ -442,19 +435,8 @@ const BillFormDetails = (props) => {
                         className="text-right block w-full bg-white text-green-600 border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                         value={aditionalInfo.paid}
                         disabled
-                        // inputMode="numeric"
                       />
-                      {/* <input
-                        className="block w-full text-right bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-                        name="input"
-                        type={"number"}
-                        // onChange={(e) => handleCellRenderChange(cellInfo, e.target.value)}
-                        defaultValue={aditionalInfo?.paid}
-                        onChange={(e) =>
-                          handleAditionalInfo(e.target.value, "paid")
-                        }
-                      /> */}
-                    </span>
+                    </span> */}
                     <span className="block w-full text-right bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40">
                       {convertTotalAmount(
                         Number(netTotalAmount(row?.data)) +
@@ -466,7 +448,7 @@ const BillFormDetails = (props) => {
                 </div>
               ),
             },
-           
+
             {
               Header: "Status",
               accessor: "status",

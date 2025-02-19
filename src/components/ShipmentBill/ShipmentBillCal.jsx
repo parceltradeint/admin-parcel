@@ -18,6 +18,11 @@ import pdfFonts from "pdfmake/build/vfs_fonts";
 import NumberFormat from "react-number-format";
 import { generateShipmentBills } from "../PDF/generateShipmentBills";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
+import { MdCloudUpload } from "react-icons/md";
+import { IoEyeSharp } from "react-icons/io5";
+import { SlideshowLightbox } from "lightbox.js-react";
+import { extractDetails, fileToDataUri, onFileUpload } from "@/lib/utilis";
+import Tesseract from "tesseract.js";
 
 const ShipmentBillCal = (props) => {
   const { type } = props;
@@ -27,6 +32,7 @@ const ShipmentBillCal = (props) => {
     volume: 0.25,
   });
   const [loading, setLoading] = useState(false);
+  const [showImg, setShowImg] = useState(false);
 
   const calculationDueBill = (item) => {
     if (item.totalDueBill) {
@@ -93,6 +99,119 @@ const ShipmentBillCal = (props) => {
     );
   };
 
+  const renderNormalEditable = (cellInfo, fixed) => {
+    const cellValue = data[cellInfo.index][cellInfo.column.id];
+
+    return (
+      <>
+        <input
+          className={`uppercase text-center block w-full px-4 py-1  text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 `}
+          name="input"
+          step={"any"}
+          onKeyDown={handleKeyDown}
+          onChange={(e) => handleCellRenderChange(cellInfo, e.target.value)}
+          value={cellValue}
+          //   value={convertTotalAmount(Number(cellValue), 0)}
+          type="text"
+          //   defaultValue={
+          //     cellInfo.column.id === "debit"
+          //       ? Number(calculationDueBill(data[cellInfo.index]))
+          //       : cellInfo || 0
+          //   }
+        />
+      </>
+    );
+  };
+  const renderNormalEditableDate = (cellInfo, fixed) => {
+    const cellValue = data[cellInfo.index][cellInfo.column.id];
+
+    return (
+      <>
+        {cellValue ? (
+          <p className="px-6 py-2 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900 text-center">
+            {cellValue || "--"}
+          </p>
+        ) : cellValue === null ? (
+          <input
+            className={`uppercase text-center block w-full px-4 py-1  text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 `}
+            name="input"
+            step={"any"}
+            onKeyDown={handleKeyDown}
+            onChange={(e) => handleCellRenderChange(cellInfo, e.target.value)}
+            value={cellValue}
+            //   value={convertTotalAmount(Number(cellValue), 0)}
+            type="date"
+            //   defaultValue={
+            //     cellInfo.column.id === "debit"
+            //       ? Number(calculationDueBill(data[cellInfo.index]))
+            //       : cellInfo || 0
+            //   }
+          />
+        ) : (
+          <p className="px-6 py-2 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900 text-center">
+            {"--"}
+          </p>
+        )}
+      </>
+    );
+  };
+
+  const renderEditableFile = (cellInfo, fixed) => {
+    const cellValue = data[cellInfo.index][cellInfo.column.id];
+    return (
+      <label className="flex items-center justify-center text-center px-4 py-1">
+        {cellValue ? (
+          <SlideshowLightbox
+            showControls
+            open={showImg}
+            onClose={() => setShowImg(false)}
+            onOpen={() => setShowImg(true)}
+            showThumbnails={false}
+            backgroundColor="rgba(0, 0, 0, 0.034)" // Black with 70% opacity
+            modalClose="clickOutside"
+            animateThumbnails={false}
+            className="lightbox-custom"
+            iconColor={"black"}
+            // className="container grid grid-cols-3 gap-2 mx-auto"
+          >
+            <img className="w-full rounded h-10" src={cellValue} />
+          </SlideshowLightbox>
+        ) : (
+          <>
+            <input
+              type="file"
+              className="hidden"
+              accept=".jpg, .png, .jpeg"
+              onChange={(e) => {
+                handleChangeFile(cellInfo, e.target.files[0]);
+              }}
+            />
+            <span className="flex items-center space-x-2 cursor-pointer">
+              <MdCloudUpload size={25} />
+            </span>
+          </>
+        )}
+        {/* <IoEyeSharp onClick={() => setShowImg(true)} /> */}
+      </label>
+    );
+  };
+
+  const handleChangeFile = (cellInfo, value) => {
+    const newData = [...data];
+    fileToDataUri(value).then((photoURL) => {
+      newData[cellInfo.index][cellInfo.column.id] = photoURL;
+      Tesseract.recognize(photoURL, "eng+ben", {
+        logger: (m) => console.log("m", m),
+      }).then(({ data: { text } }) => {
+        const extract = extractDetails(text);
+        newData[cellInfo.index]["trxDate"] = extract.trxDate;
+        newData[cellInfo.index]["trxId"] = extract.trxId;
+        newData[cellInfo.index]["amount"] = extract.amount;
+        setData(newData);
+      });
+    });
+  };
+
   const handleCellRenderChange = (cellInfo, val) => {
     const newData = [...data];
     newData[cellInfo.index][cellInfo.column.id] = val;
@@ -140,19 +259,20 @@ const ShipmentBillCal = (props) => {
       if (resP.isConfirmed) {
         setLoading(val._id);
         delete newData?._id;
-        await axios
-          .patch(`/api/${type}`, {
-            id: val?._id,
-            data: { ...newData },
-          })
-          .then((res) => {
-            successAlert("Successfully Update");
-          })
-          .catch((err) => {
-            console.log("err", err);
-            errorAlert("Something went wrong!");
-          })
-          .finally(() => setLoading(false));
+        // onFileUpload()
+        //   await axios
+        //     .patch(`/api/${type}`, {
+        //       id: val?._id,
+        //       data: { ...newData },
+        //     })
+        //     .then((res) => {
+        //       successAlert("Successfully Update");
+        //     })
+        //     .catch((err) => {
+        //       console.log("err", err);
+        //       errorAlert("Something went wrong!");
+        //     })
+        //     .finally(() => setLoading(false));
       } else {
         return;
       }
@@ -200,7 +320,7 @@ const ShipmentBillCal = (props) => {
           {
             Header: "SL",
             accessor: "sl",
-            Cell: (row) => <p>{ row.viewIndex + 1}</p>,
+            Cell: (row) => <p>{row.viewIndex + 1}</p>,
             Footer: () => <p className="text-center">Total-</p>,
             width: 50,
           },
@@ -244,14 +364,15 @@ const ShipmentBillCal = (props) => {
                 )}
               </p>
             ),
-            
           },
           {
             Header: "Debit",
             accessor: "debit",
             //   Cell: renderEditable,
             Cell: ({ row }) => (
-              <p className="text-center">{convertTotalAmount(Number(row?._original?.totalAmount))}</p>
+              <p className="text-center">
+                {convertTotalAmount(Number(row?._original?.totalAmount))}
+              </p>
             ),
             Footer: ({ row }) => (
               <p className="text-center">
@@ -273,6 +394,7 @@ const ShipmentBillCal = (props) => {
               </p>
             ),
           },
+
           {
             Header: "Discount",
             accessor: "discount",
@@ -289,13 +411,61 @@ const ShipmentBillCal = (props) => {
             Header: "Balance",
             accessor: "balance",
             Cell: ({ row }) => (
-              <p className="text-center">{convertTotalAmount(Number(row?._original?.balance))}</p>
+              <p className="text-center">
+                {convertTotalAmount(Number(row?._original?.balance))}
+              </p>
             ),
             Footer: ({ row }) => (
               <p className="text-center">
                 {convertTotalAmount(
                   sumBy(data, (item) => Number(item.balance))
                 )}
+              </p>
+            ),
+          },
+          {
+            Header: "Payslip",
+            accessor: "payslip",
+            Cell: renderEditableFile,
+          },
+          {
+            Header: "Trx Date",
+            accessor: "trxDate",
+            // Cell: ({ row }) => (
+            //   <p className="px-6 py-2 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900 text-center">
+            //     {(row._original?.trxDate &&
+            //       new Date(row._original?.trxDate).toLocaleString()) ||
+            //       "--"}
+            //   </p>
+            // ),
+            Cell: renderNormalEditableDate,
+          },
+          {
+            Header: "Trx Id",
+            accessor: "trxId",
+            // Cell: ({ row }) => (
+            //   <p className="px-6 py-2 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900 text-center">
+            //     {row._original?.trxId || "--"}
+            //   </p>
+            // ),
+            Cell: renderNormalEditable,
+          },
+          {
+            Header: "Amount",
+            accessor: "amount",
+            // Cell: ({ row }) => (
+            //   <p className="px-6 py-2 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900 text-center">
+            //     {row._original?.amount || "--"}
+            //   </p>
+            // ),
+            Cell: renderNormalEditable,
+          },
+          {
+            Header: "Approval",
+            accessor: "approval",
+            Cell: ({ row }) => (
+              <p className="px-6 py-2 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900 text-center">
+                {row._original?.approval || "Pending"}
               </p>
             ),
           },
@@ -307,7 +477,7 @@ const ShipmentBillCal = (props) => {
                 <button
                   onClick={(e) => handleOnSubmit(row._original)}
                   className="uppercase inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
-                  disabled={loading}
+                  disabled={loading || !row._original?.payslip}
                 >
                   {loading === row._original?._id ? (
                     <>

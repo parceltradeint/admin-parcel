@@ -88,9 +88,10 @@ export const generatePDF = (info) => {
 
   const totalDueBill = () => {
     const value =
-      Number(netTotalAmount(allData)) +
-      Number(info?.due || 0) -
-      Number(info?.paid || 0);
+      Number(netTotalAmount(allData))
+      // +
+      // Number(info?.due || 0) -
+      // Number(info?.paid || 0);
     return value;
   };
 
@@ -99,7 +100,7 @@ export const generatePDF = (info) => {
       ? `CONGRATULATIONS! ADVANCE${convertTotalAmount(totalDueBill())} TAKA`
       : totalDueBill() == 0
       ? "CONGRATULATIONS!"
-      : `TOTAL DUE BILL- ${convertTotalAmount(totalDueBill())}`;
+      : `TOTAL BILL- ${convertTotalAmount(totalDueBill())}`;
 
   let docDefinition = {
     info: {
@@ -137,128 +138,6 @@ export const generatePDF = (info) => {
       },
       HeaderOfPDF(),
       headerBanner(),
-      // {
-      //   margin: [0, 0, 0, 0],
-      //   table: {
-      //     widths: ["*"],
-      //     body: [
-      //       [
-      //         {
-      //           border: [true, true, true, false],
-      //           columns: [
-      //             {
-      //               alignment: "left",
-      //               width: 60,
-      //               image: parcelLogo,
-      //             },
-      //             {
-      //               alignment: "left",
-      //               text: [
-      //                 "P",
-      //                 { text: "arce", color: "red" },
-      //                 "l ",
-      //                 "Trade International",
-      //               ],
-      //               fontSize: 30,
-      //               bold: true,
-      //               margin: [0, 10, 0, 0],
-      //             },
-      //             {
-      //               alignment: "right",
-      //               width: 60,
-      //               image: contact27,
-      //             },
-      //           ],
-      //         },
-      //       ],
-      //     ],
-      //   },
-      //   layout: {
-      //     defaultBorder: false,
-      //   },
-      // },
-      // {
-      //   table: {
-      //     widths: ["13%", "73%", "14%"],
-      //     body: [
-      //       [
-      //         {
-      //           stack: [
-      //             {
-      //               image: wechat,
-      //               width: 50,
-      //               margin: [10, 0, 0, 0],
-      //             },
-      //             {
-      //               text: "WeChat",
-      //               color: "#333",
-      //               alignment: "center",
-      //               fontSize: 9,
-      //               margin: [4, 4, 0, 0],
-      //             },
-      //           ],
-      //         },
-      //         {
-      //           stack: [
-      //             {
-      //               text: "H-2553, Sayednagor, Vatara, Gulshan-2, Dhaka-1212.\n",
-      //               fontSize: 15,
-      //               border: [false, true, false, true],
-      //             },
-      //             {
-      //               text: "Cell: 01879314050, 01521584929\n",
-      //               fontSize: 15,
-      //               margin: [0, 5, 0, 0],
-      //             },
-      //           ],
-      //           fillColor: "#555555",
-      //           color: "#FFFFFF",
-      //           bold: true,
-      //           alignment: "center",
-      //           margin: [0, 10, 0, 0],
-      //         },
-
-      //         {
-      //           stack: [
-      //             {
-      //               image: whatsApp,
-      //               width: 53,
-      //               margin: [10, 0, 0, 0],
-      //             },
-      //             {
-      //               text: "WhatsApp",
-      //               color: "#333",
-      //               alignment: "center",
-      //               fontSize: 9,
-      //               margin: [4, 0, 0, 0],
-      //             },
-      //           ],
-      //         },
-      //       ],
-      //     ],
-      //   },
-      //   layout: "borders",
-      // },
-
-      // {
-      //   style: "section",
-      //   margin: [0, 5, 0, 0],
-      //   table: {
-      //     widths: ["*"],
-      //     body: [
-      //       [
-      //         {
-      //           text: [{ text: "SHIPMENT BILL\n", fontSize: 15 }],
-      //           fillColor: "#1586D5",
-      //           color: "#FFFFFF",
-      //           alignment: "center",
-      //           bold: true,
-      //         },
-      //       ],
-      //     ],
-      //   },
-      //   layout: "noBorders",
-      // },
       invoiceCustomerInfo(info),
 
       {
@@ -342,13 +221,13 @@ export const generatePDF = (info) => {
         stack: [
           {
             table: {
-              widths: ["71.6%", "14.2%", "14.2%"],
+              widths: ["*"],
               body: [
                 [
                   {
-                    rowSpan: 3,
+                    // rowSpan: 3,
                     text: totalDueSection,
-                    alignment: "left",
+                    alignment: "right",
                     margin: [40, 10, 0, 0],
                     fontSize: 15,
                     bold: true,
@@ -358,53 +237,53 @@ export const generatePDF = (info) => {
                         : "red",
                     border: [true, false, true, true],
                   },
-                  {
-                    text: "DUE",
-                    fillColor: "#555555",
-                    color: "#FFFFFF",
-                    fontSize: 10,
-                    border: [true, false, true, false],
-                  },
-                  {
-                    text: `${convertTotalAmount(Number(info?.due || 0))}`,
-                    alignment: "right",
-                    fontSize: 10,
-                    color: `${info?.due ? "red" : "black"}`,
-                    border: [true, false, true, false],
-                  },
+                  // {
+                  //   text: "DUE",
+                  //   fillColor: "#555555",
+                  //   color: "#FFFFFF",
+                  //   fontSize: 10,
+                  //   border: [true, false, true, false],
+                  // },
+                  // {
+                  //   text: `${convertTotalAmount(Number(info?.due || 0))}`,
+                  //   alignment: "right",
+                  //   fontSize: 10,
+                  //   color: `${info?.due ? "red" : "black"}`,
+                  //   border: [true, false, true, false],
+                  // },
                 ],
-                [
-                  "",
-                  {
-                    text: "PAID",
-                    fillColor: "#555555",
-                    color: "#FFFFFF",
-                    fontSize: 10,
-                  },
-                  {
-                    text: `${convertTotalAmount(Number(info?.paid || 0))}`,
-                    alignment: "right",
-                    fontSize: 10,
-                    color: `${info?.paid ? "green" : "black"}`,
-                  },
-                ],
-                [
-                  "",
-                  {
-                    text: info?.watermark ? "" : "TOTAL",
-                    fillColor: "#555555",
-                    color: "#FFFFFF",
-                    fontSize: 10,
-                  },
-                  {
-                    text: info?.watermark
-                      ? ""
-                      : `${convertTotalAmount(Math.abs(totalDueBill()))}`,
-                    alignment: "right",
-                    bold: true,
-                    fontSize: 10,
-                  },
-                ],
+                // [
+                //   "",
+                //   {
+                //     text: "PAID",
+                //     fillColor: "#555555",
+                //     color: "#FFFFFF",
+                //     fontSize: 10,
+                //   },
+                //   {
+                //     text: `${convertTotalAmount(Number(info?.paid || 0))}`,
+                //     alignment: "right",
+                //     fontSize: 10,
+                //     color: `${info?.paid ? "green" : "black"}`,
+                //   },
+                // ],
+                // [
+                //   "",
+                //   {
+                //     text: info?.watermark ? "" : "TOTAL",
+                //     fillColor: "#555555",
+                //     color: "#FFFFFF",
+                //     fontSize: 10,
+                //   },
+                //   {
+                //     text: info?.watermark
+                //       ? ""
+                //       : `${convertTotalAmount(Math.abs(totalDueBill()))}`,
+                //     alignment: "right",
+                //     bold: true,
+                //     fontSize: 10,
+                //   },
+                // ],
               ],
             },
             // layout: "border",

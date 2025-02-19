@@ -60,21 +60,24 @@ body {
   text-transform: uppercase !important;
 }
 
-html::-webkit-scrollbar, .scrollbar::-webkit-scrollbar {
+html::-webkit-scrollbar,
+.scrollbar::-webkit-scrollbar {
   width: 3px !important;
 }
 
-html::-webkit-scrollbar-track, .scrollbar::-webkit-scrollbar-track {
+html::-webkit-scrollbar-track,
+.scrollbar::-webkit-scrollbar-track {
   box-shadow: inset 0 0 6px rgba(196, 196, 196, 0.735) !important;
 }
 
-html::-webkit-scrollbar-thumb, .scrollbar::-webkit-scrollbar-thumb {
+html::-webkit-scrollbar-thumb,
+.scrollbar::-webkit-scrollbar-thumb {
   background-color: rgba(25, 29, 253, 0.829) !important;
   outline: 1px solid slategrey !important;
 }
 
-input[type='number'] {
-  -moz-appearance:textfield;
+input[type="number"] {
+  -moz-appearance: textfield;
 }
 
 input::-webkit-outer-spin-button,
@@ -86,7 +89,8 @@ input::-webkit-inner-spin-button {
   text-transform: uppercase;
 }
 
-.css-tj5bde-Svg, .css-1u9des2-indicatorSeparator{
+.css-tj5bde-Svg,
+.css-1u9des2-indicatorSeparator {
   display: none !important;
 }
 .css-13cymwt-control {
@@ -94,5 +98,15 @@ input::-webkit-inner-spin-button {
 }
 .custom-Hover .ReactTable .rt-tr:hover .rt-td {
   background-color: #e53e3e;
-   color: white !important;;
+  color: white !important;
+}
+
+.lightbox-custom {
+  /* Example custom styles */
+  background-color: rgba(0, 0, 0, 0.034); /* Ensuring background color and opacity */
+}
+
+/* Target specific parts of the lightbox if needed */
+.lightbox-custom ._closeIcon_1foy9_63  {
+  border: 1 solid black !important;
 }
