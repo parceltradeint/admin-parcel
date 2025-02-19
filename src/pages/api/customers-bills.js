@@ -186,6 +186,7 @@ export async function getFilteredAndPaginatedData(
   sortOptions
 ) {
   const { client, db } = await dbClient();
+
   try {
     await client.connect();
     const collection = db.collection("shipment_bill");

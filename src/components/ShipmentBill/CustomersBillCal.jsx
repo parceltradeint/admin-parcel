@@ -1,4 +1,4 @@
-import { sumBy } from "lodash";
+import { sortBy, sumBy } from "lodash";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import ReactTable from "react-table-v6";
@@ -29,8 +29,19 @@ const CustomersBillCal = (props) => {
             rejected: 3,
             approved: 4,
           };
-          const newData = res.data.data?.sort(
-            (a, b) => statusPriority[a?.approval] - statusPriority[b?.approval]
+          const newData = sortBy(
+            res.data.data,
+            [
+              (o) => {
+                // Items without the 'approval' key come first (lowest sort value)
+                if (!o.approval) {
+                  return -1; // Lower than any priority defined in statusPriority
+                }
+                // Then sort by the defined status priorities
+                return statusPriority[o.approval] || 999; // Use a high value for undefined statuses
+              },
+            ],
+            ["asc"]
           );
           setData(newData);
         })
@@ -101,9 +112,10 @@ const CustomersBillCal = (props) => {
   }, {});
 
   // Convert the object back to an array
-  const groupedArray = Object.values(groupedByCustomerId).sort(
-    (a, b) => b.totalAmount - a.totalAmount
-  );
+  const groupedArray = Object.values(groupedByCustomerId) 
+  // Object.values(groupedByCustomerId).sort(
+  //   (a, b) => b.totalAmount - a.totalAmount
+  // );
 
   const handleExportBills = () => {
     if (window.confirm("Are you sure you want to export bills?")) {
