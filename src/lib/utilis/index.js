@@ -6,7 +6,7 @@ export const fileToDataUri = (file) =>
     reader.onload = (event) => {
       resolve(event.target.result);
     };
-    reader.readAsDataURL(file);
+    reader?.readAsDataURL(file);
   });
 
 export function timeSince(date) {
