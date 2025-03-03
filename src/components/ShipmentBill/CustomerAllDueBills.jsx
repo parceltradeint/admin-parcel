@@ -1,6 +1,6 @@
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { isNumber, sumBy } from "lodash";
+import { isArray, isNumber, sumBy } from "lodash";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -207,14 +207,16 @@ const CustomerAllDueBills = (props) => {
 
   const renderEditableFile = (cellInfo, fixed) => {
     const cellValue = data[cellInfo.index][cellInfo.column.id];
+    
     return (
       <label className="flex items-center justify-center text-center px-4 py-1">
         {cellValue ? (
           <SlideshowLightbox
             showControls
-            open={showImg}
-            onClose={() => setShowImg(false)}
-            onOpen={() => setShowImg(true)}
+            // open={showImg}
+            // onClose={() => setShowImg(false)}
+            // onOpen={() => setShowImg(true)}
+            key={JSON.stringify(cellValue)}
             showThumbnails={false}
             backgroundColor="rgba(0, 0, 0, 0.034)" // Black with 70% opacity
             modalClose="clickOutside"
@@ -223,7 +225,14 @@ const CustomerAllDueBills = (props) => {
             iconColor={"black"}
             // className="container grid grid-cols-3 gap-2 mx-auto"
           >
-            <img className="w-full rounded h-10" src={cellValue} />
+            {cellValue?.length > 0 &&
+              cellValue?.map((item, i) => (
+                <img
+                  key={i}
+                  className="w-full rounded h-10"
+                  src={item}
+                />
+              ))}
           </SlideshowLightbox>
         ) : (
           <span className=" cursor-not-allowed flex items-center space-x-2">
@@ -261,6 +270,47 @@ const CustomerAllDueBills = (props) => {
     const newData = [...data];
     newData[cellInfo.index][cellInfo.column.id] = value;
     setData(newData);
+  };
+
+  const renderNormalEditable = (cellInfo, fixed) => {
+    const cellValue = data[cellInfo.index][cellInfo.column.id];
+
+    return (
+      <>
+        {cellValue?.length > 0 && isArray(cellValue) ? (
+          <span className="flex flex-col space-y-1">
+            {cellValue?.map((value, i) => (
+              <NumberFormat
+                key={i}
+                thousandSeparator={true}
+                onValueChange={(values, sourceInfo) => {
+                  const { formattedValue, value } = values;
+                  // handleCellRenderChange(row, value);
+                  handleCellRenderChange(cellInfo, value);
+                }}
+                className={`uppercase text-center block w-full px-4 py-1  text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 `}
+                value={value}
+                // decimalScale={0}
+                // fixedDecimalScale={2}
+              />
+            ))}
+          </span>
+        ) : (
+          <NumberFormat
+            thousandSeparator={true}
+            onValueChange={(values, sourceInfo) => {
+              const { formattedValue, value } = values;
+              // handleCellRenderChange(row, value);
+              handleCellRenderChange(cellInfo, value);
+            }}
+            className={`uppercase text-center block w-full px-4 py-1  text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 `}
+            value={cellValue}
+            // decimalScale={0}
+            // fixedDecimalScale={2}
+          />
+        )}
+      </>
+    );
   };
 
   return (
@@ -338,7 +388,7 @@ const CustomerAllDueBills = (props) => {
               {
                 Header: "Credit",
                 accessor: "credit",
-                Cell: renderEditable,
+                Cell: renderNormalEditable,
                 Footer: ({ row }) => (
                   <p className="text-center">
                     {convertTotalAmount(

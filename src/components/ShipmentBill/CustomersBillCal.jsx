@@ -1,4 +1,4 @@
-import { sortBy, sumBy } from "lodash";
+import { orderBy, sortBy, sumBy } from "lodash";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import ReactTable from "react-table-v6";
@@ -29,23 +29,21 @@ const CustomersBillCal = (props) => {
             rejected: 3,
             approved: 4,
           };
-          const newData = sortBy(
-            res.data.data,
+          const newData = orderBy(
+            res.data?.data,
             [
-              (o) => {
-                // Items without the 'approval' key come first (lowest sort value)
-                if (!o.approval) {
-                  return -1; // Lower than any priority defined in statusPriority
-                }
-                // Then sort by the defined status priorities
-                return statusPriority[o.approval] || 999; // Use a high value for undefined statuses
-              },
+              // First criterion: whether the item has an 'approval' key and is valid
+              (o) => (o?.approval in statusPriority ? 0 : 1),
+              // Second criterion: sort by the defined statusPriority or default to a large number
+              (o) => statusPriority[o?.approval] || Number.MAX_VALUE,
             ],
-            ["asc"]
+            ["asc", "asc"] // Sorting directions for each criterion
           );
           setData(newData);
         })
         .catch((err) => {
+          console.log("err", err);
+
           errorAlert("Something went wrong!");
         })
         .finally(() => setLoading(false));
@@ -112,7 +110,7 @@ const CustomersBillCal = (props) => {
   }, {});
 
   // Convert the object back to an array
-  const groupedArray = Object.values(groupedByCustomerId) 
+  const groupedArray = Object.values(groupedByCustomerId);
   // Object.values(groupedByCustomerId).sort(
   //   (a, b) => b.totalAmount - a.totalAmount
   // );

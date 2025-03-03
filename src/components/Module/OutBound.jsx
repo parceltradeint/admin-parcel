@@ -130,12 +130,12 @@ const OutBound = () => {
     {
       id: 1,
       label: "Shipement",
-      value: <ShipmentBillGrid data={data} type={"outbound"} />,
+      value: <ShipmentBillGrid data={data} setData={setData} type={"outbound"} />,
     },
     {
       id: 2,
       label: "Finance",
-      value: <ShipmentBillCal data={data} type={"outbound"} />,
+      value: <ShipmentBillCal data={data} setData={setData} type={"outbound"} />,
     },
   ];
 
