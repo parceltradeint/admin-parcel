@@ -107,8 +107,16 @@ const CustomerAllDueBills = (props) => {
     let debit = Number(newData[cellInfo.index]["totalAmount"] || 0).toFixed(2);
     let credit = Number(newData[cellInfo.index]["credit"] || 0);
     let discount = Number(newData[cellInfo.index]["discount"] || 0);
-    newData[cellInfo.index]["balance"] = Number(debit) - credit - discount;
-    newData[cellInfo.index]["due"] = newData[cellInfo.index]["balance"];
+    // newData[cellInfo.index]["balance"] = Number(debit) - credit - discount;
+    // newData[cellInfo.index]["due"] = newData[cellInfo.index]["balance"];
+    newData[cellInfo.index]["balance"] =
+      Number(newData[cellInfo.index].totalAmount) -
+      newData[cellInfo.index]["transactions"].reduce(
+        (acc, tran) => acc + Number(tran.credit),
+        0
+      ) -
+      discount;
+
     setData(newData);
   };
 
@@ -206,8 +214,8 @@ const CustomerAllDueBills = (props) => {
   };
 
   const renderEditableFile = (cellInfo, fixed) => {
-    const cellValue = data[cellInfo.index][cellInfo.column.id];
-    
+    const cellValue = data[cellInfo.index]["transactions"];
+
     return (
       <label className="flex items-center justify-center text-center px-4 py-1">
         {cellValue ? (
@@ -230,7 +238,7 @@ const CustomerAllDueBills = (props) => {
                 <img
                   key={i}
                   className="w-full rounded h-10"
-                  src={item}
+                  src={item.payslip}
                 />
               ))}
           </SlideshowLightbox>
@@ -313,6 +321,30 @@ const CustomerAllDueBills = (props) => {
     );
   };
 
+  const renderAmount = (cellInfo, fixed) => {
+    const cellValue = data[cellInfo.index]["transactions"];
+
+    return (
+      <span className="flex flex-col space-y-1 justify-center text-center">
+        {cellValue?.map((item, i) => (
+          <NumberFormat
+            key={i}
+            thousandSeparator={true}
+            onValueChange={(values, sourceInfo) => {
+              const { formattedValue, value } = values;
+              // handleCellRenderChange(row, value);
+              handleCellRenderChange(cellInfo, value);
+            }}
+            className={`uppercase text-center block w-full px-4 py-1  text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 `}
+            value={item.credit}
+            // decimalScale={0}
+            // fixedDecimalScale={2}
+          />
+        ))}
+      </span>
+    );
+  };
+
   return (
     <Modal
       isOpen={items ? true : false}
@@ -388,7 +420,7 @@ const CustomerAllDueBills = (props) => {
               {
                 Header: "Credit",
                 accessor: "credit",
-                Cell: renderNormalEditable,
+                Cell: renderAmount,
                 Footer: ({ row }) => (
                   <p className="text-center">
                     {convertTotalAmount(

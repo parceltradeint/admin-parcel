@@ -1,39 +1,35 @@
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { isArray, isNumber, sumBy } from "lodash";
-import Link from "next/link";
-import { useRouter } from "next/router";
+import { isArray, isNumber, isUndefined, sumBy } from "lodash";
 import React, { useMemo, useState } from "react";
 import ReactTable from "react-table-v6";
 import { convertBengaliToEnglishNumber, generatePDF } from "../PDF/InvoiceDef";
 import useSound from "use-sound";
-import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
-import PlaceHolderLoading, { SpingSvgIcon } from "@/common/PlaceHolderLoading";
+import { SpingSvgIcon } from "@/common/PlaceHolderLoading";
 import axios from "axios";
 import { errorAlert, successAlert } from "@/common/SweetAlert";
-import { generateExportBills } from "../PDF/generateExportBills";
+// import { generateExportBills } from "../PDF/generateExportBills";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import NumberFormat from "react-number-format";
 import { generateShipmentBills } from "../PDF/generateShipmentBills";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import { MdCloudUpload } from "react-icons/md";
-import { IoClose, IoEyeSharp } from "react-icons/io5";
+import { IoClose } from "react-icons/io5";
 import { SlideshowLightbox } from "lightbox.js-react";
 import { extractDetails, fileToDataUri, onFileUpload } from "@/lib/utilis";
 import Tesseract from "tesseract.js";
 import { ImageHosting } from "@/common/ImageHosting";
+import banklist from "@/assets/bankList";
+import OverlayLoading from "@/common/OverlayLoading";
 
 const ShipmentBillCal = (props) => {
   const { type } = props;
   const { data, setData } = props;
-  const router = useRouter();
+
   const [addItemsSoundPlay] = useSound("/assets/sounds/save.mp3", {
     volume: 0.25,
   });
   const [loading, setLoading] = useState(false);
-  const [showImg, setShowImg] = useState(false);
 
   const calculationDueBill = (item) => {
     if (item.totalDueBill) {
@@ -64,23 +60,34 @@ const ShipmentBillCal = (props) => {
     );
   };
 
-  const renderEditable = (cellInfo, fixed) => {
-    const cellValue = data[cellInfo.index][cellInfo.column.id];
-
+  const renderSelect = (cellInfo, fixed) => {
+    const cellValue = data[cellInfo.index]["transactions"];
     return (
       <>
-        <NumberFormat
-          thousandSeparator={true}
-          onValueChange={(values, sourceInfo) => {
-            const { formattedValue, value } = values;
-            // handleCellRenderChange(row, value);
-            handleCellRenderChange(cellInfo, value);
-          }}
-          className={`uppercase text-center block w-full px-4 py-1  text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 `}
-          value={cellValue}
-          // decimalScale={0}
-          // fixedDecimalScale={2}
-        />
+        {cellValue?.map((item, index) => (
+          <select
+            className={`uppercase whitespace-no-wrap text-sm leading-5  text-center block w-full px-4 py-1 my-2  text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 `}
+            value={item?.trasferredBy}
+            // onKeyDown={(e) => handleKeyDown(e, cellInfo)}
+            onChange={(e) =>
+              handleTrasferredBy(cellInfo.index, index, e.target.value)
+            }
+            defaultValue={item?.trasferredBy}
+            key={index}
+          >
+            <option value={""}>Select Bank</option>
+            {banklist.map((item, index) => (
+              <option
+                selected={item == item?.trasferredBy}
+                value={item}
+                key={index}
+              >
+                {item}
+              </option>
+            ))}
+          </select>
+        ))}
+
         {/* <input
           className={`uppercase text-center block w-full px-4 py-1  text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 `}
           name="input"
@@ -100,55 +107,55 @@ const ShipmentBillCal = (props) => {
     );
   };
 
-  const renderNormalEditable = (cellInfo, fixed) => {
-    const cellValue = data[cellInfo.index][cellInfo.column.id];
+  // const renderNormalEditable = (cellInfo, fixed) => {
+  //   const cellValue = data[cellInfo.index][cellInfo.column.id];
 
-    return (
-      <>
-        {
-          cellValue?.length > 0 && isArray(cellValue) ? (
-            <span className="flex flex-col space-y-1">
-              {cellValue?.map((value, i) => (
-                <>
-                  {isNumber(value) ? (
-                    <NumberFormat
-                      thousandSeparator={true}
-                      value={value}
-                      displayType={"text"}
-                      renderText={(value, props) => <p {...props}>{value}</p>}
-                    />
-                  ) : (
-                    <p key={i}>{value}</p>
-                  )}
-                </>
-              ))}
-            </span>
-          ) : (
-            <p>{cellValue || "--"}</p>
-          )
-          // : (
-          //   <input
-          //     className={`uppercase text-center block w-full px-4 py-1  text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 `}
-          //     name="input"
-          //     step={"any"}
-          //     onKeyDown={handleKeyDown}
-          //     onChange={(e) => handleCellRenderChange(cellInfo, e.target.value)}
-          //     value={cellValue}
-          //     //   value={convertTotalAmount(Number(cellValue), 0)}
-          //     type="text"
-          //     //   defaultValue={
-          //     //     cellInfo.column.id === "debit"
-          //     //       ? Number(calculationDueBill(data[cellInfo.index]))
-          //     //       : cellInfo || 0
-          //     //   }
-          //   />
-          // )
-        }
-      </>
-    );
-  };
+  //   return (
+  //     <>
+  //       {
+  //         cellValue?.length > 0 && isArray(cellValue) ? (
+  //           <span className="flex flex-col space-y-1">
+  //             {cellValue?.map((value, i) => (
+  //               <>
+  //                 {isNumber(value) ? (
+  //                   <NumberFormat
+  //                     thousandSeparator={true}
+  //                     value={value}
+  //                     displayType={"text"}
+  //                     renderText={(value, props) => <p {...props}>{value}</p>}
+  //                   />
+  //                 ) : (
+  //                   <p key={i}>{value}</p>
+  //                 )}
+  //               </>
+  //             ))}
+  //           </span>
+  //         ) : (
+  //           <p>{cellValue || "--"}</p>
+  //         )
+  //         // : (
+  //         //   <input
+  //         //     className={`uppercase text-center block w-full px-4 py-1  text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 `}
+  //         //     name="input"
+  //         //     step={"any"}
+  //         //     onKeyDown={handleKeyDown}
+  //         //     onChange={(e) => handleCellRenderChange(cellInfo, e.target.value)}
+  //         //     value={cellValue}
+  //         //     //   value={convertTotalAmount(Number(cellValue), 0)}
+  //         //     type="text"
+  //         //     //   defaultValue={
+  //         //     //     cellInfo.column.id === "debit"
+  //         //     //       ? Number(calculationDueBill(data[cellInfo.index]))
+  //         //     //       : cellInfo || 0
+  //         //     //   }
+  //         //   />
+  //         // )
+  //       }
+  //     </>
+  //   );
+  // };
   const renderNormalEditableDate = (cellInfo, fixed) => {
-    const cellValue = data[cellInfo.index][cellInfo.column.id];
+    const cellValue = data[cellInfo.index]["transactions"];
 
     return (
       <>
@@ -159,26 +166,10 @@ const ShipmentBillCal = (props) => {
                 key={i}
                 className="px-6 py-2 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900 text-center"
               >
-                {value || "--"}
+                {value?.trxDate || "--"}
               </p>
             ))}
           </>
-        ) : cellValue === null ? (
-          <input
-            className={`uppercase text-center block w-full px-4 py-1  text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 `}
-            name="input"
-            step={"any"}
-            onKeyDown={handleKeyDown}
-            onChange={(e) => handleCellRenderChange(cellInfo, e.target.value)}
-            value={cellValue}
-            //   value={convertTotalAmount(Number(cellValue), 0)}
-            type="date"
-            //   defaultValue={
-            //     cellInfo.column.id === "debit"
-            //       ? Number(calculationDueBill(data[cellInfo.index]))
-            //       : cellInfo || 0
-            //   }
-          />
         ) : (
           <p className="px-6 py-2 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900 text-center">
             {"--"}
@@ -188,8 +179,50 @@ const ShipmentBillCal = (props) => {
     );
   };
 
+  const renderTrxId = (cellInfo, fixed) => {
+    const cellValue = data[cellInfo.index]["transactions"];
+
+    return (
+      <>
+        {cellValue?.map((value, i) => (
+          <p
+            key={i}
+            className="px-6 py-2 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900 text-center"
+          >
+            {value?.trxId}
+          </p>
+        ))}
+      </>
+    );
+  };
+  const renderAmount = (cellInfo, fixed) => {
+    const cellValue = data[cellInfo.index]["transactions"];
+
+    return (
+      <span className="flex flex-col space-y-1 justify-center text-center">
+        {cellValue?.map((item, i) => (
+          <>
+            {isNumber(item?.credit) ? (
+              <NumberFormat
+                thousandSeparator={true}
+                value={item?.credit || 0}
+                displayType={"text"}
+                decimalScale={2}
+                // renderText={(value, props) => (
+                //   <p {...props}>{item?.credit || 0}</p>
+                // )}
+              />
+            ) : (
+              <p key={i}>{0}</p>
+            )}
+          </>
+        ))}
+      </span>
+    );
+  };
+
   const renderEditableFileView = (cellInfo, fixed) => {
-    const cellValue = data[cellInfo.index][cellInfo.column.id];
+    const cellValue = data[cellInfo.index]["transactions"];
 
     return (
       <span className="flex items-center justify-center text-center px-4 py-1">
@@ -211,9 +244,9 @@ const ShipmentBillCal = (props) => {
             {cellValue?.length > 0 &&
               cellValue?.map((item, i) => (
                 <img
-                  key={i}
+                  key={item + i}
                   className="w-full rounded h-10"
-                  src={item?.src || item}
+                  src={item?.payslip?.src || item?.payslip}
                 />
               ))}
           </SlideshowLightbox>
@@ -259,36 +292,20 @@ const ShipmentBillCal = (props) => {
 
   const handleDeletePayslip = (index, cellIndex) => {
     const newData = [...data];
-    // newData[index][cellInfo.column.id] = [];
-    // setData(newData);
-
     if (index !== -1) {
-      // const newTrxId = newData[cellIndex]["trxId"]?.unshift(index);
-      // const trxDate = newData[cellIndex]["trxDate"]?.unshift(index);
-      // const credit = newData[cellIndex]["credit"]?.unshift(index);
-      // const payslips = newData[cellIndex]["payslip"].unshift(index);
-      removeItemByIndex(newData[cellIndex]["trxId"], index);
-      removeItemByIndex(newData[cellIndex]["trxDate"], index);
-      removeItemByIndex(newData[cellIndex]["credit"], index);
-      removeItemByIndex(newData[cellIndex]["payslip"], index);
+      // Remove the transaction
+      newData[cellIndex].transactions.splice(index, 1);
 
-      // newData[cellIndex]["trxDate"] = trxDate;
-      // newData[cellIndex]["trxId"] = newTrxId;
-      // newData[cellIndex]["credit"] = credit;
-      // newData[cellIndex]["payslip"] = payslips;
-      newData[cellIndex]["balance"] =
-        Number(newData[cellIndex]["totalAmount"]) -
-        sumBy(
-          newData[cellIndex]["credit"],
-          (val) => parseFloat(val.replace(/,/g, "")) || 0
-        );
-
-      setData(newData);
-    }
-    function removeItemByIndex(array, index) {
-      if (index > -1 && index < array.length) {
-        array.splice(index, 1);
+      // Recalculate the balance
+      if (newData[cellIndex].totalAmount) {
+        newData[cellIndex].balance =
+          Number(newData[cellIndex].totalAmount) -
+          newData[cellIndex].transactions.reduce(
+            (acc, tran) => acc + Number(tran.credit),
+            0
+          );
       }
+      setData(newData);
     }
   };
 
@@ -299,40 +316,59 @@ const ShipmentBillCal = (props) => {
         src: photoURL,
         file: value,
       };
-      if (newData[cellInfo.index][columnId]) {
-        newData[cellInfo.index][columnId] = [
-          ...newData[cellInfo.index][columnId],
-          payslip,
-        ];
-      } else {
-        newData[cellInfo.index][columnId] = [payslip];
-      }
       Tesseract.recognize(photoURL, "eng+ben", {
         logger: (m) => console.log("m", m),
       }).then(({ data: { text } }) => {
         const extract = extractDetails(text);
-        let trxDate = newData[cellInfo.index]["trxDate"];
-        let trxId = newData[cellInfo.index]["trxId"];
-        newData[cellInfo.index]["trxDate"] = isArray(trxDate)
-          ? [...trxDate, extract.trxDate]
-          : [extract.trxDate];
-        newData[cellInfo.index]["trxId"] = isArray(trxId)
-          ? [...trxId, extract.trxId]
-          : [extract.trxId];
-        if (isArray(newData[cellInfo.index]["credit"])) {
-          newData[cellInfo.index]["credit"] = [
-            ...newData[cellInfo.index]["credit"],
-            parseFloat(extract.amount?.replace(/,/g, "")),
-          ];
-        } else {
-          newData[cellInfo.index]["credit"] = [
-            parseFloat(extract.amount?.replace(/,/g, "")),
-          ];
+
+        // Check if the 'transactions' array exists at the current index, if not create it
+        if (!Array.isArray(newData[cellInfo.index].transactions)) {
+          newData[cellInfo.index].transactions = [];
         }
 
-        newData[cellInfo.index]["balance"] =
-          Number(newData[cellInfo.index]["totalAmount"]) -
-          sumBy(newData[cellInfo.index]["credit"], (val) => Number(val) || 0);
+        // Create a new transaction object
+        const newTransaction = {
+          trxDate: extract.trxDate,
+          trxId: extract.trxId,
+          credit: parseFloat(extract.amount.replace(/,/g, "")), // Convert amount to float and remove commas
+          payslip: payslip,
+        };
+
+        // Append the new transaction to the transactions array at the current index
+        newData[cellInfo.index].transactions.push(newTransaction);
+
+        // Optionally, compute the new balance if required
+        if (newData[cellInfo.index].totalAmount) {
+          newData[cellInfo.index].balance =
+            Number(newData[cellInfo.index].totalAmount) -
+            newData[cellInfo.index].transactions.reduce(
+              (acc, tran) => acc + Number(tran.credit),
+              0
+            );
+        }
+
+        // let trxDate = newData[cellInfo.index]["trxDate"];
+        // let trxId = newData[cellInfo.index]["trxId"];
+        // newData[cellInfo.index]["trxDate"] = isArray(trxDate)
+        //   ? [...trxDate, extract.trxDate]
+        //   : [extract.trxDate];
+        // newData[cellInfo.index]["trxId"] = isArray(trxId)
+        //   ? [...trxId, extract.trxId]
+        //   : [extract.trxId];
+        // if (isArray(newData[cellInfo.index]["credit"])) {
+        //   newData[cellInfo.index]["credit"] = [
+        //     ...newData[cellInfo.index]["credit"],
+        //     parseFloat(extract.amount?.replace(/,/g, "")),
+        //   ];
+        // } else {
+        //   newData[cellInfo.index]["credit"] = [
+        //     parseFloat(extract.amount?.replace(/,/g, "")),
+        //   ];
+        // }
+
+        // newData[cellInfo.index]["balance"] =
+        //   Number(newData[cellInfo.index]["totalAmount"]) -
+        //   sumBy(newData[cellInfo.index]["credit"], (val) => Number(val) || 0);
 
         setData(newData);
       });
@@ -341,12 +377,20 @@ const ShipmentBillCal = (props) => {
 
   const handleCellRenderChange = (cellInfo, val) => {
     const newData = [...data];
-    newData[cellInfo.index][cellInfo.column.id] = val;
-    let debit = Number(newData[cellInfo.index]["totalAmount"] || 0).toFixed(2);
-    let credit = Number(newData[cellInfo.index]["credit"] || "");
-    let discount = Number(newData[cellInfo.index]["discount"] || 0);
-    newData[cellInfo.index]["balance"] = Number(debit) - credit - discount;
-    newData[cellInfo.index]["due"] = newData[cellInfo.index]["balance"];
+    // newData[cellInfo.index][cellInfo.column.id] = val;
+    // let debit = Number(newData[cellInfo.index]["totalAmount"] || 0).toFixed(2);
+    // let credit = Number(newData[cellInfo.index]["credit"] || "");
+    // let discount = Number(newData[cellInfo.index]["discount"] || 0);
+    // newData[cellInfo.index]["balance"] = Number(debit) - credit - discount;
+    // newData[cellInfo.index]["due"] = newData[cellInfo.index]["balance"];
+    newData[cellInfo.index].transactions.splice(index, 1);
+
+    setData(newData);
+  };
+
+  const handleTrasferredBy = (index, indexToUpdate, val) => {
+    const newData = [...data];
+    newData[index].transactions[indexToUpdate]["trasferredBy"] = val;
     setData(newData);
   };
 
@@ -391,12 +435,12 @@ const ShipmentBillCal = (props) => {
         delete newData?._id;
         newData["approval"] = newData["approval"] || "pending";
         // onFileUpload()
-        if (isArray(newData?.payslip)) {
-          for (let i = 0; i < newData?.payslip.length; i++) {
-            const element = newData?.payslip[i];
-            if (element?.file) {
-              const imageData = await ImageHosting(element?.file);
-              newData.payslip[i] = imageData.url;
+        if (isArray(newData?.transactions)) {
+          for (let i = 0; i < newData?.transactions.length; i++) {
+            const element = newData?.transactions[i];
+            if (element?.payslip?.file) {
+              const imageData = await ImageHosting(element?.payslip?.file);
+              newData["transactions"][i]["payslip"] = imageData.url;
             }
           }
         }
@@ -519,7 +563,7 @@ const ShipmentBillCal = (props) => {
       {
         Header: "Credit",
         accessor: "credit",
-        Cell: renderNormalEditable,
+        Cell: renderAmount,
         Footer: ({ row }) => (
           <p className="text-center">
             {convertTotalAmount(
@@ -585,7 +629,17 @@ const ShipmentBillCal = (props) => {
         //     {row._original?.trxId || "--"}
         //   </p>
         // ),
-        Cell: renderNormalEditable,
+        Cell: renderTrxId,
+      },
+      {
+        Header: "Transfered By",
+        accessor: "transferedBy",
+        // Cell: ({ row }) => (
+        //   <p className="px-6 py-2 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900 text-center">
+        //     {row._original?.trxId || "--"}
+        //   </p>
+        // ),
+        Cell: renderSelect,
       },
       // {
       //   Header: "Amount",
@@ -612,9 +666,16 @@ const ShipmentBillCal = (props) => {
         Cell: ({ row }) => (
           <div className={"text-center flex space-x-2"}>
             <button
-              onClick={(e) => handleOnSubmit(row._original, row.index)}
+              onClick={(e) => handleOnSubmit(row._original, row._index)}
               className="uppercase inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
-              disabled={loading || row._original?.approval === "approved"}
+              disabled={
+                loading ||
+                row._original?.approval === "approved" ||
+                !row._original?.transactions > 0 ||
+                isUndefined(
+                  row._original?.transactions[row._index]?.["trasferredBy"]
+                )
+              }
             >
               {loading === row._original?._id ? (
                 <>
@@ -658,7 +719,9 @@ const ShipmentBillCal = (props) => {
     ],
     []
   );
-
+  if (loading) {
+    return <OverlayLoading />;
+  }
   return (
     <>
       <button
