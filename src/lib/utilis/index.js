@@ -199,7 +199,7 @@ export const onFileUpload = async (file) => {
 export const extractDetails = (text) => {
   
   const trxIdRegex = new RegExp(
-    "(Transaction ID|Transaction ID/Ref Number|Tr Id|TRXN NO|Reference Number|Reference ID|REF|Voucher Number|ট্রানজেকশন আইডি)" +
+    "(Transaction ID|Transaction ID/Ref Number|Tr Id|TRXN NO|Reference Number|Reference ID|REF|Voucher Number|TRX ID|ট্রানজেকশন আইডি)" +
       "\\s*[:\\/]?\\s*(?<trxNumber>[\\w\\d-]+)",
     "i"
   );

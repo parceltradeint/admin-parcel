@@ -22,8 +22,9 @@ export default function CreditVoucher({ isOpen, setIsOpen }) {
   });
   const { randomUUID } = new ShortUniqueId({ length: 8 });
   const onSubmit = (data) => {
-    generateCreditVoucher("");
-    console.log("data", data);
+    const trxId = randomUUID()
+    generateCreditVoucher({ ...data, trxId });
+    setIsOpen(false);
   };
 
   function getFormattedDateTime() {
@@ -120,7 +121,7 @@ export default function CreditVoucher({ isOpen, setIsOpen }) {
                 type="text"
               />
             </div>
-            <div>
+            {/* <div>
               <div className="flex w-full items-center justify-between bg-primaryBg px-4 py-1 text-sm text-white">
                 <p className="m-0 p-0 uppercase">Trxd Id</p>
                 <span className="m-0 p-0">:</span>
@@ -136,7 +137,7 @@ export default function CreditVoucher({ isOpen, setIsOpen }) {
                 value={randomUUID()}
                 readOnly
               />
-            </div>
+            </div> */}
             <div>
               <div className="flex w-full items-center justify-between bg-primaryBg px-4 py-1 text-sm text-white">
                 <p className="m-0 p-0 uppercase">Shipment No</p>

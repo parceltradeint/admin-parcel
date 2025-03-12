@@ -191,7 +191,7 @@ export const generateCreditVoucher = (info) => {
   // const pdfDocGenerator = pdfMake.createPdf(docDefinition);
   let docDefinition = {
     info: {
-      title: `${info?.customerName}- ${formartDate(new Date())}`,
+      title: `${info?.receivedBy}- ${formartDate(new Date())}`,
       author: "Parcel",
       subject: "CUSTOMER LEDGER BILL",
     },
@@ -250,7 +250,7 @@ export const generateCreditVoucher = (info) => {
                         fontSize: 10,
                         text: [
                           { text: `Received By: ${info?.receivedBy}\n` },
-                          { text: `Date & Time: ${info?.date}\n` },
+                          { text: `Date: ${info?.dateTime}\n` },
                           { text: `TRX ID: ${info?.trxId}\n` },
                         ],
                       },
