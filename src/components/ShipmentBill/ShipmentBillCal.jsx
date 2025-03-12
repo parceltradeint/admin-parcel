@@ -677,7 +677,7 @@ const ShipmentBillCal = (props) => {
                 )
               }
             >
-              {loading === row._original?._id ? (
+              {loading ? (
                 <>
                   <SpingSvgIcon />
                   Updating
@@ -719,9 +719,9 @@ const ShipmentBillCal = (props) => {
     ],
     []
   );
-  if (loading) {
-    return <OverlayLoading />;
-  }
+  // if (loading) {
+  //   return <OverlayLoading />;
+  // }
   return (
     <>
       <button
