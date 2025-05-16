@@ -36,7 +36,7 @@ export default function HeaderOfPDF() {
                     border: [false, true, false, true],
                   },
                   {
-                    text: "Cell: 01879314050, 01521584929; E-mail: parceltradeint@gmail.com\n",
+                    text: "Cell: 01335096042, 01335096043; E-mail: parceltradeint@gmail.com\n",
                     fontSize: 10,
                     margin: [0, 5, 0, 0],
                   },

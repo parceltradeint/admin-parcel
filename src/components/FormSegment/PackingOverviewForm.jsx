@@ -120,7 +120,7 @@ const PackingOverviewForm = (props) => {
           <div className="w-[60%] border-l border-r border-black px-2 bg-[#555555]">
             <div className="md:text-xl text-black font-medium text-center ">
               <p>H-2553, Sayednagor, Vatara, Gulshan-2, Dhaka-1212.</p>
-              <p>Cell: 01879314050, 01521584929</p>
+              <p>Cell: 01335096042, 01335096043</p>
             </div>
           </div>
           <div className="w-[20%] flex justify-end">

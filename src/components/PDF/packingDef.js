@@ -199,7 +199,7 @@ export const generatePackingPDF = (info, type) => {
       //               border: [false, true, false, true],
       //             },
       //             {
-      //               text: "Cell: 01879314050, 01521584929\n",
+      //               text: "Cell: 01335096042, 01335096043\n",
       //               fontSize: 15,
       //               margin: [0, 5, 0, 0],
       //             },
