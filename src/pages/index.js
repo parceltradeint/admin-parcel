@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { Inter } from "next/font/google";
 import Layout from "@/components/Layout/Layout";
 import NavBar from "@/common/NavBar/NavBar";
 import LandingPage from "@/components/Landing/Index";
@@ -9,7 +8,6 @@ import { useRouter } from "next/router";
 import { useTheme } from "next-themes";
 import { useEffect } from "react";
 
-const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   const router = useRouter();
