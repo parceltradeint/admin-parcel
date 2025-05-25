@@ -31,11 +31,12 @@ export default async function newShipmentBill(req, res) {
   } else if (req.method == "GET") {
     if (req?.query?.customerId) {
       // const objectId = new ObjectId(req?.query?.id);
-      let response = await collection.findOne({
-        customerId: req?.query?.customerId,
-        balance: { $exists: true, $ne: 0 },
-      });
-
+      let response = await collection
+        .find({
+          customerId: req?.query?.customerId,
+          balance: { $exists: true, $ne: 0 },
+        })
+        .toArray();
       const aggregationResult = await collection
         .aggregate([
           {
@@ -58,7 +59,7 @@ export default async function newShipmentBill(req, res) {
         ])
         .toArray();
 
-      res.status(200).json({ res: {...response}, ...aggregationResult[0] });
+      res.status(200).json({ data: response, ...aggregationResult[0] });
     } else {
       const { page, limit, type, shipmentNo, month, year } = req.query;
       const filter = req.query?.filter || {};

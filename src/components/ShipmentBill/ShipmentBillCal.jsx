@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 import { isArray, isNumber, isUndefined, sumBy } from "lodash";
 import React, { useMemo, useState } from "react";
 import ReactTable from "react-table-v6";
@@ -14,13 +15,15 @@ import NumberFormat from "react-number-format";
 import { generateShipmentBills } from "../PDF/generateShipmentBills";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import { MdCloudUpload } from "react-icons/md";
-import { IoClose } from "react-icons/io5";
+import { IoClose, IoEye } from "react-icons/io5";
 import { SlideshowLightbox } from "lightbox.js-react";
 import { extractDetails, fileToDataUri, onFileUpload } from "@/lib/utilis";
 import Tesseract from "tesseract.js";
 import { ImageHosting } from "@/common/ImageHosting";
 import banklist from "@/assets/bankList";
 import OverlayLoading from "@/common/OverlayLoading";
+import Modal from "../Module/Modal";
+import { generateLedgerPDF } from "../PDF/accountLedger";
 
 const ShipmentBillCal = (props) => {
   const { type } = props;
@@ -30,6 +33,8 @@ const ShipmentBillCal = (props) => {
     volume: 0.25,
   });
   const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [paySlipData, setPaySlipData] = useState([]);
 
   const calculationDueBill = (item) => {
     if (item.totalDueBill) {
@@ -37,9 +42,9 @@ const ShipmentBillCal = (props) => {
     } else {
       let total =
         sumBy(item.data, (v) => Number(v.totalAmount || 0)) +
-        Number(item?.rmb?.qty || 0) * Number(item?.rmb?.rate || 0) +
-        Number(item?.due || 0) -
-        Number(item?.paid || 0);
+        Number(item?.rmb?.qty || 0) * Number(item?.rmb?.rate || 0);
+      // Number(item?.due || 0) -
+      // Number(item?.paid || 0);
       return total.toFixed(2);
     }
   };
@@ -243,6 +248,7 @@ const ShipmentBillCal = (props) => {
           >
             {cellValue?.length > 0 &&
               cellValue?.map((item, i) => (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img
                   key={item + i}
                   className="w-full rounded h-10"
@@ -254,13 +260,23 @@ const ShipmentBillCal = (props) => {
         {cellValue?.length > 0 && (
           <span className="flex flex-col items-start space-y-1">
             {cellValue?.map((item, i) => (
-              <span
-                key={i}
-                className="flex items-start cursor-pointer"
-                onClick={() => handleDeletePayslip(i, cellInfo.index)}
-              >
-                <IoClose size={15} />
-              </span>
+              <div key={i} className="flex items-start space-x-1">
+                <span
+                  className="flex items-start cursor-pointer"
+                  onClick={() => handleDeletePayslip(i, cellInfo.index)}
+                >
+                  <IoClose size={15} />
+                </span>
+                <span
+                  className="flex items-start cursor-pointer"
+                  onClick={() => {
+                    setPaySlipData(cellValue);
+                    setIsOpen(true);
+                  }}
+                >
+                  <IoEye size={15} />
+                </span>
+              </div>
             ))}
           </span>
         )}
@@ -527,22 +543,22 @@ const ShipmentBillCal = (props) => {
         accessor: "shipmentNo",
         Cell: renderText,
       },
-      {
-        Header: "Total Due",
-        accessor: "totalAmount",
-        Cell: ({ row }) => (
-          <p className="text-center">
-            {convertTotalAmount(Number(calculationDueBill(row?._original)))}
-          </p>
-        ),
-        Footer: ({ row }) => (
-          <p className="text-center">
-            {convertTotalAmount(
-              sumBy(data, (item) => Number(calculationDueBill(item)))
-            )}
-          </p>
-        ),
-      },
+      // {
+      //   Header: "Total Due",
+      //   accessor: "totalAmount",
+      //   Cell: ({ row }) => (
+      //     <p className="text-center">
+      //       {convertTotalAmount(Number(calculationDueBill(row?._original)))}
+      //     </p>
+      //   ),
+      //   Footer: ({ row }) => (
+      //     <p className="text-center">
+      //       {convertTotalAmount(
+      //         sumBy(data, (item) => Number(calculationDueBill(item)))
+      //       )}
+      //     </p>
+      //   ),
+      // },
       {
         Header: "Debit",
         accessor: "debit",
@@ -609,38 +625,20 @@ const ShipmentBillCal = (props) => {
         accessor: "#UploadedFile",
         Cell: (cell) => fileUploadCell(cell),
       },
-      {
-        Header: "Trx Date",
-        accessor: "trxDate",
-        // Cell: ({ row }) => (
-        //   <p className="px-6 py-2 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900 text-center">
-        //     {(row._original?.trxDate &&
-        //       new Date(row._original?.trxDate).toLocaleString()) ||
-        //       "--"}
-        //   </p>
-        // ),
-        Cell: renderNormalEditableDate,
-      },
-      {
-        Header: "Trx Id",
-        accessor: "trxId",
-        // Cell: ({ row }) => (
-        //   <p className="px-6 py-2 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900 text-center">
-        //     {row._original?.trxId || "--"}
-        //   </p>
-        // ),
-        Cell: renderTrxId,
-      },
-      {
-        Header: "Transfered By",
-        accessor: "transferedBy",
-        // Cell: ({ row }) => (
-        //   <p className="px-6 py-2 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900 text-center">
-        //     {row._original?.trxId || "--"}
-        //   </p>
-        // ),
-        Cell: renderSelect,
-      },
+      // {
+      //   Header: "Trx Date",
+      //   accessor: "trxDate",
+      //   Cell: renderNormalEditableDate,
+      // },
+      // {
+      //   Header: "Trx Id",
+      //   Cell: renderTrxId,
+      // },
+      // {
+      //   Header: "Transfered By",
+      //   accessor: "transferedBy",
+      //   Cell: renderSelect,
+      // },
       // {
       //   Header: "Amount",
       //   accessor: "amount",
@@ -664,20 +662,20 @@ const ShipmentBillCal = (props) => {
         Header: "Action",
         accessor: "##",
         Cell: ({ row }) => (
-          <div className={"text-center flex space-x-2"}>
+          <div className={"text-center flex space-x-2 justify-center"}>
             <button
               onClick={(e) => handleOnSubmit(row._original, row._index)}
-              className="uppercase inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
+              className="uppercase inline-flex items-center text-center px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
               disabled={
-                loading ||
-                row._original?.approval === "approved" ||
-                !row._original?.transactions > 0 ||
-                isUndefined(
-                  row._original?.transactions[row._index]?.["trasferredBy"]
-                )
+                loading || row._original?.approval === "approved"
+                // ||
+                // !row._original?.transactions > 0 ||
+                // isUndefined(
+                //   row._original?.transactions[row._index]?.["trasferredBy"]
+                // )
               }
             >
-              {loading === row._original?._id ? (
+              {loading ? (
                 <>
                   <SpingSvgIcon />
                   Updating
@@ -686,12 +684,19 @@ const ShipmentBillCal = (props) => {
                 "Update"
               )}
             </button>
-            <button
+            {/* <button
               onClick={(e) => handleOnViewPDF(row._original)}
               className="uppercase inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded transition ease-in-out duration-150 bg-red-600 hover:bg-red-700 text-white"
               disabled={loading}
             >
               View Pdf
+            </button> */}
+            <button
+              onClick={(e) => ledgerPDF(row._original)}
+              className="uppercase inline-flex items-center text-center px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded transition ease-in-out duration-150 bg-red-600 hover:bg-red-700 text-white"
+              disabled={loading}
+            >
+              Ledger
             </button>
           </div>
         ),
@@ -717,13 +722,82 @@ const ShipmentBillCal = (props) => {
       //   width: 100,
       // },
     ],
+    [loading]
+  );
+
+  const paySlipcolumns = useMemo(
+    () => [
+      {
+        Header: "SL",
+        accessor: "sl",
+        Cell: (row) => <p>{row.viewIndex + 1}</p>,
+        Footer: () => <p className="text-center">Total-</p>,
+        width: 50,
+      },
+
+      {
+        Header: "S. No.",
+        accessor: "shipmentNo",
+        Cell: renderText,
+      },
+      {
+        Header: "Trx Date",
+        accessor: "trxDate",
+        Cell: renderNormalEditableDate,
+      },
+      {
+        Header: "Trx Id",
+        Cell: renderTrxId,
+      },
+      {
+        Header: "Transfered By",
+        accessor: "transferedBy",
+        Cell: renderSelect,
+      },
+    ],
     []
   );
-  if (loading) {
-    return <OverlayLoading />;
-  }
+
+  const ledgerPDF = async (row) => {
+    
+    let billsData = await axios.get(`/api/customers-bills?customerId=` + row?.customerId)
+      .then((res) => {
+        const statusPriority = {
+          pending: 1,
+          ongoing: 2,
+          rejected: 3,
+          approved: 4,
+        };        
+        // const newData = orderBy(
+        //   res.data?.data,
+        //   [
+        //     // First criterion: whether the item has an 'approval' key and is valid
+        //     (o) => (o?.approval in statusPriority ? 0 : 1),
+        //     // Second criterion: sort by the defined statusPriority or default to a large number
+        //     (o) => statusPriority[o?.approval] || Number.MAX_VALUE,
+        //   ],
+        //   ["asc", "asc"] // Sorting directions for each criterion
+        // );        
+        return [...res.data?.data];
+      })
+      .catch((err) => {
+        errorAlert("Something went wrong!");
+      })
+      .finally(() => setLoading(false));    
+    const newData = billsData?.length > 0 ? [...billsData] : [];
+    const newInfo = {
+      customerId: newData[0]["customerId"],
+      customerName: newData[0]["customerName"],
+      shipmentNo: newData.map((item) => item.shipmentNo),
+      data: newData,
+    };
+    
+    generateLedgerPDF(newInfo);
+  };
+
   return (
     <>
+      {/* {loading && <OverlayLoading />} */}
       <button
         type="button"
         className=" bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mb-2 mx-auto flex justify-center uppercase"
@@ -743,6 +817,43 @@ const ShipmentBillCal = (props) => {
         // showPagination={false}
         sortable={true}
       />
+      <Modal
+        isOpen={isOpen}
+        showXButton
+        onClose={() => {
+          setPaySlipData(null);
+          setIsOpen(false);
+        }}
+      >
+        <Modal.Title>
+          <div className="flex items-center justify-between">
+            <p>Payslip View</p>
+            <button
+              onClick={() => {
+                setIsOpen(false);
+                setPaySlipData(null);
+              }}
+              className="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-4 rounded mt-3"
+            >
+              Close
+            </button>
+          </div>
+        </Modal.Title>
+        <Modal.Content>
+          <ReactTable
+            data={paySlipData || []}
+            columns={paySlipcolumns}
+            className="-striped -highlight px-3 overflow-auto"
+            defaultPageSize={200}
+            minRows={12}
+            showPageJump={false}
+            pageSizeOptions={[200, 250, 300]}
+            showPagination={true}
+            // showPagination={false}
+            sortable={true}
+          />
+        </Modal.Content>
+      </Modal>
     </>
   );
 };

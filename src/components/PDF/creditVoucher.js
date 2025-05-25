@@ -227,35 +227,77 @@ export const generateCreditVoucher = (info) => {
                     decoration: "underline",
                   },
                   {
-                    columns: [
-                      {
-                        // Column for From, Method, Amount
-                        alignment: "left",
-                        width: "*",
-                        style: "body",
-                        fontSize: 10,
-                        border: [false, true, false, true],
-                        text: [
-                          { text: `From: ${info?.from}\n`, bold: true },
-                          { text: `Method: ${info?.method}\n`, bold: true },
-                          { text: `Amount: ${info?.amount}\n`, bold: true },
+                    table: {
+                      widths: ["*", "*"],
+                      body: [
+                        [
+                          {
+                            text: `From: ${info?.from}`,
+                            bold: true,
+                            alignment: "left",
+                          },
+                          {
+                            text: `Received By: ${info?.receivedBy}`,
+                            alignment: "right",
+                          },
                         ],
-                      },
-                      {
-                        // Column for values
-                        alignment: "right",
-                        width: "auto",
-                        style: "bodyValues",
-
-                        fontSize: 10,
-                        text: [
-                          { text: `Received By: ${info?.receivedBy}\n` },
-                          { text: `Date: ${info?.dateTime}\n` },
-                          { text: `TRX ID: ${info?.trxId}\n` },
+                        [
+                          {
+                            text: `Method: ${info?.method}`,
+                            bold: true,
+                            alignment: "left",
+                          },
+                          {
+                            text: `Date: ${info?.dateTime}`,
+                            alignment: "right",
+                          },
                         ],
-                      },
-                    ],
+                        [
+                          {
+                            text: `Amount: ${info?.amount}`,
+                            bold: true,
+                            alignment: "left",
+                          },
+                          {
+                            text: `TRX ID: ${info?.trxId}`,
+                            alignment: "right",
+                          },
+                        ],
+                      ],
+                    },
+                    layout: "lightHorizontalLines",
+                    margin: [0, 10, 0, 0],
                   },
+                  // {
+                  //   columns: [
+                  //     {
+                  //       // Column for From, Method, Amount
+                  //       alignment: "left",
+                  //       width: "*",
+                  //       style: "body",
+                  //       fontSize: 10,
+                  //       border: [false, true, false, true],
+                  //       text: [
+                  //         { text: `From: ${info?.from}\n`, bold: true },
+                  //         { text: `Method: ${info?.method}\n`, bold: true },
+                  //         { text: `Amount: ${info?.amount}\n`, bold: true },
+                  //       ],
+                  //     },
+                  //     {
+                  //       // Column for values
+                  //       alignment: "right",
+                  //       width: "auto",
+                  //       style: "bodyValues",
+
+                  //       fontSize: 10,
+                  //       text: [
+                  //         { text: `Received By: ${info?.receivedBy}\n` },
+                  //         { text: `Date: ${info?.dateTime}\n` },
+                  //         { text: `TRX ID: ${info?.trxId}\n` },
+                  //       ],
+                  //     },
+                  //   ],
+                  // },
                 ],
                 // fillColor: "#555555",
                 // color: "#FFFFFF",

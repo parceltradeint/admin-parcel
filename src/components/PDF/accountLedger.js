@@ -7,21 +7,68 @@ import HeaderOfPDF from "./InvoiceHeader";
 import { convertTotalAmount, stylesVals } from "./InvoiceDef";
 export const generateLedgerPDF = (info) => {
   let renderData = [];
+  let allData = [];
+
   if (info?.data) {
-    let newData = info?.data.map((item, i) => {
+    const finalData = info?.data.flatMap((entry) => {
+      const baseEntry = {
+        shipmentNo: entry.shipmentNo || "",
+        date: entry.deliveryDate || "",
+        totalAmount: entry.totalAmount || "",
+        credit: "",
+        balance: entry.balance || "",
+        trasferredBy: "",
+        trxDate: "",
+        trxId: "",
+      };
+
+      const transactions = Array.isArray(entry.transactions)
+        ? entry.transactions.map((trx) => ({
+            shipmentNo: entry.shipmentNo || "",
+            date: trx.trxDate || "",
+            totalAmount: "",
+            credit: trx.credit || "",
+            balance: entry.balance || "",
+            trasferredBy: trx.trasferredBy || "",
+            trxDate: trx.trxDate || "",
+            trxId: trx.trxId || "",
+          }))
+        : [];
+
+      return [baseEntry, ...transactions];
+    });
+
+    let runningBalance = 0;
+    const calculatedArray = finalData.map((item) => {
+      if (Number(item.totalAmount) && Number(item.credit)) {
+        runningBalance += Number(item.credit);
+      } else {
+        runningBalance -= Number(item.totalAmount);
+      }
+
+      return {
+        ...item,
+        balance: runningBalance,
+      };
+    });
+    let newData = calculatedArray?.map((item, i) => {
       return [
         {
-          text: `${item.deliveryDate}`,
+          text: `${item.date}`,
           fontSize: 9,
           // color: `${isBrand ? "red" : "black"}`,
         },
         {
-          text: `SHIPMENT NO. ${item?.shipmentNo}`,
+          text: item?.trasferredBy
+            ? `${item?.trasferredBy}- (${item?.shipmentNo})`
+            : `PENDING APPROVAL SHIPMENT NO. ${item?.shipmentNo}`,
           fontSize: 9,
           alignment: "left",
         },
         {
-          text: `${convertTotalAmount(Number(item?.totalAmount || ""))}`,
+          text: item?.totalAmount
+            ? `${convertTotalAmount(Number(item?.totalAmount || ""))}`
+            : "",
           fontSize: 9,
           alignment: "center",
         },
@@ -38,13 +85,14 @@ export const generateLedgerPDF = (info) => {
         },
       ];
     });
-
+    allData = [...calculatedArray];
     renderData = [...newData];
   }
 
   const dueOrAdvance =
-    Number(sumBy(info?.data, (item) => Number(item.totalAmount || 0)).toFixed(2)) -
-    sumBy(info?.data, (item) => Number(item.credit || 0)) - sumBy(info?.data, (item) => Number(item.discount || 0));
+    Number(sumBy(allData, (item) => Number(item.totalAmount || 0)).toFixed(2)) -
+    sumBy(allData, (item) => Number(item.credit || 0)) -
+    sumBy(info?.data, (item) => Number(item.discount || 0));
 
   let docDefinition = {
     info: {
@@ -143,19 +191,20 @@ export const generateLedgerPDF = (info) => {
 
               {
                 text: `${convertTotalAmount(
-                  sumBy(info?.data, (val) => Number(val?.totalAmount || 0))
+                  sumBy(allData, (val) => Number(val?.totalAmount || 0))
                 )}`,
                 style: "tableFooter",
               },
               {
                 text: `${convertTotalAmount(
-                  sumBy(info?.data, (val) => Number(val?.credit || 0)) || ""
+                  sumBy(allData, (val) => Number(val?.credit || 0)) || ""
                 )}`,
                 style: "tableFooter",
               },
               {
                 text: `${convertTotalAmount(
-                  sumBy(info?.data, (val) => Number(val?.balance || 0))
+                  sumBy(allData, (val) => Number(val?.totalAmount || 0)) -
+                    sumBy(allData, (val) => Number(val?.credit || 0))
                 )}`,
                 style: "tableFooter",
               },
@@ -181,19 +230,19 @@ export const generateLedgerPDF = (info) => {
       {
         text: [
           {
-            text:
-              dueOrAdvance
-                ? [
-                    {
-                      text: Math.sign(dueOrAdvance) === -1 
-                          ? `CONGRATULATIONS! ADVANCE: ${convertTotalAmount(
-                              Math.abs(dueOrAdvance)
-                            )} TAKA`
-                          : `TOTAL DUE- ${convertTotalAmount(dueOrAdvance)} TAKA`,
-                      color: Math.sign(dueOrAdvance) === -1 ? "green" : "red",
-                    },
-                  ]
-                : "",
+            text: dueOrAdvance
+              ? [
+                  {
+                    text:
+                      Math.sign(dueOrAdvance) === -1
+                        ? `CONGRATULATIONS! ADVANCE: ${convertTotalAmount(
+                            Math.abs(dueOrAdvance)
+                          )} TAKA`
+                        : `TOTAL DUE- ${convertTotalAmount(dueOrAdvance)} TAKA`,
+                    color: Math.sign(dueOrAdvance) === -1 ? "green" : "red",
+                  },
+                ]
+              : "",
           },
         ],
         alignment: "right",
@@ -240,7 +289,7 @@ export const generateLedgerPDF = (info) => {
   var win = window.open("", "_blank");
   pdfMake.createPdf(docDefinition).open(
     {
-      filename: "Nayem Khan.pdf",
+      filename: "Parcel trade int.pdf",
       options: {
         windowTitle: "My Document",
       },
