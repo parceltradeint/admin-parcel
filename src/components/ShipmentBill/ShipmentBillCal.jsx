@@ -33,6 +33,8 @@ const ShipmentBillCal = (props) => {
     volume: 0.25,
   });
   const [loading, setLoading] = useState(false);
+  const [ledgerLoading, setLedgerLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [paySlipData, setPaySlipData] = useState([]);
 
@@ -186,7 +188,6 @@ const ShipmentBillCal = (props) => {
 
   const renderTrxId = (cellInfo, fixed) => {
     const cellValue = data[cellInfo.index]["transactions"];
-
     return (
       <>
         {cellValue?.map((value, i) => (
@@ -201,11 +202,23 @@ const ShipmentBillCal = (props) => {
     );
   };
   const renderAmount = (cellInfo, fixed) => {
-    const cellValue = data[cellInfo.index]["transactions"];
+    const cellValue = sumBy(
+      data[cellInfo.index]["transactions"],
+      (tran) => Number(tran.credit) || 0
+    );
 
     return (
       <span className="flex flex-col space-y-1 justify-center text-center">
-        {cellValue?.map((item, i) => (
+        <NumberFormat
+          thousandSeparator={true}
+          value={cellValue || 0}
+          displayType={"text"}
+          decimalScale={2}
+          // renderText={(value, props) => (
+          //   <p {...props}>{item?.credit || 0}</p>
+          // )}
+        />
+        {/* {cellValue?.map((item, i) => (
           <>
             {isNumber(item?.credit) ? (
               <NumberFormat
@@ -221,7 +234,7 @@ const ShipmentBillCal = (props) => {
               <p key={i}>{0}</p>
             )}
           </>
-        ))}
+        ))} */}
       </span>
     );
   };
@@ -299,7 +312,14 @@ const ShipmentBillCal = (props) => {
             disabled={cellInfo?.original?.approval === "approval"}
           />
           <span className="flex items-center space-x-2 cursor-pointer">
-            <MdCloudUpload size={25} />
+            {uploading ? (
+              <>
+                <SpingSvgIcon />
+                Uploading
+              </>
+            ) : (
+              <MdCloudUpload size={25} />
+            )}
           </span>
         </span>
       </label>
@@ -327,68 +347,73 @@ const ShipmentBillCal = (props) => {
 
   const handleChangeFile = (cellInfo, value, columnId) => {
     const newData = [...data];
-    fileToDataUri(value).then((photoURL) => {
-      const payslip = {
-        src: photoURL,
-        file: value,
-      };
-      Tesseract.recognize(photoURL, "eng+ben", {
-        logger: (m) => console.log("m", m),
-      }).then(({ data: { text } }) => {
-        const extract = extractDetails(text);
-
-        // Check if the 'transactions' array exists at the current index, if not create it
-        if (!Array.isArray(newData[cellInfo.index].transactions)) {
-          newData[cellInfo.index].transactions = [];
-        }
-
-        // Create a new transaction object
-        const newTransaction = {
-          trxDate: extract.trxDate,
-          trxId: extract.trxId,
-          credit: parseFloat(extract.amount.replace(/,/g, "")), // Convert amount to float and remove commas
-          payslip: payslip,
+    setUploading(true);
+    fileToDataUri(value)
+      .then((photoURL) => {
+        const payslip = {
+          src: photoURL,
+          file: value,
         };
+        Tesseract.recognize(photoURL, "eng+ben", {
+          logger: (m) => console.log("m", m),
+        }).then(({ data: { text } }) => {
+          const extract = extractDetails(text);
 
-        // Append the new transaction to the transactions array at the current index
-        newData[cellInfo.index].transactions.push(newTransaction);
+          // Check if the 'transactions' array exists at the current index, if not create it
+          if (!Array.isArray(newData[cellInfo?.index].transactions)) {
+            newData[cellInfo.index].transactions = [];
+          }
 
-        // Optionally, compute the new balance if required
-        if (newData[cellInfo.index].totalAmount) {
-          newData[cellInfo.index].balance =
-            Number(newData[cellInfo.index].totalAmount) -
-            newData[cellInfo.index].transactions.reduce(
-              (acc, tran) => acc + Number(tran.credit),
-              0
-            );
-        }
+          // Create a new transaction object
+          const newTransaction = {
+            trxDate: extract.trxDate,
+            trxId: extract.trxId,
+            credit: parseFloat(extract.amount.replace(/,/g, "")), // Convert amount to float and remove commas
+            payslip: payslip,
+          };
 
-        // let trxDate = newData[cellInfo.index]["trxDate"];
-        // let trxId = newData[cellInfo.index]["trxId"];
-        // newData[cellInfo.index]["trxDate"] = isArray(trxDate)
-        //   ? [...trxDate, extract.trxDate]
-        //   : [extract.trxDate];
-        // newData[cellInfo.index]["trxId"] = isArray(trxId)
-        //   ? [...trxId, extract.trxId]
-        //   : [extract.trxId];
-        // if (isArray(newData[cellInfo.index]["credit"])) {
-        //   newData[cellInfo.index]["credit"] = [
-        //     ...newData[cellInfo.index]["credit"],
-        //     parseFloat(extract.amount?.replace(/,/g, "")),
-        //   ];
-        // } else {
-        //   newData[cellInfo.index]["credit"] = [
-        //     parseFloat(extract.amount?.replace(/,/g, "")),
-        //   ];
-        // }
+          // Append the new transaction to the transactions array at the current index
+          newData[cellInfo.index].transactions.push(newTransaction);
 
-        // newData[cellInfo.index]["balance"] =
-        //   Number(newData[cellInfo.index]["totalAmount"]) -
-        //   sumBy(newData[cellInfo.index]["credit"], (val) => Number(val) || 0);
+          // Optionally, compute the new balance if required
+          if (newData[cellInfo.index].totalAmount) {
+            newData[cellInfo.index].balance =
+              Number(newData[cellInfo.index].totalAmount) -
+              newData[cellInfo.index].transactions.reduce(
+                (acc, tran) => acc + Number(tran.credit),
+                0
+              );
+          }
 
-        setData(newData);
+          // let trxDate = newData[cellInfo.index]["trxDate"];
+          // let trxId = newData[cellInfo.index]["trxId"];
+          // newData[cellInfo.index]["trxDate"] = isArray(trxDate)
+          //   ? [...trxDate, extract.trxDate]
+          //   : [extract.trxDate];
+          // newData[cellInfo.index]["trxId"] = isArray(trxId)
+          //   ? [...trxId, extract.trxId]
+          //   : [extract.trxId];
+          // if (isArray(newData[cellInfo.index]["credit"])) {
+          //   newData[cellInfo.index]["credit"] = [
+          //     ...newData[cellInfo.index]["credit"],
+          //     parseFloat(extract.amount?.replace(/,/g, "")),
+          //   ];
+          // } else {
+          //   newData[cellInfo.index]["credit"] = [
+          //     parseFloat(extract.amount?.replace(/,/g, "")),
+          //   ];
+          // }
+
+          // newData[cellInfo.index]["balance"] =
+          //   Number(newData[cellInfo.index]["totalAmount"]) -
+          //   sumBy(newData[cellInfo.index]["credit"], (val) => Number(val) || 0);
+
+          setData(newData);
+        });
+      })
+      .finally(() => {
+        setUploading(false);
       });
-    });
   };
 
   const handleCellRenderChange = (cellInfo, val) => {
@@ -405,7 +430,7 @@ const ShipmentBillCal = (props) => {
   };
 
   const handleTrasferredBy = (index, indexToUpdate, val) => {
-    const newData = [...data];
+    const newData = [...data];    
     newData[index].transactions[indexToUpdate]["trasferredBy"] = val;
     setData(newData);
   };
@@ -615,16 +640,16 @@ const ShipmentBillCal = (props) => {
           </p>
         ),
       },
-      {
-        Header: "Payslip",
-        accessor: "payslip",
-        Cell: renderEditableFileView,
-      },
-      {
-        Header: "Upload",
-        accessor: "#UploadedFile",
-        Cell: (cell) => fileUploadCell(cell),
-      },
+      // {
+      //   Header: "Payslip",
+      //   accessor: "payslip",
+      //   Cell: renderEditableFileView,
+      // },
+      // {
+      //   Header: "Upload",
+      //   accessor: "#UploadedFile",
+      //   Cell: (cell) => fileUploadCell(cell),
+      // },
       // {
       //   Header: "Trx Date",
       //   accessor: "trxDate",
@@ -661,9 +686,18 @@ const ShipmentBillCal = (props) => {
       {
         Header: "Action",
         accessor: "##",
-        Cell: ({ row }) => (
+        Cell: (cell) => (
           <div className={"text-center flex space-x-2 justify-center"}>
             <button
+              onClick={(e) => {
+                setPaySlipData(cell);
+                setIsOpen(true);
+              }}
+              className="uppercase inline-flex items-center text-center px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
+            >
+              Payment Slip
+            </button>
+            {/* <button
               onClick={(e) => handleOnSubmit(row._original, row._index)}
               className="uppercase inline-flex items-center text-center px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
               disabled={
@@ -683,7 +717,7 @@ const ShipmentBillCal = (props) => {
               ) : (
                 "Update"
               )}
-            </button>
+            </button> */}
             {/* <button
               onClick={(e) => handleOnViewPDF(row._original)}
               className="uppercase inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded transition ease-in-out duration-150 bg-red-600 hover:bg-red-700 text-white"
@@ -692,11 +726,18 @@ const ShipmentBillCal = (props) => {
               View Pdf
             </button> */}
             <button
-              onClick={(e) => ledgerPDF(row._original)}
+              onClick={(e) => ledgerPDF(cell.row._original)}
               className="uppercase inline-flex items-center text-center px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded transition ease-in-out duration-150 bg-red-600 hover:bg-red-700 text-white"
-              disabled={loading}
+              disabled={ledgerLoading}
             >
-              Ledger
+              {ledgerLoading == cell.row._original?._id ? (
+                <>
+                  <SpingSvgIcon />
+                  Making
+                </>
+              ) : (
+                "Ledger"
+              )}
             </button>
           </div>
         ),
@@ -722,52 +763,53 @@ const ShipmentBillCal = (props) => {
       //   width: 100,
       // },
     ],
-    [loading]
+    [loading, ledgerLoading]
   );
 
-  const paySlipcolumns = useMemo(
-    () => [
-      {
-        Header: "SL",
-        accessor: "sl",
-        Cell: (row) => <p>{row.viewIndex + 1}</p>,
-        Footer: () => <p className="text-center">Total-</p>,
-        width: 50,
-      },
+  // const paySlipcolumns = useMemo(
+  //   () => [
+  //     {
+  //       Header: "SL",
+  //       accessor: "sl",
+  //       Cell: (row) => <p>{row.viewIndex + 1}</p>,
+  //       Footer: () => <p className="text-center">Total-</p>,
+  //       width: 50,
+  //     },
 
-      {
-        Header: "S. No.",
-        accessor: "shipmentNo",
-        Cell: renderText,
-      },
-      {
-        Header: "Trx Date",
-        accessor: "trxDate",
-        Cell: renderNormalEditableDate,
-      },
-      {
-        Header: "Trx Id",
-        Cell: renderTrxId,
-      },
-      {
-        Header: "Transfered By",
-        accessor: "transferedBy",
-        Cell: renderSelect,
-      },
-    ],
-    []
-  );
+  //     {
+  //       Header: "S. No.",
+  //       accessor: "shipmentNo",
+  //       Cell: renderText,
+  //     },
+  //     {
+  //       Header: "Trx Date",
+  //       accessor: "trxDate",
+  //       Cell: renderNormalEditableDate,
+  //     },
+  //     {
+  //       Header: "Trx Id",
+  //       Cell: renderTrxId,
+  //     },
+  //     {
+  //       Header: "Transfered By",
+  //       accessor: "transferedBy",
+  //       Cell: renderSelect,
+  //     },
+  //   ],
+  //   []
+  // );
 
-  const ledgerPDF = async (row) => {
-    
-    let billsData = await axios.get(`/api/customers-bills?customerId=` + row?.customerId)
+  const ledgerPDF = async (row) => {    
+    setLedgerLoading(row?._id);
+    let billsData = await axios
+      .get(`/api/customers-bills?customerId=` + row?.customerId)
       .then((res) => {
         const statusPriority = {
           pending: 1,
           ongoing: 2,
           rejected: 3,
           approved: 4,
-        };        
+        };
         // const newData = orderBy(
         //   res.data?.data,
         //   [
@@ -777,22 +819,24 @@ const ShipmentBillCal = (props) => {
         //     (o) => statusPriority[o?.approval] || Number.MAX_VALUE,
         //   ],
         //   ["asc", "asc"] // Sorting directions for each criterion
-        // );        
+        // );
         return [...res.data?.data];
       })
       .catch((err) => {
         errorAlert("Something went wrong!");
       })
-      .finally(() => setLoading(false));    
+      .finally(() => setLedgerLoading(false));
     const newData = billsData?.length > 0 ? [...billsData] : [];
-    const newInfo = {
-      customerId: newData[0]["customerId"],
-      customerName: newData[0]["customerName"],
-      shipmentNo: newData.map((item) => item.shipmentNo),
-      data: newData,
-    };
-    
-    generateLedgerPDF(newInfo);
+    if (billsData?.length > 0) {
+      const newInfo = {
+        customerId: newData[0]["customerId"],
+        customerName: newData[0]["customerName"],
+        shipmentNo: newData.map((item) => item.shipmentNo),
+        data: newData,
+      };
+
+      generateLedgerPDF(newInfo);
+    }
   };
 
   return (
@@ -824,11 +868,16 @@ const ShipmentBillCal = (props) => {
           setPaySlipData(null);
           setIsOpen(false);
         }}
+        className="bg-gray-100"
       >
         <Modal.Title>
-          <div className="flex items-center justify-between">
-            <p>Payslip View</p>
-            <button
+          <div className=" text-center mx-auto">
+            <div className="flex-1">
+              <p className="text-xl">Parcel Trade International</p>
+              <p className="text-base">CUSTOMER PAYMENT DETAILS</p>
+              <hr />
+            </div>
+            {/* <button
               onClick={() => {
                 setIsOpen(false);
                 setPaySlipData(null);
@@ -836,23 +885,112 @@ const ShipmentBillCal = (props) => {
               className="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-4 rounded mt-3"
             >
               Close
-            </button>
+            </button> */}
           </div>
         </Modal.Title>
         <Modal.Content>
-          <ReactTable
-            data={paySlipData || []}
-            columns={paySlipcolumns}
-            className="-striped -highlight px-3 overflow-auto"
-            defaultPageSize={200}
-            minRows={12}
-            showPageJump={false}
-            pageSizeOptions={[200, 250, 300]}
-            showPagination={true}
-            // showPagination={false}
-            sortable={true}
-          />
+          <div>
+            <div className=" border w-12 p-3 rounded-sm hover:bg-gray-200 hover:border-blue-600 mb-2">
+              {fileUploadCell(paySlipData)}
+            </div>
+            <div class="grid grid-cols-3 gap-2 rounded-md">
+              {paySlipData?.original?.transactions?.length > 0 &&
+                paySlipData?.original?.transactions?.map((item, i) => (
+                  <div
+                    key={i}
+                    class="bg-white border border-blue-500 hover:bg-gray-100 text-black shadow-md text-center py-6 rounded-lg px-3"
+                  >
+                    <SlideshowLightbox
+                      key={JSON.stringify(item)}
+                      showControls
+                      // open={showImg}
+                      // onClose={() => setShowImg(false)}
+                      // onOpen={() => setShowImg(true)}
+                      showThumbnails={true}
+                      backgroundColor="rgba(0, 0, 0, 0.034)" // Black with 70% opacity
+                      modalClose="clickOutside"
+                      animateThumbnails={true}
+                      className="lightbox-custom space-y-1"
+                      iconColor={"black"}
+                      // className="container grid grid-cols-3 gap-2 mx-auto"
+                    >
+                      <img
+                        key={item + i}
+                        className=" mx-auto rounded h-20 w-10"
+                        src={item?.payslip?.src || item?.payslip}
+                      />
+                    </SlideshowLightbox>
+                    <div className="grid grid-cols-2 gap-2 text-left text-sm mt-2">
+                      <p className="">TRX DATE: {item.trxDate}</p>
+                      <p>TRX ID: {item.trxId}</p>
+                      <div>
+                        <select
+                          className={`uppercase whitespace-no-wrap text-sm leading-5  text-center block w-full px-4 py-1 my-2  text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 `}
+                          value={item?.trasferredBy}
+                          // onKeyDown={(e) => handleKeyDown(e, cellInfo)}
+                          onChange={(e) =>
+                            handleTrasferredBy(
+                              paySlipData.index,
+                              i,
+                              e.target.value
+                            )
+                          }
+                          defaultValue={item?.trasferredBy}
+                          key={i}
+                        >
+                          <option value={""}>Select Bank</option>
+                          {banklist.map((item, index) => (
+                            <option
+                              selected={item == item?.trasferredBy}
+                              value={item}
+                              key={index}
+                            >
+                              {item}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <p>CREDIT: {item.credit}</p>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
         </Modal.Content>
+        <Modal.Footer className={"flex justify-center space-x-2 items-center"}>
+          <button
+            onClick={() => {
+              setIsOpen(false);
+              setPaySlipData(null);
+            }}
+            className="bg-red-600 hover:bg-red-700 text-white uppercase inline-flex items-center text-center px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded  focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
+          >
+            Close
+          </button>
+          <button
+            onClick={(e) =>
+              handleOnSubmit(paySlipData?.original, paySlipData._index)
+            }
+            className="uppercase inline-flex items-center text-center px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
+            // disabled={
+            //   // loading || cell?.original?.approval === "approved"
+            //   // ||
+            //   // !row._original?.transactions > 0 ||
+            //   // isUndefined(
+            //   //   row._original?.transactions[row._index]?.["trasferredBy"]
+            //   // )
+            // }
+          >
+            {loading ? (
+              <>
+                <SpingSvgIcon />
+                Updating
+              </>
+            ) : (
+              "Update"
+            )}
+          </button>
+        </Modal.Footer>
       </Modal>
     </>
   );

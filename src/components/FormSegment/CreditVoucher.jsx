@@ -46,7 +46,7 @@ export default function CreditVoucher({ isOpen, setIsOpen }) {
           <div className=" grid grid-cols-3 justify-center space-x-3 gap-3">
             <div>
               <div className="flex w-full items-center justify-between bg-primaryBg px-4 py-1 text-sm text-white">
-                <p className="m-0 p-0 uppercase">Enter From</p>
+                <p className="m-0 p-0 uppercase">Enter Customer Name</p>
                 <span className="m-0 p-0">:</span>
               </div>
               <input

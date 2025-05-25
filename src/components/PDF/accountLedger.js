@@ -13,6 +13,7 @@ export const generateLedgerPDF = (info) => {
     const finalData = info?.data.flatMap((entry) => {
       const baseEntry = {
         shipmentNo: entry.shipmentNo || "",
+        shipmentBy: entry.shipmentBy || "",
         date: entry.deliveryDate || "",
         totalAmount: entry.totalAmount || "",
         credit: "",
@@ -25,6 +26,7 @@ export const generateLedgerPDF = (info) => {
       const transactions = Array.isArray(entry.transactions)
         ? entry.transactions.map((trx) => ({
             shipmentNo: entry.shipmentNo || "",
+            shipmentBy: entry.shipmentBy || "",
             date: trx.trxDate || "",
             totalAmount: "",
             credit: trx.credit || "",
@@ -40,10 +42,10 @@ export const generateLedgerPDF = (info) => {
 
     let runningBalance = 0;
     const calculatedArray = finalData.map((item) => {
-      if (Number(item.totalAmount) && Number(item.credit)) {
-        runningBalance += Number(item.credit);
+      if (Number(item.credit)) {
+        runningBalance -= Number(item.credit);
       } else {
-        runningBalance -= Number(item.totalAmount);
+        runningBalance += Number(item.totalAmount);
       }
 
       return {
@@ -60,8 +62,8 @@ export const generateLedgerPDF = (info) => {
         },
         {
           text: item?.trasferredBy
-            ? `${item?.trasferredBy}- (${item?.shipmentNo})`
-            : `PENDING APPROVAL SHIPMENT NO. ${item?.shipmentNo}`,
+            ? `BILL RECEIVED BY ${item?.trasferredBy} FOR ${item?.shipmentBy} SHIPMENT NO. ${item?.shipmentNo}`
+            : `${item?.shipmentBy} - SHIPMENT NO. ${item?.shipmentNo}`,
           fontSize: 9,
           alignment: "left",
         },
