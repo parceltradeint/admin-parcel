@@ -1,9 +1,9 @@
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { isArray, isNumber, sumBy } from "lodash";
+import { isArray, isNumber, set, sumBy } from "lodash";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import ReactTable from "react-table-v6";
 import { convertBengaliToEnglishNumber, generatePDF } from "../PDF/InvoiceDef";
 import useSound from "use-sound";
@@ -214,11 +214,11 @@ const CustomerAllDueBills = (props) => {
   };
 
   const renderEditableFile = (cellInfo, fixed) => {
-    const cellValue = data[cellInfo.index]["transactions"];
+    const cellValue = cellInfo?.original["transactions"];
 
     return (
       <label className="flex items-center justify-center text-center px-4 py-1">
-        {cellValue ? (
+        {cellValue?.length > 0 ? (
           <SlideshowLightbox
             showControls
             // open={showImg}
@@ -238,7 +238,7 @@ const CustomerAllDueBills = (props) => {
                 <img
                   key={i}
                   className="w-full rounded h-10"
-                  src={item.payslip}
+                  src={item?.payslip || ""}
                 />
               ))}
           </SlideshowLightbox>
@@ -254,7 +254,9 @@ const CustomerAllDueBills = (props) => {
 
   const renderEditableStatus = (cellInfo, fixed) => {
     const cellValue = data[cellInfo.index][cellInfo.column.id];
-
+    if (cellValue === "rejected") {
+      data[cellInfo.index]["transactions"] = [];
+    }
     return (
       <select
         className={`block w-full bg-white dark:bg-black border border-gray-200 dark:border-black rounded py-1 px-4 leading-tight focus:outline-none ${getStatusColor(
@@ -323,7 +325,8 @@ const CustomerAllDueBills = (props) => {
 
   const renderAmount = (cellInfo, fixed) => {
     const cellValue = data[cellInfo.index]["transactions"];
-
+    const totalCredit = sumBy(cellValue, (item) => Number(item.credit) || 0);
+    data[cellInfo.index]["credit"] = totalCredit;
     return (
       <span className="flex flex-col space-y-1 justify-center text-center">
         {cellValue?.map((item, i) => (
@@ -344,6 +347,186 @@ const CustomerAllDueBills = (props) => {
       </span>
     );
   };
+  const renderBalance = (cellInfo, fixed) => {
+    const credit = sumBy(
+      data[cellInfo.index]["transactions"],
+      (tran) => Number(tran.credit) || 0
+    );
+    const cellBalance =
+      data[cellInfo.index]["totalAmount"] -
+      (credit + Number(data[cellInfo.index]["discount"] || 0));
+
+    data[cellInfo.index]["balance"] = cellBalance;
+    return (
+      <span className="flex flex-col space-y-1 justify-center text-center">
+        <NumberFormat
+          thousandSeparator={true}
+          className={`uppercase text-center block w-full px-4 py-1  text-gray-700 bg-white border rounded-md !appearance-none focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 `}
+          value={cellBalance}
+          decimalScale={2}
+        />
+      </span>
+    );
+  };
+
+  const columns = useMemo(
+    () => [
+      // {
+      //   Header: "User ID",
+      //   accessor: "customerId",
+      //   Cell: renderText,
+      //   Footer: () => <p className="text-center">Total-</p>,
+      // },
+      {
+        Header: "DATE",
+        accessor: "deliveryDate",
+        Cell: renderText,
+        Footer: () => <p className="text-center">Total-</p>,
+      },
+      // {
+      //   Header: "S. Mark",
+      //   accessor: "customerName",
+      //   Cell: renderText,
+      // },
+      {
+        Header: "By",
+        accessor: "shipmentBy",
+        Cell: renderText,
+      },
+      {
+        Header: "Kg",
+        accessor: "totalKg",
+        Cell: renderText,
+        Footer: () => (
+          <p className="text-center">
+            {sumBy(data, (item) => Number(item.totalKg)).toFixed(2)}
+          </p>
+        ),
+      },
+      {
+        Header: "No",
+        accessor: "shipmentNo",
+        Cell: renderText,
+      },
+      // {
+      //   Header: "Total Bill",
+      //   accessor: "totalBill",
+      //   Cell: ({ row }) => <p>{calculationDueBill(row?._original)}</p>,
+      // },
+      {
+        Header: "Debit",
+        accessor: "debit",
+        //   Cell: renderEditable,
+        Cell: ({ row }) => (
+          <p className="text-center">
+            {convertTotalAmount(Number(row?._original?.totalAmount))}
+          </p>
+        ),
+        Footer: ({ row }) => (
+          <p className="text-center">
+            {convertTotalAmount(
+              sumBy(data, (item) => Number(item.totalAmount))
+            )}
+          </p>
+        ),
+      },
+      {
+        Header: "Credit",
+        accessor: "credit",
+        Cell: renderAmount,
+        Footer: ({ row }) => (
+          <p className="text-center">
+            {convertTotalAmount(
+              sumBy(data, (tran) => Number(tran.credit) || 0)
+            )}
+          </p>
+        ),
+      },
+      {
+        Header: "Discount",
+        accessor: "discount",
+        Cell: renderEditable,
+        Footer: ({ row }) => (
+          <p className="text-center">
+            {convertTotalAmount(
+              sumBy(data, (item) => Number(item?.discount || 0))
+            )}
+          </p>
+        ),
+      },
+      {
+        Header: "Balance",
+        accessor: "balance",
+        Cell: renderBalance,
+        Footer: ({ row }) => (
+          <p className="text-center">
+            {convertTotalAmount(sumBy(data, (item) => Number(item.balance)))}
+          </p>
+        ),
+      },
+      {
+        Header: "Pay Slip",
+        accessor: "payslip",
+        Cell: renderEditableFile,
+      },
+      {
+        Header: "Approval",
+        accessor: "approval",
+        Cell: renderEditableStatus,
+        width: 135,
+      },
+      {
+        Header: "Action",
+        accessor: "##",
+        Cell: ({ row }) => (
+          <div className={"text-center flex space-x-1"}>
+            <button
+              onClick={(e) => handleOnSubmit(row._original)}
+              className=" uppercase inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
+              disabled={loading}
+            >
+              {loading === row._original?._id ? (
+                <>
+                  <SpingSvgIcon />
+                  Updating..
+                </>
+              ) : (
+                "Update"
+              )}
+            </button>
+            <button
+              onClick={(e) => handleOnViewPDF(row._original)}
+              className="uppercase inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded transition ease-in-out duration-150 bg-red-600 hover:bg-red-700 text-white"
+              disabled={loading}
+            >
+              View Pdf
+            </button>
+          </div>
+        ),
+        width: 180,
+      },
+      // {
+      //   //   id: "headerId",
+      //   Header: "Action",
+      //   accessor: "#",
+      //   Cell: (row) => (
+      //     <div className={"text-center flex flex-col space-y-2"}>
+      //       <button
+      //         type="submit"
+      //         className="inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
+      //       >
+      //         Update
+      //       </button>
+      //     </div>
+      //   ),
+
+      //   className: "sticky-r",
+      //   headerClassName: "sticky-r",
+      //   width: 100,
+      // },
+    ],
+    [data]
+  );
 
   return (
     <Modal
@@ -357,165 +540,7 @@ const CustomerAllDueBills = (props) => {
         <div>
           <ReactTable
             data={data}
-            columns={[
-              // {
-              //   Header: "User ID",
-              //   accessor: "customerId",
-              //   Cell: renderText,
-              //   Footer: () => <p className="text-center">Total-</p>,
-              // },
-              {
-                Header: "DATE",
-                accessor: "deliveryDate",
-                Cell: renderText,
-                Footer: () => <p className="text-center">Total-</p>,
-              },
-              // {
-              //   Header: "S. Mark",
-              //   accessor: "customerName",
-              //   Cell: renderText,
-              // },
-              {
-                Header: "By",
-                accessor: "shipmentBy",
-                Cell: renderText,
-              },
-              {
-                Header: "Kg",
-                accessor: "totalKg",
-                Cell: renderText,
-                Footer: () => (
-                  <p className="text-center">
-                    {sumBy(data, (item) => Number(item.totalKg)).toFixed(2)}
-                  </p>
-                ),
-              },
-              {
-                Header: "No",
-                accessor: "shipmentNo",
-                Cell: renderText,
-              },
-              // {
-              //   Header: "Total Bill",
-              //   accessor: "totalBill",
-              //   Cell: ({ row }) => <p>{calculationDueBill(row?._original)}</p>,
-              // },
-              {
-                Header: "Debit",
-                accessor: "debit",
-                //   Cell: renderEditable,
-                Cell: ({ row }) => (
-                  <p className="text-center">
-                    {convertTotalAmount(Number(row?._original?.totalAmount))}
-                  </p>
-                ),
-                Footer: ({ row }) => (
-                  <p className="text-center">
-                    {convertTotalAmount(
-                      sumBy(data, (item) => Number(item.totalAmount))
-                    )}
-                  </p>
-                ),
-              },
-              {
-                Header: "Credit",
-                accessor: "credit",
-                Cell: renderAmount,
-                Footer: ({ row }) => (
-                  <p className="text-center">
-                    {convertTotalAmount(
-                      sumBy(data, (item) => Number(item.credit || 0))
-                    )}
-                  </p>
-                ),
-              },
-              {
-                Header: "Discount",
-                accessor: "discount",
-                Cell: renderEditable,
-                Footer: ({ row }) => (
-                  <p className="text-center">
-                    {convertTotalAmount(
-                      sumBy(data, (item) => Number(item?.discount || 0))
-                    )}
-                  </p>
-                ),
-              },
-              {
-                Header: "Balance",
-                accessor: "balance",
-                Cell: ({ row }) => (
-                  <p>{convertTotalAmount(Number(row?._original?.balance))}</p>
-                ),
-                Footer: ({ row }) => (
-                  <p className="text-center">
-                    {convertTotalAmount(
-                      sumBy(data, (item) => Number(item.balance))
-                    )}
-                  </p>
-                ),
-              },
-              {
-                Header: "Pay Slip",
-                accessor: "payslip",
-                Cell: renderEditableFile,
-              },
-              {
-                Header: "Approval",
-                accessor: "approval",
-                Cell: renderEditableStatus,
-                width: 135,
-              },
-              {
-                Header: "Action",
-                accessor: "##",
-                Cell: ({ row }) => (
-                  <div className={"text-center flex space-x-1"}>
-                    <button
-                      onClick={(e) => handleOnSubmit(row._original)}
-                      className=" uppercase inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
-                      disabled={loading}
-                    >
-                      {loading === row._original?._id ? (
-                        <>
-                          <SpingSvgIcon />
-                          Updating..
-                        </>
-                      ) : (
-                        "Update"
-                      )}
-                    </button>
-                    <button
-                      onClick={(e) => handleOnViewPDF(row._original)}
-                      className="uppercase inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded transition ease-in-out duration-150 bg-red-600 hover:bg-red-700 text-white"
-                      disabled={loading}
-                    >
-                      View Pdf
-                    </button>
-                  </div>
-                ),
-                width: 180,
-              },
-              // {
-              //   //   id: "headerId",
-              //   Header: "Action",
-              //   accessor: "#",
-              //   Cell: (row) => (
-              //     <div className={"text-center flex flex-col space-y-2"}>
-              //       <button
-              //         type="submit"
-              //         className="inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
-              //       >
-              //         Update
-              //       </button>
-              //     </div>
-              //   ),
-
-              //   className: "sticky-r",
-              //   headerClassName: "sticky-r",
-              //   width: 100,
-              // },
-            ]}
+            columns={columns}
             className="-striped -highlight"
             defaultPageSize={200}
             minRows={12}

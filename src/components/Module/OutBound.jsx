@@ -134,7 +134,7 @@ const OutBound = () => {
     },
     {
       id: 2,
-      label: "Finance",
+      label: "Payslip",
       value: <ShipmentBillCal data={data} setData={setData} type={"outbound"} />,
     },
   ];

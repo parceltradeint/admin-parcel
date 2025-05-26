@@ -311,14 +311,17 @@ const ShipmentBillCal = (props) => {
             }}
             disabled={cellInfo?.original?.approval === "approval"}
           />
-          <span className="flex items-center space-x-2 cursor-pointer">
+          <span className="  space-x-2 cursor-pointer">
             {uploading ? (
               <>
                 <SpingSvgIcon />
                 Uploading
               </>
             ) : (
-              <MdCloudUpload size={25} />
+              <div className="flex items-center space-x-2">
+                <p>Upload Payment Slip</p>
+                <MdCloudUpload size={20} />
+              </div>
             )}
           </span>
         </span>
@@ -327,6 +330,8 @@ const ShipmentBillCal = (props) => {
   };
 
   const handleDeletePayslip = (index, cellIndex) => {
+    console.log("cellIndex", cellIndex);
+
     const newData = [...data];
     if (index !== -1) {
       // Remove the transaction
@@ -366,9 +371,9 @@ const ShipmentBillCal = (props) => {
 
           // Create a new transaction object
           const newTransaction = {
-            trxDate: extract.trxDate,
-            trxId: extract.trxId,
-            credit: parseFloat(extract.amount.replace(/,/g, "")), // Convert amount to float and remove commas
+            trxDate: extract?.trxDate,
+            trxId: extract?.trxId,
+            credit: parseFloat(extract?.amount?.replace(/,/g, "")), // Convert amount to float and remove commas
             payslip: payslip,
           };
 
@@ -384,29 +389,6 @@ const ShipmentBillCal = (props) => {
                 0
               );
           }
-
-          // let trxDate = newData[cellInfo.index]["trxDate"];
-          // let trxId = newData[cellInfo.index]["trxId"];
-          // newData[cellInfo.index]["trxDate"] = isArray(trxDate)
-          //   ? [...trxDate, extract.trxDate]
-          //   : [extract.trxDate];
-          // newData[cellInfo.index]["trxId"] = isArray(trxId)
-          //   ? [...trxId, extract.trxId]
-          //   : [extract.trxId];
-          // if (isArray(newData[cellInfo.index]["credit"])) {
-          //   newData[cellInfo.index]["credit"] = [
-          //     ...newData[cellInfo.index]["credit"],
-          //     parseFloat(extract.amount?.replace(/,/g, "")),
-          //   ];
-          // } else {
-          //   newData[cellInfo.index]["credit"] = [
-          //     parseFloat(extract.amount?.replace(/,/g, "")),
-          //   ];
-          // }
-
-          // newData[cellInfo.index]["balance"] =
-          //   Number(newData[cellInfo.index]["totalAmount"]) -
-          //   sumBy(newData[cellInfo.index]["credit"], (val) => Number(val) || 0);
 
           setData(newData);
         });
@@ -430,7 +412,7 @@ const ShipmentBillCal = (props) => {
   };
 
   const handleTrasferredBy = (index, indexToUpdate, val) => {
-    const newData = [...data];    
+    const newData = [...data];
     newData[index].transactions[indexToUpdate]["trasferredBy"] = val;
     setData(newData);
   };
@@ -605,10 +587,13 @@ const ShipmentBillCal = (props) => {
         Header: "Credit",
         accessor: "credit",
         Cell: renderAmount,
-        Footer: ({ row }) => (
+        Footer: (row) => (
           <p className="text-center">
             {convertTotalAmount(
-              sumBy(data, (item) => Number(item.credit || 0))
+              sumBy(
+                data.flatMap((item) => item.transactions || []),
+                (tran) => Number(tran.credit) || 0
+              )
             )}
           </p>
         ),
@@ -765,7 +750,6 @@ const ShipmentBillCal = (props) => {
     ],
     [loading, ledgerLoading]
   );
-
   // const paySlipcolumns = useMemo(
   //   () => [
   //     {
@@ -799,7 +783,7 @@ const ShipmentBillCal = (props) => {
   //   []
   // );
 
-  const ledgerPDF = async (row) => {    
+  const ledgerPDF = async (row) => {
     setLedgerLoading(row?._id);
     let billsData = await axios
       .get(`/api/customers-bills?customerId=` + row?.customerId)
@@ -869,6 +853,7 @@ const ShipmentBillCal = (props) => {
           setIsOpen(false);
         }}
         className="bg-gray-100"
+        key={paySlipData?.original}
       >
         <Modal.Title>
           <div className=" text-center mx-auto">
@@ -889,18 +874,186 @@ const ShipmentBillCal = (props) => {
           </div>
         </Modal.Title>
         <Modal.Content>
+          <div className=" mx-auto flex justify-center">
+            <table className="table-auto border border-black text-sm">
+              <tbody>
+                <tr>
+                  <td className="border border-black px-2 py-2 font-semibold">
+                    SHIPPING MARK: {paySlipData?.original?.customerName}
+                  </td>
+                  <td className="border border-black px-2 py-2 font-semibold">
+                    S.NO: {paySlipData?.original?.shipmentNo}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border border-black px-2 py-2">
+                    KG: {paySlipData?.original?.kg}
+                  </td>
+                  <td className="border border-black px-2 py-2">
+                    BY: {paySlipData?.original?.shipmentBy}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border border-black px-2 py-2">
+                    DEBIT:{" "}
+                    <NumberFormat
+                      thousandSeparator={true}
+                      value={paySlipData?.original?.totalAmount || 0}
+                      displayType={"text"}
+                      decimalScale={2}
+                    />
+                    /-
+                  </td>
+                  <td className="border border-black px-2 py-2">
+                    CREDIT:{" "}
+                    <NumberFormat
+                      thousandSeparator={true}
+                      value={sumBy(
+                        data.flatMap((item) => item.transactions || []),
+                        (tran) => Number(tran.credit) || 0
+                      )}
+                      displayType={"text"}
+                      decimalScale={2}
+                    />
+                    /-
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border border-black px-2 py-2">
+                    DUE:{" "}
+                    <NumberFormat
+                      thousandSeparator={true}
+                      value={
+                        paySlipData?.original?.totalAmount -
+                          sumBy(
+                            data.flatMap((item) => item.transactions || []),
+                            (tran) => Number(tran.credit) || 0
+                          ) || 0
+                      }
+                      displayType={"text"}
+                      decimalScale={2}
+                    />
+                    /-
+                  </td>
+                  <td className="border border-black px-2 py-2">
+                    DISCOUNT:{" "}
+                    <NumberFormat
+                      thousandSeparator={true}
+                      value={paySlipData?.original?.discount || 0}
+                      displayType={"text"}
+                      decimalScale={2}
+                    />
+                    /-
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
           <div>
-            <div className=" border w-12 p-3 rounded-sm hover:bg-gray-200 hover:border-blue-600 mb-2">
+            <div className=" border px-3 py-1 mx-auto w-64 mt-2 border-black rounded-sm hover:bg-gray-200 hover:border-blue-600 mb-2">
               {fileUploadCell(paySlipData)}
             </div>
-            <div class="grid grid-cols-3 gap-2 rounded-md">
+
+            <div className="grid grid-cols-3 gap-2 rounded-md">
               {paySlipData?.original?.transactions?.length > 0 &&
                 paySlipData?.original?.transactions?.map((item, i) => (
                   <div
                     key={i}
-                    class="bg-white border border-blue-500 hover:bg-gray-100 text-black shadow-md text-center py-6 rounded-lg px-3"
+                    className="bg-white border border-blue-500 hover:bg-gray-100 text-black shadow-md text-center py-1 rounded-lg px-3"
                   >
-                    <SlideshowLightbox
+                    <div className="text-center font-semibold border-b border-black py-1">
+                      <button
+                        onClick={() =>
+                          handleDeletePayslip(i, paySlipData?.index)
+                        }
+                        className="bg-red-600 hover:bg-red-700 mb-1 text-white uppercase inline-flex items-center text-center px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded  focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
+                      >
+                        Delete Payslip
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-2 border-b border-black text-sm">
+                      <div className="border-r border-black p-1 text-left">
+                        BANK: {item?.trasferredBy}
+                      </div>
+                      <div className="p-1 text-left">
+                        TRX DATE:{" "}
+                        {`${(() => {
+                          const [d, m, y] = item?.trxDate
+                            .split(",")[0]
+                            .split(" ");
+                          return `${d} ${monthMap[m] || m} ${y}`;
+                        })()}`}
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 border-b border-black text-sm">
+                      <div className="border-r border-black p-1 text-left">
+                        AMOUNT:{" "}
+                        <NumberFormat
+                          thousandSeparator={true}
+                          value={item.credit || 0}
+                          displayType={"text"}
+                          decimalScale={2}
+                        />
+                        /-
+                      </div>
+                      <div className="p-1 text-left">TRX ID: {item.trxId}</div>
+                    </div>
+                    <div className="grid grid-cols-2 border-b border-black text-sm">
+                      <div className="border-r border-black p-1 text-left">
+                        Trasnfer By
+                      </div>
+                      <select
+                        className={`text-left uppercase whitespace-no-wrap text-sm leading-5  block w-full px-0.5 py-1  text-gray-700 bg-white border rounded-md !appearance-none focus:ring-blue-300 focus:outline-none `}
+                        value={item?.trasferredBy}
+                        // onKeyDown={(e) => handleKeyDown(e, cellInfo)}
+                        onChange={(e) =>
+                          handleTrasferredBy(
+                            paySlipData.index,
+                            i,
+                            e.target.value
+                          )
+                        }
+                        defaultValue={item?.trasferredBy}
+                        key={i}
+                      >
+                        <option value={""}>Select Bank</option>
+                        {banklist.map((item, index) => (
+                          <option
+                            selected={item == item?.trasferredBy}
+                            value={item}
+                            key={index}
+                          >
+                            {item}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="p-1 flex justify-center items-center">
+                      <SlideshowLightbox
+                        key={JSON.stringify(item)}
+                        showControls
+                        // open={showImg}
+                        // onClose={() => setShowImg(false)}
+                        // onOpen={() => setShowImg(true)}
+                        showThumbnails={true}
+                        backgroundColor="rgba(0, 0, 0, 0.034)" // Black with 70% opacity
+                        modalClose="clickOutside"
+                        animateThumbnails={true}
+                        className="lightbox-custom space-y-1"
+                        iconColor={"black"}
+                        // className="container grid grid-cols-3 gap-2 mx-auto"
+                      >
+                        <img
+                          key={item + i}
+                          className=" mx-auto rounded h-20 w-10"
+                          src={item?.payslip?.src || item?.payslip}
+                        />
+                      </SlideshowLightbox>
+                    </div>
+                    {/* <SlideshowLightbox
                       key={JSON.stringify(item)}
                       showControls
                       // open={showImg}
@@ -951,7 +1104,7 @@ const ShipmentBillCal = (props) => {
                         </select>
                       </div>
                       <p>CREDIT: {item.credit}</p>
-                    </div>
+                    </div> */}
                   </div>
                 ))}
             </div>
@@ -997,3 +1150,18 @@ const ShipmentBillCal = (props) => {
 };
 
 export default ShipmentBillCal;
+
+export const monthMap = {
+  জানু: "January",
+  ফেব: "February",
+  মার্চ: "March",
+  এপ্রি: "April",
+  মে: "May",
+  জুন: "June",
+  জুলা: "July",
+  আগ: "August",
+  সেপ্টে: "September",
+  অক্টো: "October",
+  নভে: "November",
+  ডিসে: "December",
+};
