@@ -34,7 +34,7 @@ export default async function newShipmentBill(req, res) {
       let response = await collection
         .find({
           customerId: req?.query?.customerId,
-          balance: { $exists: true, $ne: 0 },
+          // balance: { $exists: false, $ne: 0 },
         })
         .toArray();
       const aggregationResult = await collection
@@ -71,9 +71,9 @@ export default async function newShipmentBill(req, res) {
 
       const searchQuery = {
         $and: [
-          {
-            balance: { $exists: true, $ne: 0 },
-          },
+          // {
+          //   balance: { $exists: true, $ne: 0 },
+          // },
           {
             customerId: { $exists: true },
           },

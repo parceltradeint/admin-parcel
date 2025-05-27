@@ -25,9 +25,8 @@ const CustomersBillCal = (props) => {
         .then((res) => {
           const statusPriority = {
             pending: 1,
-            ongoing: 2,
-            rejected: 3,
-            approved: 4,
+            rejected: 2,
+            approved: 3,
           };
           const newData = orderBy(
             res.data?.data,
@@ -120,6 +119,7 @@ const CustomersBillCal = (props) => {
       generateExportBills(groupedArray);
     }
   };
+console.log("groupedArray", groupedArray);
 
   if (loading) {
     return <PlaceHolderLoading loading={true} />;

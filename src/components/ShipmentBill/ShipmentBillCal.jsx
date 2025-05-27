@@ -309,7 +309,7 @@ const ShipmentBillCal = (props) => {
               e.stopPropagation();
               handleChangeFile(cellInfo, e.target.files[0], "payslip");
             }}
-            disabled={cellInfo?.original?.approval === "approval"}
+            // disabled={cellInfo?.original?.approval === "approval"}
           />
           <span className="  space-x-2 cursor-pointer">
             {uploading ? (
@@ -318,10 +318,10 @@ const ShipmentBillCal = (props) => {
                 Uploading
               </>
             ) : (
-              <div className="flex items-center space-x-2">
+              <button className="flex items-center space-x-2">
                 <p>Upload Payment Slip</p>
                 <MdCloudUpload size={20} />
-              </div>
+              </button>
             )}
           </span>
         </span>
@@ -330,7 +330,6 @@ const ShipmentBillCal = (props) => {
   };
 
   const handleDeletePayslip = (index, cellIndex) => {
-    console.log("cellIndex", cellIndex);
 
     const newData = [...data];
     if (index !== -1) {
@@ -810,6 +809,7 @@ const ShipmentBillCal = (props) => {
         errorAlert("Something went wrong!");
       })
       .finally(() => setLedgerLoading(false));
+    
     const newData = billsData?.length > 0 ? [...billsData] : [];
     if (billsData?.length > 0) {
       const newInfo = {
@@ -887,7 +887,7 @@ const ShipmentBillCal = (props) => {
                 </tr>
                 <tr>
                   <td className="border border-black px-2 py-2">
-                    KG: {paySlipData?.original?.kg}
+                    KG: {paySlipData?.original?.totalKg || 0}
                   </td>
                   <td className="border border-black px-2 py-2">
                     BY: {paySlipData?.original?.shipmentBy}
@@ -909,11 +909,12 @@ const ShipmentBillCal = (props) => {
                     <NumberFormat
                       thousandSeparator={true}
                       value={sumBy(
-                        data.flatMap((item) => item.transactions || []),
+                        paySlipData?.original?.transactions,
                         (tran) => Number(tran.credit) || 0
                       )}
                       displayType={"text"}
                       decimalScale={2}
+                      key={`credit-${paySlipData?.original?.shipmentNo}`}
                     />
                     /-
                   </td>
@@ -926,12 +927,13 @@ const ShipmentBillCal = (props) => {
                       value={
                         paySlipData?.original?.totalAmount -
                           sumBy(
-                            data.flatMap((item) => item.transactions || []),
+                            paySlipData?.original?.transactions,
                             (tran) => Number(tran.credit) || 0
                           ) || 0
                       }
                       displayType={"text"}
                       decimalScale={2}
+                      key={`due-${paySlipData?.original?.shipmentNo}`}
                     />
                     /-
                   </td>
@@ -966,6 +968,7 @@ const ShipmentBillCal = (props) => {
                         onClick={() =>
                           handleDeletePayslip(i, paySlipData?.index)
                         }
+                        disabled={paySlipData?.original?.approval !== "approval"}
                         className="bg-red-600 hover:bg-red-700 mb-1 text-white uppercase inline-flex items-center text-center px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded  focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
                       >
                         Delete Payslip
@@ -974,7 +977,31 @@ const ShipmentBillCal = (props) => {
 
                     <div className="grid grid-cols-2 border-b border-black text-sm">
                       <div className="border-r border-black p-1 text-left">
-                        BANK: {item?.trasferredBy}
+                        <select
+                          className={`text-left uppercase whitespace-no-wrap text-sm leading-5  block w-full px-0.5 py-1  text-gray-700 bg-white border rounded-md !appearance-none focus:ring-blue-300 focus:outline-none `}
+                          value={item?.trasferredBy}
+                          // onKeyDown={(e) => handleKeyDown(e, cellInfo)}
+                          onChange={(e) =>
+                            handleTrasferredBy(
+                              paySlipData.index,
+                              i,
+                              e.target.value
+                            )
+                          }
+                          defaultValue={item?.trasferredBy}
+                          key={i}
+                        >
+                          <option value={""}>Select Bank</option>
+                          {banklist.map((item, index) => (
+                            <option
+                              selected={item == item?.trasferredBy}
+                              value={item}
+                              key={index}
+                            >
+                              {item}
+                            </option>
+                          ))}
+                        </select>
                       </div>
                       <div className="p-1 text-left">
                         TRX DATE:{" "}
@@ -1000,36 +1027,12 @@ const ShipmentBillCal = (props) => {
                       </div>
                       <div className="p-1 text-left">TRX ID: {item.trxId}</div>
                     </div>
-                    <div className="grid grid-cols-2 border-b border-black text-sm">
+                    {/* <div className="grid grid-cols-2 border-b border-black text-sm">
                       <div className="border-r border-black p-1 text-left">
                         Trasnfer By
                       </div>
-                      <select
-                        className={`text-left uppercase whitespace-no-wrap text-sm leading-5  block w-full px-0.5 py-1  text-gray-700 bg-white border rounded-md !appearance-none focus:ring-blue-300 focus:outline-none `}
-                        value={item?.trasferredBy}
-                        // onKeyDown={(e) => handleKeyDown(e, cellInfo)}
-                        onChange={(e) =>
-                          handleTrasferredBy(
-                            paySlipData.index,
-                            i,
-                            e.target.value
-                          )
-                        }
-                        defaultValue={item?.trasferredBy}
-                        key={i}
-                      >
-                        <option value={""}>Select Bank</option>
-                        {banklist.map((item, index) => (
-                          <option
-                            selected={item == item?.trasferredBy}
-                            value={item}
-                            key={index}
-                          >
-                            {item}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                      
+                    </div> */}
 
                     <div className="p-1 flex justify-center items-center">
                       <SlideshowLightbox
