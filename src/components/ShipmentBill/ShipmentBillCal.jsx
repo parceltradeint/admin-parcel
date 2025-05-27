@@ -299,16 +299,17 @@ const ShipmentBillCal = (props) => {
 
   const fileUploadCell = (cellInfo) => {
     return (
-      <label className="flex justify-center">
+      <label className="flex justify-center" htmlFor="uploadFile">
         <span>
           <input
             type="file"
             className="hidden"
             accept=".jpg, .png, .jpeg"
             onChange={(e) => {
-              e.stopPropagation();
+              // e.stopPropagation();
               handleChangeFile(cellInfo, e.target.files[0], "payslip");
             }}
+            id="uploadFile"
             // disabled={cellInfo?.original?.approval === "approval"}
           />
           <span className="  space-x-2 cursor-pointer">
@@ -318,10 +319,10 @@ const ShipmentBillCal = (props) => {
                 Uploading
               </>
             ) : (
-              <button className="flex items-center space-x-2">
+              <p className="flex items-center space-x-2">
                 <p>Upload Payment Slip</p>
                 <MdCloudUpload size={20} />
-              </button>
+              </p>
             )}
           </span>
         </span>
