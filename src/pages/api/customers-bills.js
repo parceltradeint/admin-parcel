@@ -71,9 +71,9 @@ export default async function newShipmentBill(req, res) {
 
       const searchQuery = {
         $and: [
-          // {
-          //   balance: { $exists: true, $ne: 0 },
-          // },
+          {
+            balance: { $exists: true, $ne: 0 },
+          },
           {
             customerId: { $exists: true },
           },
