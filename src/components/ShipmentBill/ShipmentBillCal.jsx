@@ -968,7 +968,7 @@ const ShipmentBillCal = (props) => {
                         onClick={() =>
                           handleDeletePayslip(i, paySlipData?.index)
                         }
-                        disabled={paySlipData?.original?.approval !== "approval"}
+                        disabled={paySlipData?.original?.approval === "approval"}
                         className="bg-red-600 hover:bg-red-700 mb-1 text-white uppercase inline-flex items-center text-center px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded  focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
                       >
                         Delete Payslip
