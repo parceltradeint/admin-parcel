@@ -888,7 +888,7 @@ const ShipmentBillCal = (props) => {
                 </tr>
                 <tr>
                   <td className="border border-black px-2 py-2">
-                    KG: {paySlipData?.original?.totalKg || 0}
+                    KG: {Number(paySlipData?.original?.totalKg).toFixed(2) || 0}
                   </td>
                   <td className="border border-black px-2 py-2">
                     BY: {paySlipData?.original?.shipmentBy}
