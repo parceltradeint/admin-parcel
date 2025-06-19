@@ -11,35 +11,41 @@ import CustomerAllDueBills, { getStatusColor } from "./CustomerAllDueBills";
 import ToolTip from "@/common/ToolTip";
 import { Button, Tooltip, Typography } from "@material-tailwind/react";
 import { generateExportBills } from "../PDF/generateExportBills";
+import FilterTabs from "./FilterTabs";
+import OverlayLoading from "@/common/OverlayLoading";
 const CustomersBillCal = (props) => {
   const { type } = props;
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [data, setData] = useState([]);
+  const [selectedTab, setSelectedTab] = useState("pending");
 
   useEffect(() => {
     async function fetchCustomers() {
       setLoading(true);
       await axios
-        .get(`/api/customers-bills`)
+        .get(`/api/customers-bills`, {
+          params: { approval: selectedTab },
+        })
         .then((res) => {
-          const statusPriority = {
-            pending: 1,
-            ongoing: 2,
-            rejected: 3,
-            approved: 4,
-          };
-          const newData = orderBy(
-            res.data?.data,
-            [
-              // First criterion: whether the item has an 'approval' key and is valid
-              (o) => (o?.approval in statusPriority ? 0 : 1),
-              // Second criterion: sort by the defined statusPriority or default to a large number
-              (o) => statusPriority[o?.approval] || Number.MAX_VALUE,
-            ],
-            ["asc", "asc"] // Sorting directions for each criterion
-          );
-          setData(newData);
+          // const statusPriority = {
+          //   pending: 1,
+          //   ongoing: 2,
+          //   rejected: 3,
+          //   approved: 4,
+          // };
+          // const newData = orderBy(
+          //   res.data?.data,
+          //   [
+          //     // First criterion: whether the item has an 'approval' key and is valid
+          //     (o) => (o?.approval in statusPriority ? 0 : 1),
+          //     // Second criterion: sort by the defined statusPriority or default to a large number
+          //     (o) => statusPriority[o?.approval] || Number.MAX_VALUE,
+          //   ],
+          //   ["asc", "asc"] // Sorting directions for each criterion
+          // );
+
+          setData(res.data?.data);
         })
         .catch((err) => {
           console.log("err", err);
@@ -50,7 +56,7 @@ const CustomersBillCal = (props) => {
     }
     fetchCustomers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [selectedTab]);
 
   const convertTotalAmount = (val, toFixed) => {
     return convertBengaliToEnglishNumber(
@@ -121,12 +127,9 @@ const CustomersBillCal = (props) => {
     }
   };
 
-  if (loading) {
-    return <PlaceHolderLoading loading={true} />;
-  }
-
   return (
     <>
+      <FilterTabs setSelectedTab={setSelectedTab} selectedTab={selectedTab} />
       <button
         type="button"
         className=" bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mb-2 mx-auto flex justify-center uppercase"
@@ -134,6 +137,7 @@ const CustomersBillCal = (props) => {
       >
         Export Due Bill
       </button>
+      {loading && <OverlayLoading loading={true} />}
       <ReactTable
         data={groupedArray}
         columns={[
@@ -359,6 +363,9 @@ const CustomersBillCal = (props) => {
         showPagination={true}
         // showPagination={false}
         sortable={true}
+        loading={loading}
+        LoadingComponent={() => <PlaceHolderLoading loading={true} />}
+        NoDataComponent={() => (loading ? null : <div>No data found</div>)}
       />
       {showModal && (
         <CustomerAllDueBills

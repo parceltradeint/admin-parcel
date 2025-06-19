@@ -4,8 +4,9 @@ import React from "react";
 
 const OverlayLoading = () => {
   return (
-    <div className="w-full h-full fixed flex items-center left-0 top-0 justify-center overLoading bg-gray-100 opacity-[0.70] z-[30]">
-      <span>
+    <div className="w-full h-full left-0 top-0 overLoading fixed inset-0 z-50 flex items-center justify-center">
+      <div className="absolute inset-0 bg-gray-100 opacity-50 z-40" />
+      <span className=" relative z-50">
         <svg
           version="1.0"
           xmlns="http://www.w3.org/2000/svg"

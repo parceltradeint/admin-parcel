@@ -66,27 +66,58 @@ export default async function newShipmentBill(req, res) {
       const sort = {
         deliveryDate: -1,
       };
-      const search = req?.query?.search || "";
-      const regexPattern = new RegExp(search, "i");
+
+      // const search = req?.query?.search || "";
+      // const regexPattern = new RegExp(search, "i");
+
+      // const searchQuery = {
+      //   $and: [
+      //     {
+      //       customerId: { $exists: true },
+      //     },
+      //     {
+      //       $or: [
+      //         { invoiceNumber: regexPattern },
+      //         { shipmentBy: regexPattern },
+      //         { shipmentNo: regexPattern },
+      //         { deliveryDate: regexPattern },
+      //         { customerName: regexPattern },
+      //         { customerPhone: regexPattern },
+      //       ],
+      //     },
+      //   ],
+      // };
+      const approvalFilter =
+        req?.query?.approval && req.query.approval !== "all"
+          ? {
+              $or: [
+                { approval: req.query.approval },
+                { approval: { $exists: false } }, // optional: include docs without approval field
+              ],
+            }
+          : {};
 
       const searchQuery = {
         $and: [
-          {
-            balance: { $exists: true, $ne: 0 },
-          },
-          {
-            customerId: { $exists: true },
-          },
+          { customerId: { $exists: true } },
           {
             $or: [
-              { invoiceNumber: regexPattern },
-              { shipmentBy: regexPattern },
-              { shipmentNo: regexPattern },
-              { deliveryDate: regexPattern },
-              { customerName: regexPattern },
-              { customerPhone: regexPattern },
+              { invoiceNumber: new RegExp(req?.query?.invoiceNumber, "i") },
+              { shipmentBy: new RegExp(req?.query?.shipmentBy, "i") },
+              { shipmentNo: new RegExp(req?.query?.shipmentNo, "i") },
+              { deliveryDate: new RegExp(req?.query?.deliveryDate, "i") },
+              { customerName: new RegExp(req?.query?.customerName, "i") },
+              { customerPhone: new RegExp(req?.query?.customerPhone, "i") },
+              // { approval: req?.query?.approval, "i") }, // <-- Added regexPattern match for approval
             ],
           },
+          ...(Object.keys(approvalFilter).length ? [approvalFilter] : []),
+          // {
+          //   $or: [
+          //     { approval: req?.query?.approval || "" },
+          //     { approval: { $exists: false } },
+          //   ],
+          // },
         ],
       };
 
@@ -154,6 +185,21 @@ export default async function newShipmentBill(req, res) {
         { _id: objectId }, // Filter criteria to find the document
         { $set: req.body.data } // Fields to update
       );
+
+      // data = await collection.updateMany(
+      //   {
+      //     $or: [
+      //       { approval: { $exists: false } }, // Field doesn't exist
+      //       { approval: null }, // Field is null
+      //       { approval: "" }, // Field is empty string
+      //     ],
+      //   },
+      //   {
+      //     $set: { approval: "pending" },
+      //   }
+      // );
+      // console.log("data", data);
+
       // console.log("res Data", data);
       // const objectId = new ObjectId(req?.body?.id);
       // shipmentData(shipmentCollection);

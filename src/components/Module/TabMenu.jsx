@@ -30,7 +30,7 @@ const TabMenu = (props) => {
 
         <Tab.Panels className="mt-2">
           {tabItems.map((item, i) => (
-            <Tab.Panel className="my-6" key={i}>
+            <Tab.Panel className="my-1" key={i}>
               {item.value}
             </Tab.Panel>
           ))}

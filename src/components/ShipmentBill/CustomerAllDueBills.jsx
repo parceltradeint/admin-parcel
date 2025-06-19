@@ -21,6 +21,7 @@ import pdfFonts from "pdfmake/build/vfs_fonts";
 import NumberFormat from "react-number-format";
 import { MdCloudUpload, MdOutlineDoNotDisturb } from "react-icons/md";
 import { SlideshowLightbox } from "lightbox.js-react";
+import PaymentSlipModal from "./PaymentSlipModal";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const CustomerAllDueBills = (props) => {
@@ -32,6 +33,9 @@ const CustomerAllDueBills = (props) => {
   const [addItemsSoundPlay] = useSound("/assets/sounds/save.mp3", {
     volume: 0.25,
   });
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [paySlipData, setPaySlipData] = useState([]);
   // const [loading, setLoading] = useState(false);
 
   //   useEffect(() => {
@@ -478,14 +482,23 @@ const CustomerAllDueBills = (props) => {
       {
         Header: "Action",
         accessor: "##",
-        Cell: ({ row }) => (
+        Cell: (cell) => (
           <div className={"text-center flex space-x-1"}>
             <button
-              onClick={(e) => handleOnSubmit(row._original)}
+              onClick={(e) => {
+                setPaySlipData(cell);
+                setIsOpen(true);
+              }}
+              className="uppercase inline-flex items-center text-center px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-green-600 hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
+            >
+              Payment Slip
+            </button>
+            <button
+              onClick={(e) => handleOnSubmit(cell.original)}
               className=" uppercase inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
               disabled={loading}
             >
-              {loading === row._original?._id ? (
+              {loading === cell.original?.id ? (
                 <>
                   <SpingSvgIcon />
                   Updating..
@@ -495,7 +508,7 @@ const CustomerAllDueBills = (props) => {
               )}
             </button>
             <button
-              onClick={(e) => handleOnViewPDF(row._original)}
+              onClick={(e) => handleOnViewPDF(cell.original)}
               className="uppercase inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded transition ease-in-out duration-150 bg-red-600 hover:bg-red-700 text-white"
               disabled={loading}
             >
@@ -503,7 +516,7 @@ const CustomerAllDueBills = (props) => {
             </button>
           </div>
         ),
-        width: 180,
+        width: 300,
       },
       // {
       //   //   id: "headerId",
@@ -537,7 +550,7 @@ const CustomerAllDueBills = (props) => {
     >
       <Modal.Title>{`View Customer Bill Detail: ${data[0]["customerName"]}`}</Modal.Title>
       <Modal.Content>
-        <div>
+        <div className="w-full overflow-auto">
           <ReactTable
             data={data}
             columns={columns}
@@ -549,6 +562,16 @@ const CustomerAllDueBills = (props) => {
             showPagination={true}
             // showPagination={false}
             sortable={true}
+          />
+
+          <PaymentSlipModal
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            paySlipData={paySlipData}
+            setPaySlipData={setPaySlipData}
+            data={data}
+            setData={setData}
+            type={type}
           />
 
           <div className="flex justify-center space-x-3 mt-4">
