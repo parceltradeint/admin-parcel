@@ -108,10 +108,15 @@ const PaymentSlipModal = ({
       });
   };
   const handleDeletePayslip = (index, cellIndex) => {
+    const newData = [...data];
+    if (newData[cellIndex]?.approval === "approved") {
+      errorAlert("You cannot delete payslip after approval!");
+      return;
+    }
     errorAlert("Are you sure you want to delete this payslip?").then(
       (res) => {
         if (res.isConfirmed) {
-          const newData = [...data];
+          
           if (index !== -1) {
             // Remove the transaction
             newData[cellIndex].transactions.splice(index, 1);

@@ -299,6 +299,11 @@ const ShipmentBillCal = (props) => {
   };
 
   const handleDeletePayslip = (index, cellIndex) => {
+    const newData = [...data];
+    if (newData[cellIndex]?.approval === "approved") {
+      errorAlert("You cannot delete payslip after approval!");
+      return;
+    }
     errorAlert("Are you sure you want to delete this payslip?").then((res) => {
       if (res.isConfirmed) {
         const newData = [...data];
