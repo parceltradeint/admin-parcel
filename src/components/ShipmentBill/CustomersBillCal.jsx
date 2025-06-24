@@ -13,6 +13,7 @@ import { Button, Tooltip, Typography } from "@material-tailwind/react";
 import { generateExportBills } from "../PDF/generateExportBills";
 import FilterTabs from "./FilterTabs";
 import OverlayLoading from "@/common/OverlayLoading";
+import { IoClose } from "react-icons/io5";
 const CustomersBillCal = (props) => {
   const { type } = props;
   const [loading, setLoading] = useState(false);
@@ -20,6 +21,7 @@ const CustomersBillCal = (props) => {
   const [data, setData] = useState([]);
   const [selectedTab, setSelectedTab] = useState("pending");
   const [refetch, setReFetch] = useState(false);
+  const [searchCustomer, setSearchCustomer] = useState("");
 
   useEffect(() => {
     async function fetchCustomers() {
@@ -117,7 +119,14 @@ const CustomersBillCal = (props) => {
   }, {});
 
   // Convert the object back to an array
-  const groupedArray = Object.values(groupedByCustomerId);
+  const groupedArray = Object.values(groupedByCustomerId)
+    .filter((item) =>
+      item.customerName
+        ?.toLowerCase()
+        .includes(searchCustomer.trim().toLowerCase())
+    )
+    .sort((a, b) => b.totalAmount - a.totalAmount);
+
   // Object.values(groupedByCustomerId).sort(
   //   (a, b) => b.totalAmount - a.totalAmount
   // );
@@ -149,6 +158,23 @@ const CustomersBillCal = (props) => {
         >
           Re-Fetch DATA
         </button>
+        <div className="relative w-340">
+          <input
+            value={searchCustomer}
+            onChange={(e) => setSearchCustomer(e.target.value)}
+            className="form-input text-black px-2 py-2 w-full bg-inherit border border-black rounded-md transition ease-in-out duration-150 sm:text-sm sm:leading-5 pr-10"
+            placeholder="Search by Customer Name"
+          />
+          {searchCustomer && (
+            <button
+              type="button"
+              onClick={() => setSearchCustomer("")}
+              className="absolute right-5 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-black"
+            >
+              <IoClose size={18} />
+            </button>
+          )}
+        </div>
       </div>
       {loading && <OverlayLoading loading={true} />}
       <ReactTable
