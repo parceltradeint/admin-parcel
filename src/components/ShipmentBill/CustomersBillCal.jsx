@@ -19,6 +19,7 @@ const CustomersBillCal = (props) => {
   const [showModal, setShowModal] = useState(false);
   const [data, setData] = useState([]);
   const [selectedTab, setSelectedTab] = useState("pending");
+  const [refetch, setReFetch] = useState(false);
 
   useEffect(() => {
     async function fetchCustomers() {
@@ -56,7 +57,7 @@ const CustomersBillCal = (props) => {
     }
     fetchCustomers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedTab]);
+  }, [selectedTab, refetch]);
 
   const convertTotalAmount = (val, toFixed) => {
     return convertBengaliToEnglishNumber(
@@ -126,17 +127,29 @@ const CustomersBillCal = (props) => {
       generateExportBills(groupedArray);
     }
   };
+  const handleReFetch = () => {
+    setReFetch(Date.now());
+  };
 
   return (
     <>
       <FilterTabs setSelectedTab={setSelectedTab} selectedTab={selectedTab} />
-      <button
-        type="button"
-        className=" bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mb-2 mx-auto flex justify-center uppercase"
-        onClick={handleExportBills}
-      >
-        Export Due Bill
-      </button>
+      <div className="flex justify-center space-x-3">
+        <button
+          type="button"
+          className=" bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mb-2 uppercase"
+          onClick={handleExportBills}
+        >
+          Export Due Bill
+        </button>
+        <button
+          type="button"
+          className=" bg-green-700 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mb-2 uppercase"
+          onClick={handleReFetch}
+        >
+          Re-Fetch DATA
+        </button>
+      </div>
       {loading && <OverlayLoading loading={true} />}
       <ReactTable
         data={groupedArray}
@@ -359,12 +372,12 @@ const CustomersBillCal = (props) => {
         defaultPageSize={200}
         minRows={12}
         showPageJump={false}
-        pageSizeOptions={[200, 250, 300]}
+        // pageSizeOptions={[200, 250, 300]}
         showPagination={true}
         // showPagination={false}
         sortable={true}
         loading={loading}
-        LoadingComponent={() => <PlaceHolderLoading loading={true} />}
+        LoadingComponent={() => <PlaceHolderLoading loading={loading} />}
         NoDataComponent={() => (loading ? null : <div>No data found</div>)}
       />
       {showModal && (

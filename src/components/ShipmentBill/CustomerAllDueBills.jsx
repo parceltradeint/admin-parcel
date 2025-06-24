@@ -115,12 +115,11 @@ const CustomerAllDueBills = (props) => {
     // newData[cellInfo.index]["due"] = newData[cellInfo.index]["balance"];
     newData[cellInfo.index]["balance"] =
       Number(newData[cellInfo.index].totalAmount) -
-      newData[cellInfo.index]["transactions"].reduce(
+      Number(newData[cellInfo.index]["transactions"]?.reduce(
         (acc, tran) => acc + Number(tran.credit),
         0
-      ) -
+      ) || 0) -
       discount;
-
     setData(newData);
   };
 
@@ -142,6 +141,8 @@ const CustomerAllDueBills = (props) => {
     addItemsSoundPlay();
     const newData = {
       ...val,
+      approval: val?.approval || "pending",
+      deliveryDate: val?.deliveryDate || new Date().toISOString().split("T")[0],
     };
 
     Swal.fire({
@@ -273,7 +274,7 @@ const CustomerAllDueBills = (props) => {
         <option value="pending">Pending</option>
         <option value="approved">Approved</option>
         <option value="rejected">Rejected</option>
-        <option value="ongoing">On Going</option>
+        <option value="due-pending">Due Pending</option>
       </select>
     );
   };
@@ -498,7 +499,7 @@ const CustomerAllDueBills = (props) => {
               className=" uppercase inline-flex items-center text-center mx-auto px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
               disabled={loading}
             >
-              {loading === cell.original?.id ? (
+              {loading == cell.original?._id ? (
                 <>
                   <SpingSvgIcon />
                   Updating..
@@ -538,7 +539,7 @@ const CustomerAllDueBills = (props) => {
       //   width: 100,
       // },
     ],
-    [data]
+    [data, loading]
   );
 
   return (
@@ -608,7 +609,7 @@ export const getStatusColor = (value) => {
       return "text-red-600";
     case "pending":
       return "text-purple-600";
-    case "ongoing":
+    case "due-pending":
       return "text-yellow-600";
     default:
       return "";

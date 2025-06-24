@@ -93,7 +93,10 @@ const BillFormSegment = (props) => {
 
   const save = async () => {
     saveSoundPlay();
-
+    if (customerInfo?.approval === "approved") {
+      errorAlert("You can't save approved invoice!");
+      return;
+    }
     const totalDueBill =
       sumBy(data, (item) => Number(item.totalAmount || 0)) +
       Number(aditionalInfo?.rmb?.qty || 0) *
@@ -113,6 +116,7 @@ const BillFormSegment = (props) => {
       totalAmount: totalAmount,
       totalDueBill,
       balance: totalAmount - Number(customerInfo?.credit || 0),
+      approval: customerInfo?.approval || "pending",
     };
 
     // if (

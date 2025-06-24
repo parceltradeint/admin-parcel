@@ -656,7 +656,7 @@ const ShipmentBillCal = (props) => {
       .then((res) => {
         const statusPriority = {
           pending: 1,
-          ongoing: 2,
+          "due-pending": 2,
           rejected: 3,
           approved: 4,
         };

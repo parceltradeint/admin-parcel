@@ -108,22 +108,28 @@ const PaymentSlipModal = ({
       });
   };
   const handleDeletePayslip = (index, cellIndex) => {
-    const newData = [...data];
-    if (index !== -1) {
-      // Remove the transaction
-      newData[cellIndex].transactions.splice(index, 1);
-
-      // Recalculate the balance
-      if (newData[cellIndex].totalAmount) {
-        newData[cellIndex].balance =
-          Number(newData[cellIndex].totalAmount) -
-          newData[cellIndex].transactions.reduce(
-            (acc, tran) => acc + Number(tran.credit),
-            0
-          );
+    successAlert("Are you sure you want to delete this payslip?").then(
+      (res) => {
+        if (res.isConfirmed) {
+          const newData = [...data];
+          if (index !== -1) {
+            // Remove the transaction
+            newData[cellIndex].transactions.splice(index, 1);
+            newData[cellIndex]["approval"] = "pending";
+            // Recalculate the balance
+            if (newData[cellIndex].totalAmount) {
+              newData[cellIndex].balance =
+                Number(newData[cellIndex].totalAmount) -
+                newData[cellIndex].transactions.reduce(
+                  (acc, tran) => acc + Number(tran.credit),
+                  0
+                );
+            }
+            setData(newData);
+          }
+        }
       }
-      setData(newData);
-    }
+    );
   };
 
   const handleOnSubmit = async (val, index) => {

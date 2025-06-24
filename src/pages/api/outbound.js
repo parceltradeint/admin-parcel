@@ -162,9 +162,20 @@ export default async function newShipmentBill(req, res) {
         { _id: objectId }, // Filter criteria to find the document
         { $set: req.body.data } // Fields to update
       );
-      // console.log("res Data", data);
-      // const objectId = new ObjectId(req?.body?.id);
-      // shipmentData(shipmentCollection);
+      
+      // data = await collection.updateMany(
+      //   {
+      //     $or: [
+      //       { approval: { $exists: false } }, // Field doesn't exist
+      //       { approval: null }, // Field is null
+      //       { approval: "" }, // Field is empty string
+      //     ],
+      //   },
+      //   {
+      //     $set: { approval: "pending" },
+      //   }
+      // );
+
       await client.close();
       res.status(200).json(data);
     } catch (error) {

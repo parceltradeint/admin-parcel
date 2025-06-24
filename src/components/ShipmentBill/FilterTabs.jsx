@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 const FilterTabs = ({ setSelectedTab, selectedTab }) => {
-  const tabs = ["all", "pending", "approved", "rejected"];
+  const tabs = ["all", "pending", "approved", "rejected", "due-pending"];
 
   return (
     <div className="w-full max-w-2xl mx-auto py-2">
