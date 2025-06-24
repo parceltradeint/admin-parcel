@@ -299,22 +299,26 @@ const ShipmentBillCal = (props) => {
   };
 
   const handleDeletePayslip = (index, cellIndex) => {
-    const newData = [...data];
-    if (index !== -1) {
-      // Remove the transaction
-      newData[cellIndex].transactions.splice(index, 1);
-
-      // Recalculate the balance
-      if (newData[cellIndex].totalAmount) {
-        newData[cellIndex].balance =
-          Number(newData[cellIndex].totalAmount) -
-          newData[cellIndex].transactions.reduce(
-            (acc, tran) => acc + Number(tran.credit),
-            0
-          );
+    errorAlert("Are you sure you want to delete this payslip?").then((res) => {
+      if (res.isConfirmed) {
+        const newData = [...data];
+        if (index !== -1) {
+          // Remove the transaction
+          newData[cellIndex].transactions.splice(index, 1);
+          newData[cellIndex]["approval"] = "pending";
+          // Recalculate the balance
+          if (newData[cellIndex].totalAmount) {
+            newData[cellIndex].balance =
+              Number(newData[cellIndex].totalAmount) -
+              newData[cellIndex].transactions.reduce(
+                (acc, tran) => acc + Number(tran.credit),
+                0
+              );
+          }
+          setData(newData);
+        }
       }
-      setData(newData);
-    }
+    });
   };
 
   const handleCellRenderChange = (cellInfo, val) => {
@@ -353,8 +357,6 @@ const ShipmentBillCal = (props) => {
       );
     }
   };
-
-
 
   //   if (loading) {
   //     return <PlaceHolderLoading loading={true} />;

@@ -108,7 +108,7 @@ const PaymentSlipModal = ({
       });
   };
   const handleDeletePayslip = (index, cellIndex) => {
-    successAlert("Are you sure you want to delete this payslip?").then(
+    errorAlert("Are you sure you want to delete this payslip?").then(
       (res) => {
         if (res.isConfirmed) {
           const newData = [...data];
