@@ -112,7 +112,7 @@ const BillFormSegment = (props) => {
       ...aditionalInfo,
       data: data,
       totalKg: sumBy(data, (item) => Number(item.kg || 0)),
-      totalCtn: data?.filter((item) => item?.ctn?.length > 1)?.length,
+      totalCtn: data?.filter((item) => item?.ctn?.length > 0)?.length,
       totalAmount: totalAmount,
       totalDueBill,
       balance: totalAmount - Number(customerInfo?.credit || 0),
