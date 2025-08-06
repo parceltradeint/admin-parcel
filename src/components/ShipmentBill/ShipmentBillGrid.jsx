@@ -6,21 +6,17 @@ import { convertTotalAmount } from "../PDF/InvoiceDef";
 
 const ShipmentBillGrid = (props) => {
   const { data, type } = props;
-  const router = useRouter()
+  const router = useRouter();
   const calculationDueBill = (item) => {
-    if (item.totalDueBill) {
-      return Number(item.totalDueBill).toFixed(2)
+    if (item.totalAmount) {
+      return Number(item.totalAmount).toFixed(2);
+    } else {
+      let total =
+        sumBy(item.data, (v) => Number(v.totalAmount || 0)) +
+        Number(item?.rmb?.qty || 0) * Number(item?.rmb?.rate || 0);
+      return total.toFixed(2);
     }
-    else {
-     let total =  sumBy(item.data, (v) => Number(v.totalAmount || 0)) +
-        (Number(item?.rmb?.qty || 0) *
-          Number(item?.rmb?.rate || 0)) +
-        Number(item?.due || 0) -
-       Number(item?.paid || 0)
-       return total.toFixed(2)
-    }
-     
-  }
+  };
   return (
     <div>
       <div className="flex flex-col uppercase">
@@ -85,12 +81,19 @@ const ShipmentBillGrid = (props) => {
 
                         <td className="px-6 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium">
                           <Link
-                            as={"/bill/edit/" + item?._id + "/?type=" + type + `/?year=${router.query?.year}`}
+                            as={
+                              "/bill/edit/" +
+                              item?._id +
+                              "/?type=" +
+                              type +
+                              `/?year=${router.query?.year}`
+                            }
                             href={{
                               pathname: "/bill/edit/[slug]",
                               query: {
                                 id: item?._id,
-                                type: type                              },
+                                type: type,
+                              },
                             }}
                           >
                             <p
