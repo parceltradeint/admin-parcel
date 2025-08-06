@@ -439,9 +439,7 @@ const BillFormDetails = (props) => {
                     </span> */}
                     <span className="block w-full text-right bg-white border focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40">
                       {convertTotalAmount(
-                        Number(netTotalAmount(row?.data)) +
-                          Number(aditionalInfo?.due || 0) -
-                          Number(aditionalInfo?.paid || 0)
+                        Number(netTotalAmount(row?.data))
                       )}
                     </span>
                   </div>
